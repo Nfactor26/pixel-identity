@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+<AuthorizeView>
+    <Authorized>
+        <MudMenu Direction="Direction.Left" OffsetX="true">
+            <ActivatorContent>
+                <MudAvatar>@context.User.Identity.Name.First()</MudAvatar>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Link="/authentication/profile">Profile</MudMenuItem>               
+                <MudMenuItem @onclick="BeginSignOut">Sign Out</MudMenuItem>
+            </ChildContent>
+        </MudMenu>      
+    </Authorized>
+    <NotAuthorized>
+        <MudLink Href="authentication/register">Register</MudLink>
+        <MudLink Href="authentication/login">Login</MudLink>      
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+}
