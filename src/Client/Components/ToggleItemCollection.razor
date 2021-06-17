@@ -1,0 +1,28 @@
+﻿<MudGrid Spacing="2">
+    @foreach (var item in Items)
+    {
+        <MudItem xs="2">           
+           <MudToggleIconButton Toggled="@item.IsSelected" ToggledChanged="@(x => ToggleSwitch(x, item))"
+                     Color="@Color.Default" ToggledColor="@Color.Success" 
+                     Size="Size.Large" ToggledSize="Size.Large"
+                     Icon="@Icons.Material.Filled.ToggleOff"
+                     ToggledIcon="@Icons.Material.Filled.ToggleOn" />
+            <span>@item.DisplayName</span>
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<SwitchItemViewModel> Items { get; set; }
+
+    [Parameter]
+    public EventCallback<SwitchItemViewModel> OnToggle { get; set; }
+
+    void ToggleSwitch(bool toggleState, SwitchItemViewModel item)
+    {       
+        OnToggle.InvokeAsync(item);
+    }
+
+}

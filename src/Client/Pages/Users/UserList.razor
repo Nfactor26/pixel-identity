@@ -1,0 +1,47 @@
+﻿@page "/users/list"
+
+<MudTable Items="@(users ?? Enumerable.Empty<UserDetailsViewModel>())"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Users</MudText>
+        <MudToolBarSpacer></MudToolBarSpacer>
+        <MudTextField Placeholder="Search" Adornment="Adornment.Start" @bind-Value="@searchString"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>User Name</MudTh>
+        <MudTh>User Email</MudTh>
+        <MudTh>Phone Number</MudTh>
+        <MudTh></MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="User Name">
+            @context.UserName
+        </MudTd>
+        <MudTd DataLabel="User Email">
+            @context.Email
+        </MudTd>
+        <MudTd DataLabel="Phone Number">
+            @context.PhoneNumber
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                        @onclick="()=> EditUser(context)"   Size="Size.Medium" ></MudIconButton>
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                     @onclick="()=> DeleteUser(context)"  Size="Size.Medium" ></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="pageSizeOptions" RowsPerPageString="Results Per Page" />
+    </PagerContent>
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+        <col style="width:20px;" />
+        <col style="width:20px;"/>
+    </ColGroup>
+</MudTable>

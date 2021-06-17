@@ -1,0 +1,23 @@
+﻿@page "/applications/edit/{clientId?}"
+
+@if (application != null)
+{
+    <MudText Typo="Typo.h4">Edit Details</MudText>
+    <br />
+    <MudPaper Elevation="4">
+        <EditForm Model="@application" OnValidSubmit="UpdateApplicationDetailsAsync">
+            <FluentValidator />
+            <MudCard>
+                <MudCardContent>
+                    <CascadingValue Value="application">
+                        <ApplicationForm Dialog="Dialog" />
+                    </CascadingValue>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+    </MudPaper>
+
+}

@@ -1,0 +1,83 @@
+﻿<MudTextField Label="Client ID"
+              @bind-Value="Application.ClientId" For="@(() => Application.ClientId)" />
+<MudTextField Label="Client Name" Class="mt-3"
+              @bind-Value="Application.DisplayName" For="@(() => Application.DisplayName)" />
+<MudSelect T="string" Label="Client Type" @bind-Value="Application.Type">
+    <MudSelectItem Value="@("public")" />
+    <MudSelectItem Value="@("confidential")" />
+</MudSelect>
+<ValidationMessage For="() => Application.Type"></ValidationMessage>
+@if (Application.IsConfidentialClient)
+{
+
+    <MudTextField @bind-Value="Application.ClientSecret" Label="Client Secret" Variant="Variant.Text"
+                  InputType="passwordInputFieldType" Adornment="Adornment.End"
+                  AdornmentIcon="passwordInputIcon" OnAdornmentClick="OnTogglePasswordVisibility" />
+    <ValidationMessage For="() => Application.ClientSecret"></ValidationMessage>
+}
+<MudSelect T="string" Label="Consent Type" @bind-Value="Application.ConsentType">
+    <MudSelectItem Value="@("explicit")" />
+    <MudSelectItem Value="@("external")" />
+    <MudSelectItem Value="@("implicit")" />
+    <MudSelectItem Value="@("systematic")" />
+</MudSelect>
+<ValidationMessage For="() => Application.ConsentType"></ValidationMessage>
+<br />
+
+<div class="d-flex flex-wrap">
+    <MudText Typo="Typo.h6" Class="mt-2">Redirect Uris</MudText>
+    <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                   @onclick="AddRedirectUri" Color="Color.Primary"></MudIconButton>
+</div>
+<ValidationMessage For="() => Application.RedirectUris"></ValidationMessage>
+<EditableCollection TItem="Uri" TValue="string" ItemSize="12" OnDeleteItem="@RemoveRedirectUri"
+                    Items="(Application.RedirectUris ?? Enumerable.Empty<Uri>())">
+    <ItemTemplate Context="item">
+        <MudText Color="Color.Info" Typo="Typo.subtitle1">@item.ToString()</MudText>
+    </ItemTemplate>
+</EditableCollection>
+
+
+<div class="d-flex flex-wrap">
+    <MudText Typo="Typo.h6" Class="mt-2">Post Logout Redirect Uris</MudText>
+    <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                   @onclick="AddPostLogoutRedirectUri" Color="Color.Primary"></MudIconButton>
+</div>
+<ValidationMessage For="() => Application.PostLogoutRedirectUris"></ValidationMessage>
+<EditableCollection TItem="Uri" TValue="string" ItemSize="12"
+                    OnDeleteItem="@RemovePostLogoutRedirectUri"
+                    Items="(Application.PostLogoutRedirectUris ?? Enumerable.Empty<Uri>())" NewItem="@string.Empty">
+    <ItemTemplate Context="item">
+        <MudText Color="Color.Info" Typo="Typo.subtitle1">@item.ToString()</MudText>      
+    </ItemTemplate>
+</EditableCollection>
+
+<MudText Typo="Typo.h6">Permissions</MudText>
+<ValidationMessage For="() => Application.Permissions"></ValidationMessage>
+<br />
+<MudExpansionPanels MultiExpansion="true">
+    <MudExpansionPanel Text="EndPoint Permissions" IsExpanded="true" HideIcon="true">
+        <ToggleItemCollection Items="endPointPermissions" OnToggle="TogglePermission" />
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Grant Type Permissions" IsExpanded="true" HideIcon="true">
+        <ToggleItemCollection Items="grantTypePermissions" OnToggle="TogglePermission" />
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Scope Permissions" IsExpanded="true" HideIcon="true">
+        <ToggleItemCollection Items="scopePermissions" OnToggle="TogglePermission" />
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="Response Type Permissions" IsExpanded="true" HideIcon="true">
+        <MudGrid Spacing="2">
+            <ToggleItemCollection Items="responseTypePermissions" OnToggle="TogglePermission" />
+        </MudGrid>
+    </MudExpansionPanel>
+</MudExpansionPanels>
+<br />
+
+<MudText Typo="Typo.h6">Requirements</MudText>
+<br />
+<MudExpansionPanels MultiExpansion="true">
+    <MudExpansionPanel Text="Application requirements" IsExpanded="true" HideIcon="true">
+        <ToggleItemCollection Items="requirements" OnToggle="ToggleRequirement" />
+    </MudExpansionPanel>
+</MudExpansionPanels>
+<br />

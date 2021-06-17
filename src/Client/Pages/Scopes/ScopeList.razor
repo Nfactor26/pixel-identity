@@ -1,0 +1,44 @@
+﻿@page "/scopes/list"
+
+<MudTable Items="@(scopes ?? Enumerable.Empty<ScopeViewModel>())"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Scopes</MudText>
+        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
+                       @onclick="NavigateToAddScopePage" Color="Color.Primary"></MudIconButton>
+    </ToolBarContent>
+    <HeaderContent>
+        @*<MudTh>Id</MudTh>*@
+        <MudTh>Name</MudTh>
+        <MudTh>Display Name</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        @*<MudTd DataLabel="Name">
+            @context.Id
+        </MudTd>*@
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
+        <MudTd DataLabel="Display Name">
+            @context.DisplayName
+        </MudTd>
+        <MudTd DataLabel="Description">
+            @context.Description
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           @onclick="()=> NavigateToEditScopePage(context)" Size="Size.Medium"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="pageSizeOptions" RowsPerPageString="Results Per Page" />
+    </PagerContent>
+    <ColGroup>        
+        <col />
+        <col />
+        <col />
+        <col style="width:20px;" />
+    </ColGroup>
+</MudTable>

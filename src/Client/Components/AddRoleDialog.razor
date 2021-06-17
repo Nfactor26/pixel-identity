@@ -1,0 +1,41 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem xs="10" sm="10" md="10">
+                <MudSelect Label="Add Role" @bind-Value="@selectedOption" Class="mt-n2" Style="width:200px;">
+                    @foreach (var role in AvailableRoles)
+                    {
+                        <MudSelectItem Value="@(role.RoleName)">
+                            @(role.RoleName)
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="2"  sm="2" md="2">
+                <MudIconButton OnClick="AddRole" Disabled="string.IsNullOrEmpty(selectedOption)"
+                               Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+            </MudItem>
+        </MudGrid>     
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    string selectedOption;
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public IEnumerable<UserRoleViewModel> AvailableRoles { get; set; }
+
+    void AddRole()
+    {
+        if(!string.IsNullOrEmpty(selectedOption))
+        {
+            MudDialog.Close(DialogResult.Ok<string>(selectedOption));            
+        }        
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}
