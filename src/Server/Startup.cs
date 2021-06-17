@@ -1,11 +1,15 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OpenIddict.Server.AspNetCore;
 using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared.Models;
 using Quartz;
+using System.Threading.Tasks;
 
 namespace Pixel.Identity.Provider
 {
@@ -26,17 +30,57 @@ namespace Pixel.Identity.Provider
             services.AddRazorPages();
 
             //// configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
-            services.Configure<IISOptions>(iis =>
-            {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
-            });
+            //services.Configure<IISOptions>(iis =>
+            //{
+            //    iis.AuthenticationDisplayName = "Windows";
+            //    iis.AutomaticAuthentication = false;
+            //});
 
-            // configures IIS in-proc settings
-            services.Configure<IISServerOptions>(iis =>
+            //// configures IIS in-proc settings
+            //services.Configure<IISServerOptions>(iis =>
+            //{
+            //    iis.AuthenticationDisplayName = "Windows";
+            //    iis.AutomaticAuthentication = false;
+            //});
+
+            services.AddAuthentication(options =>
             {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.AddScheme(Microsoft.AspNetCore.Server.IISIntegration.IISDefaults.AuthenticationScheme, options =>
+                //{
+                //    options.DisplayName = "Windows";                  
+                //});
+            })
+            //.AddNegotiate()
+            //.AddNegotiate(Microsoft.AspNetCore.Server.IISIntegration.IISDefaults.AuthenticationScheme, "Windows", options =>
+            //{
+            //    //options.ForwardAuthenticate = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme;             
+            //    options.Events = new NegotiateEvents()
+            //    {
+            //        OnAuthenticationFailed = context =>
+            //        {
+            //            // context.SkipHandler();
+            //            return Task.CompletedTask;
+            //        }
+            //    };
+            //})
+            .AddGoogle(options =>
+            {
+                options.ClientId = "291460082161-tj6e9vvmg8ec98tuof0upevvrnlvd245.apps.googleusercontent.com";
+                options.ClientSecret = "rAUmJdBV3If9nTCXA82Ncr0F";
+            });
+            
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:5001");
+                        //This is required for pre-flight request for CORS
+                        builder.AllowAnyHeader();
+                        builder.AllowAnyMethod();
+                        builder.AllowCredentials();
+                    });
             });
 
             services.AddIdentityWithMongo<ApplicationUser, ApplicationRole>(this.Configuration);
@@ -52,6 +96,7 @@ namespace Pixel.Identity.Provider
             // Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
             services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
+
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
             //        Configuration.GetConnectionString("DefaultConnection")));
@@ -63,7 +108,8 @@ namespace Pixel.Identity.Provider
 
             //services.AddIdentityServer()
             //    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-        
+
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +133,8 @@ namespace Pixel.Identity.Provider
             app.UseStaticFiles();
 
             app.UseRouting();
-           
+            app.UseCors();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

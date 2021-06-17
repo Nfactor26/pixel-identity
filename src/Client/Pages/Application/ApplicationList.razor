@@ -1,0 +1,49 @@
+﻿@page "/applications/list"
+
+<MudTable Items="@(applications ?? Enumerable.Empty<ApplicationViewModel>())"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Applications</MudText>
+        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
+                       @onclick="AddNewApplication" Color="Color.Primary"></MudIconButton>
+        <MudToolBarSpacer></MudToolBarSpacer>
+        <MudTextField Placeholder="Search" Adornment="Adornment.Start" @bind-Value="@searchString"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Client Id</MudTh>
+        <MudTh>Display Name</MudTh>
+        <MudTh>Consent Type</MudTh>
+        <MudTh></MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Client Id">
+            @context.ClientId
+        </MudTd>
+        <MudTd DataLabel="Display Name">
+            @context.DisplayName
+        </MudTd>
+        <MudTd DataLabel="Consent Type">
+            @context.ConsentType
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           @onclick="()=> EditApplication(context)" Size="Size.Medium"></MudIconButton>
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                           @onclick="()=> DeleteApplication(context)" Size="Size.Medium"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="pageSizeOptions" RowsPerPageString="Results Per Page" />
+    </PagerContent>
+    <ColGroup>
+        <col />
+        <col />
+        <col />
+        <col style="width:20px;" />
+        <col style="width:20px;" />
+    </ColGroup>
+</MudTable>
