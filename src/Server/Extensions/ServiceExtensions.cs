@@ -55,33 +55,36 @@ namespace Pixel.Identity.Provider.Extensions
            // Register the OpenIddict server components.
            .AddServer(options =>
            {
-                // Enable the authorization, logout, token and userinfo endpoints.
-                options.SetAuthorizationEndpointUris("/connect/authorize")
-               .SetLogoutEndpointUris("/connect/logout")
-               .SetTokenEndpointUris("/connect/token")
-               .SetUserinfoEndpointUris("/connect/userinfo")
-               .SetDeviceEndpointUris("/connect/device")
-               .SetVerificationEndpointUris("connect/verify");
+               // Enable the authorization, logout, token and userinfo endpoints.
+               options.SetAuthorizationEndpointUris("/connect/authorize")
+              .SetLogoutEndpointUris("/connect/logout")
+              .SetTokenEndpointUris("/connect/token")
+              .SetUserinfoEndpointUris("/connect/userinfo")
+              .SetDeviceEndpointUris("/connect/device")
+              .SetVerificationEndpointUris("connect/verify");
 
-                // Mark the "email", "profile" and "roles" scopes as supported scopes.
-                options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
+               //when integration with third-party APIs/resource servers is desired
+               options.DisableAccessTokenEncryption();
 
-                // Note: this sample only uses the authorization code flow but you can enable
-                // the other flows if you need to support implicit, password or client credentials.
-                //options.AllowDeviceCodeFlow();
-                options.AllowAuthorizationCodeFlow().AllowDeviceCodeFlow().AllowRefreshTokenFlow();
+               // Mark the "email", "profile" and "roles" scopes as supported scopes.
+               options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
 
-                // Register the signing and encryption credentials.
-                options.AddDevelopmentEncryptionCertificate()
-               .AddDevelopmentSigningCertificate();
+               // Note: this sample only uses the authorization code flow but you can enable
+               // the other flows if you need to support implicit, password or client credentials.
+               //options.AllowDeviceCodeFlow();
+               options.AllowAuthorizationCodeFlow().AllowDeviceCodeFlow().AllowRefreshTokenFlow();
 
-                // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-                options.UseAspNetCore()
-               .EnableAuthorizationEndpointPassthrough()
-               .EnableLogoutEndpointPassthrough()
-               .EnableTokenEndpointPassthrough()
-               .EnableUserinfoEndpointPassthrough()
-               .EnableStatusCodePagesIntegration();
+               // Register the signing and encryption credentials.
+               options.AddDevelopmentEncryptionCertificate()
+              .AddDevelopmentSigningCertificate();
+
+               // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+               options.UseAspNetCore()
+              .EnableAuthorizationEndpointPassthrough()
+              .EnableLogoutEndpointPassthrough()
+              .EnableTokenEndpointPassthrough()
+              .EnableUserinfoEndpointPassthrough()
+              .EnableStatusCodePagesIntegration();
            })
            // Register the OpenIddict validation components.
            .AddValidation(options =>
