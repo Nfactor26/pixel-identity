@@ -2,6 +2,7 @@
 using MudBlazor;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Shared.ViewModels;
+using Pixel.Identity.UI.Client.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,49 +13,64 @@ namespace Pixel.Identity.UI.Client.Components
     {      
         [Parameter]
         public IDialogService Dialog { get; set; }
-     
+
+        [Inject]
+        public IScopeService ScopeService { get; set; }
+
         [CascadingParameter]
         public ApplicationViewModel Application { get; set; }
 
         List<SwitchItemViewModel> endPointPermissions = new List<SwitchItemViewModel>()
         {
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Authorization,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Introspection,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Logout,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Revocation,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Token,false))
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Authorization, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Introspection, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Logout, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Revocation, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Token, false))
         };
 
         List<SwitchItemViewModel> grantTypePermissions = new List<SwitchItemViewModel>()
         {
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.Implicit,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.Password,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.RefreshToken,false))
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.Implicit, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.Password, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.RefreshToken, false))
         };
 
         List<SwitchItemViewModel> responseTypePermissions = new List<SwitchItemViewModel>()
         {
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.Code,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.CodeIdToken,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.CodeIdTokenToken,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.CodeToken,false))
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.Code, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.CodeIdToken, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.CodeIdTokenToken, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.ResponseTypes.CodeToken, false))
         };
 
         List<SwitchItemViewModel> scopePermissions = new List<SwitchItemViewModel>()
         {
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Address,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Email,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Phone,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Profile,false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Roles,false))
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Address, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Email, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Phone, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Profile, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Scopes.Roles, false))
         };
 
         List<SwitchItemViewModel> requirements = new List<SwitchItemViewModel>()
         {
             (new SwitchItemViewModel(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange, false))
         };
+
+        protected override async Task OnInitializedAsync()
+        {
+            if (Application != null)
+            {
+                var customScopes = await ScopeService.GetAllAsync();
+                foreach (var customScope in customScopes)
+                {
+                    scopePermissions.Add(new SwitchItemViewModel(customScope.DisplayName, Application.Permissions.Contains(customScope.Name)));
+                }
+            }              
+        }
 
         protected override void OnParametersSet()
         {
