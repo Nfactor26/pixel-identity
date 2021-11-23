@@ -31,10 +31,7 @@ namespace Pixel.Identity.UI.Client
 
             builder.Services.AddHttpClient<IUserRolesService, UserRolesService>(
               client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-              .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
-
-            builder.Services.AddHttpClient<IAccountsService, AccountsService>(
-                client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+              .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();          
 
             builder.Services.AddHttpClient<IUsersService, UsersService>(
               client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
