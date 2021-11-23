@@ -50,7 +50,7 @@ namespace Pixel.Identity.Provider
                 //{
                 //    options.DisplayName = "Windows";                  
                 //});
-            })
+            });
             //.AddNegotiate()
             //.AddNegotiate(Microsoft.AspNetCore.Server.IISIntegration.IISDefaults.AuthenticationScheme, "Windows", options =>
             //{
@@ -64,12 +64,12 @@ namespace Pixel.Identity.Provider
             //        }
             //    };
             //})
-            .AddGoogle(options =>
-            {
-                options.ClientId = "291460082161-tj6e9vvmg8ec98tuof0upevvrnlvd245.apps.googleusercontent.com";
-                options.ClientSecret = "rAUmJdBV3If9nTCXA82Ncr0F";
-            });
-            
+            //.AddGoogle(options =>
+            //{
+            //    options.ClientId = Configuration["google-client-id"];
+            //    options.ClientSecret = Configuration["google-secret"];
+            //});
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
