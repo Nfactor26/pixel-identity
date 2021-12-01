@@ -22,6 +22,8 @@ namespace Pixel.Identity.Provider.Extensions
                 options.ClaimsIdentity.UserNameClaimType = Claims.Name;
                 options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
                 options.ClaimsIdentity.RoleClaimType = Claims.Role;
+                //options.SignIn.RequireConfirmedAccount = true;
+                //options.User.RequireUniqueEmail = true;               
             })
             .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
             (
@@ -65,6 +67,10 @@ namespace Pixel.Identity.Provider.Extensions
 
                //when integration with third-party APIs/resource servers is desired
                options.DisableAccessTokenEncryption();
+
+               // Disables the transport security requirement (HTTPS). Service is supposed
+               // to run behind a reverse-proxy with tls termination
+               options.UseAspNetCore().DisableTransportSecurityRequirement();
 
                // Mark the "email", "profile" and "roles" scopes as supported scopes.
                options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);

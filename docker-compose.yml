@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+
+  pixel-identity:
+    image: ${DOCKER_REGISTRY-}pixelidentityprovider   
+    build:
+      context: .
+      dockerfile: src/Server/Dockerfile    

@@ -1,0 +1,41 @@
+global:
+  sendAnonymousUsage: false
+
+api:
+  dashboard: true
+  insecure: true
+
+# we define docker based and file based provider.
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    watch: true
+    exposedByDefault: false
+    useBindPortIP: false
+    httpClientTimeout: 30
+    network: pixel-network
+
+  file:
+    filename: /etc/traefik/config.yml
+    watch: true
+
+log:
+  level: INFO
+  format: common
+
+accessLog: {}
+
+tracing:
+  jaeger: {}
+
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      # redirect any request on http to https
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+  https:
+    address: ":443"

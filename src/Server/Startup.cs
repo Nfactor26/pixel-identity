@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using OpenIddict.Server.AspNetCore;
 using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared.Models;
 using Quartz;
-using System.Threading.Tasks;
+using System;
 
 namespace Pixel.Identity.Provider
 {
@@ -26,9 +26,42 @@ namespace Pixel.Identity.Provider
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpLogging(logging =>
+            {               
+                logging.LoggingFields = HttpLoggingFields.All;
+                logging.RequestHeaders.Add("Referer");
+                logging.RequestHeaders.Add("Origin");
+                logging.RequestHeaders.Add("X-Forwarded-For");
+                logging.RequestHeaders.Add("X-Forwarded-Host");
+                logging.RequestHeaders.Add("X-Forwarded-Proto");
+                logging.RequestHeaders.Add("Upgrade-Insecure-Requests");
+                logging.RequestHeaders.Add("Sec-Fetch-Site");
+                logging.RequestHeaders.Add("Sec-Fetch-Mode");
+                logging.RequestHeaders.Add("Sec-Fetch-Dest");              
+                logging.RequestHeaders.Add("Access-Control-Request-Method");
+                logging.RequestHeaders.Add("Access-Control-Request-Headers");
+                logging.ResponseHeaders.Add("Access-Control-Allow-Origin");
+                logging.ResponseHeaders.Add("Access-Control-Allow-Methods");
+                logging.ResponseHeaders.Add("Access-Control-Request-Headers");
+                logging.ResponseHeaders.Add("Access-Control-Allow-Credentials");
+                logging.ResponseHeaders.Add("Access-Control-Max-Age");
+                logging.MediaTypeOptions.AddText("application/javascript");
+                logging.RequestBodyLogLimit = 4096;
+                logging.ResponseBodyLogLimit = 4096;
+            });
+
+            //To forward the scheme from the proxy in non - IIS scenarios
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+         
             //// configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
             //services.Configure<IISOptions>(iis =>
             //{
@@ -75,11 +108,15 @@ namespace Pixel.Identity.Provider
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:5001");
+                        var allowedOrigins = Configuration["AllowedOrigins"];
+                        foreach(var item in allowedOrigins.Split(';'))
+                        {
+                            builder.WithOrigins(item);                           
+                        }
                         //This is required for pre-flight request for CORS
                         builder.AllowAnyHeader();
-                        builder.AllowAnyMethod();
-                        builder.AllowCredentials();
+                        builder.AllowAnyMethod();                       
+                        builder.AllowCredentials();                        
                     });
             });
 
@@ -110,11 +147,14 @@ namespace Pixel.Identity.Provider
             //    .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddAutoMapper();
+
+            services.AddHostedService<Worker>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+        {         
+            app.UseForwardedHeaders();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -125,15 +165,22 @@ namespace Pixel.Identity.Provider
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
+            app.UseHttpLogging();
             app.UseRouting();
             app.UseCors();
+
+            //app.Use((context, next) =>
+            //{
+            //    context.Request.Scheme = "https";
+            //    return next();
+            //});
 
             app.UseAuthentication();
             app.UseAuthorization();

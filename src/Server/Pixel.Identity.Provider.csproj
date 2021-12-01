@@ -5,6 +5,9 @@
     <UserSecretsId>Pixel.Identity.UI.Server-DBF95824-61B9-4155-ABD3-07F68D78DC36</UserSecretsId>
     <RootNamespace>Pixel.Identity.Provider</RootNamespace>
     <AssemblyName>Pixel.Identity.Provider</AssemblyName>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +15,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.0.5" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore.Models" Version="3.0.5" />

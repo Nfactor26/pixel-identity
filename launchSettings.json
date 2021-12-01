@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "pixel-identity",
+      "composeLaunchUrl": "{Scheme}://identity.dashboard.local",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "mongo": "StartWithoutDebugging",
+        "pixel-identity": "StartDebugging",
+        "reverse-proxy": "StartWithoutDebugging"
+      }
+    }
+  }
+}
