@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.6.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Provider", "src\Server\Pixel.Identity.Provider.csproj", "{F779E136-A2F5-41FA-B4AB-02C9DE9C8CCB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.UI.Client", "src\Client\Pixel.Identity.UI.Client.csproj", "{F7E50B7A-C3EB-4DD6-9B19-67020C1F9C97}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Shared", "src\Shared\Pixel.Identity.Shared.csproj", "{A549C971-2306-45A0-BDCD-D210523FFBB3}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8F59DA83-60F4-485A-B8C7-B17936EC00A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,18 @@ Global
 		{A549C971-2306-45A0-BDCD-D210523FFBB3}.Release|x64.Build.0 = Release|Any CPU
 		{A549C971-2306-45A0-BDCD-D210523FFBB3}.Release|x86.ActiveCfg = Release|Any CPU
 		{A549C971-2306-45A0-BDCD-D210523FFBB3}.Release|x86.Build.0 = Release|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Debug|x64.Build.0 = Debug|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Debug|x86.Build.0 = Debug|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Release|x64.ActiveCfg = Release|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Release|x64.Build.0 = Release|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{8F59DA83-60F4-485A-B8C7-B17936EC00A2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
