@@ -9,6 +9,8 @@
     <DockerServiceName>pixel.identity.provider</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include=".traefik\config.yml" />
+    <None Include=".traefik\traefik.yml" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>

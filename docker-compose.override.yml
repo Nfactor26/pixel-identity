@@ -8,18 +8,12 @@ services:
     container_name: pixel_identity_traefik
     restart: unless-stopped
     security_opt:
-      - no-new-privileges:true
-    # Enables the web UI and tells Traefik to listen to docker
+      - no-new-privileges:true   
     # command: --api.insecure=true --providers.docker --log.level=DEBUG
     labels:
       - "traefik.enable=true"
       # Use "traefik" router configuration defined into the dynamic config file: ./traefik/config.yml
-      - "traefik.http.routers.traefik=true"
-      #- "traefik.http.routers.reverse-proxy.middlewares=header-middleware@docker"
-      #- "traefik.http.middlewares.header-middleware.headers.accesscontrolallowmethods=*"
-      #- "traefik.http.middlewares.header-middleware.headers.accessControlAllowHeaders=*"
-      #- "traefik.http.middlewares.header-middleware.headers.accessControlAllowCredentials=true"    
-      #- "traefik.http.middlewares.header-middleware.headers.accesscontrolalloworiginlist=https://identity.docker.localhost"
+      - "traefik.http.routers.traefik=true"     
     ports:
       # The HTTP port
       - "80:80" 
@@ -52,12 +46,7 @@ services:
       - pixel-network
      environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: mongopass
-     #ports:
-     # - 27017:27017
-     #labels:
-     # - "traefik.enable=true"
-     # - "traefik.http.routers.pixel-identity.rule=Host(`mongo.docker.localhost`)"      
+      MONGO_INITDB_ROOT_PASSWORD: mongopass       
      profiles:
       - mongo
 
@@ -87,28 +76,23 @@ services:
       - ASPNETCORE_URLS=http://+
       - MongoDbSettings:ConnectionString=mongodb://mongoadmin:mongopass@mongo:27017/
       - IdentityHost=identity.docker.localhost
-      - AllowedOrigins=https://identity.docker.localhost;http://identity.docker.localhost
+      - AllowedOrigins=https://identity.docker.localhost;http://identity.docker.localhost     
+      # Certificates required by OpenIdDict for encyrption and signing
+      - Identity:Certificates:EncryptionCertificatePath=/etc/certs/identity-encryption.pfx
+      - Identity:Certificates:EncryptionCertificateKey=${OPENIDDICT_ENCRYPTION_CERTIFICATE_KEY:-""}
+      - Identity:Certificates:SigningCertificatePath=/etc/certs/identity-signing.pfx
+      - Identity:Certificates:SigningCertificateKey=${OPENIDDICT_ENCRYPTION_SIGNING_KEY:-""}
       # Certificate settings when using https
-      #- Kestrel:Certificates:Default:Path=/etc/certs/pixel-identity-cert.pem
-      #- Kestrel:Certificates:Default:KeyPath=/etc/certs/pixel-identity-key.pem
-    #depends_on:
-    # - mongo
-    #ports:
-    #  - "5050:80"
-    #  - "5051:443"
+      #-Kestrel:Certificates:Default:Path=/etc/certs/pixel-identity-cert.pem
+      #-Kestrel:Certificates:Default:KeyPath=/etc/certs/pixel-identity-key.pem 
     volumes:
-      #- ./.certificates:/etc/certs:ro
+      - ./.certificates:/etc/certs:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro      
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pixel-identity.rule=Host(`identity.docker.localhost`)"
-      - "traefik.http.routers.pixel-identity.tls=true"
-      #- "traefik.http.middlewares.header-middleware.headers.accesscontrolmaxage=100"
-      #- "traefik.http.middlewares.header-middleware.headers.addvaryheader=true"
-      #- "traefik.http.routers.pixel-identity.middlewares=test-redirectscheme"
-      #- "traefik.http.middlewares.test-redirectscheme.redirectscheme.scheme=https"
-      #- "traefik.http.middlewares.test-redirectscheme.redirectscheme.permanent=true"   
+      - "traefik.http.routers.pixel-identity.tls=true"    
     networks:
       - pixel-network
   

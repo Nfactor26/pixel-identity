@@ -8,10 +8,7 @@ http:
         domains:
           - main: "docker.localhost"
             sans:
-              - "*.docker.localhost"
-          - main: "domain.local"
-            sans:
-              - "*.domain.local"
+              - "*.docker.localhost"       
 
 #Traefik TLS https://doc.traefik.io/traefik/https/tls/
 tls:

@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Pixel.Identity.Shared.Models;
 using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Pixel.Identity.Provider.Extensions
@@ -80,9 +82,34 @@ namespace Pixel.Identity.Provider.Extensions
                //options.AllowDeviceCodeFlow();
                options.AllowAuthorizationCodeFlow().AllowDeviceCodeFlow().AllowRefreshTokenFlow();
 
-               // Register the signing and encryption credentials.
-               options.AddDevelopmentEncryptionCertificate()
-              .AddDevelopmentSigningCertificate();
+               
+               //OpenIdDict uses two types of credentials to secure the token it issues.
+               //1.Encryption credentials are used to ensure the content of tokens cannot be read by malicious parties
+               if (string.IsNullOrEmpty(Configuration["Identity:Certificates:EncryptionCertificatePath"]))                 
+               {
+                 
+                   var encryptionKeyBytes = File.ReadAllBytes(Configuration["Identity:Certificates:EncryptionCertificatePath"]);
+                   X509Certificate2 encryptionKey = new X509Certificate2(encryptionKeyBytes, Configuration["Identity:EncryptionCertificateKey"],
+                           X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet);
+               }
+               else
+               {
+                   options.AddDevelopmentEncryptionCertificate();
+               }
+
+               //2.Signing credentials are used to protect against tampering
+               if (string.IsNullOrEmpty(Configuration["Identity:Certificates:SigningCertificatePath"]))
+               {
+                  
+                   var signingKeyBytes = File.ReadAllBytes(Configuration["Identity:Certificates:SigningCertificatePath"]);
+                   X509Certificate2 signingKey = new X509Certificate2(signingKeyBytes, Configuration["Identity:SigningCertificateKey"],
+                           X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet);
+                   options.AddSigningCertificate(signingKey);
+               }
+               else
+               {
+                   options.AddDevelopmentSigningCertificate();
+               }          
 
                // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
                options.UseAspNetCore()
