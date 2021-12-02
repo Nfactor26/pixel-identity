@@ -76,12 +76,17 @@ services:
       - ASPNETCORE_URLS=http://+
       - MongoDbSettings:ConnectionString=mongodb://mongoadmin:mongopass@mongo:27017/
       - IdentityHost=identity.docker.localhost
-      - AllowedOrigins=https://identity.docker.localhost;http://identity.docker.localhost
+      - AllowedOrigins=https://identity.docker.localhost;http://identity.docker.localhost     
+      # Certificates required by OpenIdDict for encyrption and signing
+      - Identity:Certificates:EncryptionCertificatePath=/etc/certs/identity-encryption.pfx
+      - Identity:Certificates:EncryptionCertificateKey=${OPENIDDICT_ENCRYPTION_CERTIFICATE_KEY:-""}
+      - Identity:Certificates:SigningCertificatePath=/etc/certs/identity-signing.pfx
+      - Identity:Certificates:SigningCertificateKey=${OPENIDDICT_ENCRYPTION_SIGNING_KEY:-""}
       # Certificate settings when using https
-      #- Kestrel:Certificates:Default:Path=/etc/certs/pixel-identity-cert.pem
-      #- Kestrel:Certificates:Default:KeyPath=/etc/certs/pixel-identity-key.pem   
+      #-Kestrel:Certificates:Default:Path=/etc/certs/pixel-identity-cert.pem
+      #-Kestrel:Certificates:Default:KeyPath=/etc/certs/pixel-identity-key.pem 
     volumes:
-      #- ./.certificates:/etc/certs:ro
+      - ./.certificates:/etc/certs:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro      
     labels:
