@@ -67,7 +67,7 @@ namespace Pixel.Identity.UI.Client
                 // For more information about this bug, visit https://github.com/dotnet/aspnetcore/issues/28344.
                 //
                 options.ProviderOptions.ResponseMode = "query";
-                options.AuthenticationPaths.RemoteRegisterPath = $"{builder.HostEnvironment.BaseAddress}/Identity/Account/Register";               
+                options.AuthenticationPaths.RemoteRegisterPath = "/Identity/Account/Register";               
             });
 
 
