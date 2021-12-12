@@ -1,8 +1,10 @@
 ﻿using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using Pixel.Identity.Provider.Helpers;
 using Pixel.Identity.Shared.Models;
 using System;
 using System.IO;
@@ -24,7 +26,7 @@ namespace Pixel.Identity.Provider.Extensions
                 options.ClaimsIdentity.UserNameClaimType = Claims.Name;
                 options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
                 options.ClaimsIdentity.RoleClaimType = Claims.Role;
-                //options.SignIn.RequireConfirmedAccount = true;
+                options.SignIn.RequireConfirmedAccount = true;
                 //options.User.RequireUniqueEmail = true;               
             })
             .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
@@ -34,6 +36,8 @@ namespace Pixel.Identity.Provider.Extensions
             )
             .AddDefaultUI()
             .AddDefaultTokenProviders();
+
+            services.AddTransient<IEmailSender, EmailSender>();
            
             return services;
         }

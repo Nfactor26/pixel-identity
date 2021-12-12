@@ -108,7 +108,7 @@ namespace Pixel.Identity.Provider
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        var allowedOrigins = Configuration["AllowedOrigins"];
+                        var allowedOrigins = Configuration["ALLOWED_ORIGINS"];
                         foreach(var item in allowedOrigins.Split(';'))
                         {
                             builder.WithOrigins(item);                           

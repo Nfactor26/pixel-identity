@@ -71,17 +71,14 @@ services:
 
   pixel-identity:
     container_name: pixel_identity_provider
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+
-      - MongoDbSettings:ConnectionString=mongodb://mongoadmin:mongopass@mongo:27017/
-      - IdentityHost=identity.docker.localhost
-      - AllowedOrigins=https://identity.docker.localhost;http://identity.docker.localhost     
+    env_file:
+      - ./.config/identity.env  
+    environment:     
+      - ASPNETCORE_URLS=http://+          
+      - IdentityHost=identity.docker.localhost           
       # Certificates required by OpenIdDict for encyrption and signing
-      - Identity:Certificates:EncryptionCertificatePath=/etc/certs/identity-encryption.pfx
-      - Identity:Certificates:EncryptionCertificateKey=${OPENIDDICT_ENCRYPTION_CERTIFICATE_KEY:-""}
-      - Identity:Certificates:SigningCertificatePath=/etc/certs/identity-signing.pfx
-      - Identity:Certificates:SigningCertificateKey=${OPENIDDICT_ENCRYPTION_SIGNING_KEY:-""}
+      - Identity:Certificates:EncryptionCertificatePath=/etc/certs/identity-encryption.pfx   
+      - Identity:Certificates:SigningCertificatePath=/etc/certs/identity-signing.pfx   
       # Certificate settings when using https
       #-Kestrel:Certificates:Default:Path=/etc/certs/pixel-identity-cert.pem
       #-Kestrel:Certificates:Default:KeyPath=/etc/certs/pixel-identity-key.pem 
