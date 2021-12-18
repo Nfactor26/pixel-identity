@@ -1,4 +1,6 @@
 ﻿@page "/roles/list"
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+
 @inject IUserRolesService userRolesService
 @inject IDialogService dialog
 

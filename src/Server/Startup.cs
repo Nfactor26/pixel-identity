@@ -7,9 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pixel.Identity.Provider.Extensions;
+using Pixel.Identity.Shared;
 using Pixel.Identity.Shared.Models;
 using Quartz;
-using System;
+using System.Linq;
 
 namespace Pixel.Identity.Provider
 {
@@ -103,13 +104,19 @@ namespace Pixel.Identity.Provider
             //    options.ClientSecret = Configuration["google-secret"];
             //});
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.IsUser, policy => policy.RequireRole(Roles.UserRole, Roles.AdminRole));
+                options.AddPolicy(Policies.IsAdmin, policy => policy.RequireRole(Roles.AdminRole));
+            });       
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
                     builder =>
                     {
                         var allowedOrigins = Configuration["ALLOWED_ORIGINS"];
-                        foreach(var item in allowedOrigins.Split(';'))
+                        foreach(var item in allowedOrigins?.Split(';') ?? Enumerable.Empty<string>())
                         {
                             builder.WithOrigins(item);                           
                         }

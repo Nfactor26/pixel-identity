@@ -29,6 +29,7 @@ namespace Pixel.Identity.Provider.Extensions
                 options.SignIn.RequireConfirmedAccount = true;
                 //options.User.RequireUniqueEmail = true;               
             })
+            .AddRoles<ApplicationRole>()
             .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
             (
                 mongoDbSettings.ConnectionString,
@@ -79,7 +80,7 @@ namespace Pixel.Identity.Provider.Extensions
                options.UseAspNetCore().DisableTransportSecurityRequirement();
 
                // Mark the "email", "profile" and "roles" scopes as supported scopes.
-               options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles);
+               options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles, Scopes.OpenId);
 
                // Note: this sample only uses the authorization code flow but you can enable
                // the other flows if you need to support implicit, password or client credentials.

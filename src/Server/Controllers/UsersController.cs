@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Pixel.Identity.Shared;
 using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
 namespace Pixel.Identity.Provider.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.IsAdmin)]
     public class UsersController : ControllerBase
     {
         private readonly IMapper mapper;

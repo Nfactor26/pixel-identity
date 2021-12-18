@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.MongoDb.Models;
 using Pixel.Identity.Provider.Extensions;
+using Pixel.Identity.Shared;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 using System;
@@ -15,6 +17,7 @@ namespace Pixel.Identity.Provider.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.IsAdmin)]
     public class ApplicationsController : ControllerBase
     {
         private readonly IMapper mapper;

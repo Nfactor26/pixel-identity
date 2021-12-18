@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Pixel.Identity.Shared;
 using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
@@ -12,6 +14,7 @@ namespace Pixel.Identity.Provider.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = Policies.IsAdmin)]
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<ApplicationRole> roleManager;

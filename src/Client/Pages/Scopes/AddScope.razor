@@ -1,4 +1,5 @@
 ﻿@page "/scopes/new"
+@attribute [Authorize(Policy = Policies.IsAdmin)]
 
 @if (scope != null)
 {
