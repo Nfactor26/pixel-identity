@@ -1,4 +1,5 @@
 ﻿@page "/applications/list"
+@attribute [Authorize(Policy = Policies.IsAdmin)]
 
 <MudTable Items="@(applications ?? Enumerable.Empty<ApplicationViewModel>())"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">

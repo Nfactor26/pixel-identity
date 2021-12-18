@@ -1,5 +1,16 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<AuthorizeView>
+    <Authorized>
+        <h2>Hello @context.User.Identity.Name, here's the list of your claims:</h2>
+        <ul>
+            @foreach (var claim in context.User.Claims)
+            {
+                <li><b>@claim.Type</b>: @claim.Value</li>
+            }
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>Welcome !!</p>
+    </NotAuthorized>
+</AuthorizeView>

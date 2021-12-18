@@ -1,10 +1,10 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
+using Pixel.Identity.Shared;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using Pixel.Identity.UI.Client.Validations;
@@ -59,7 +59,6 @@ namespace Pixel.Identity.UI.Client
                 options.ProviderOptions.ClientId = "pixel-identity-ui";
                 options.ProviderOptions.Authority = builder.HostEnvironment.BaseAddress;
                 options.ProviderOptions.ResponseType = "code";
-                //options.ProviderOptions.DefaultScopes.Add("pixel_identity_ui");
 
                 // Note: response_mode=fragment is the best option for a SPA. Unfortunately, the Blazor WASM
                 // authentication stack is impacted by a bug that prevents it from correctly extracting
@@ -67,11 +66,21 @@ namespace Pixel.Identity.UI.Client
                 // For more information about this bug, visit https://github.com/dotnet/aspnetcore/issues/28344.
                 //
                 options.ProviderOptions.ResponseMode = "query";
-                options.AuthenticationPaths.RemoteRegisterPath = "/Identity/Account/Register";               
+                options.AuthenticationPaths.RemoteRegisterPath = "/Identity/Account/Register";
+                
+                options.UserOptions.RoleClaim = "role";
+
+                options.ProviderOptions.DefaultScopes.Add("roles");
+            })
+            .AddAccountClaimsPrincipalFactory<IdentityClaimsPrincipalFactory<RemoteUserAccount>>();
+
+
+            builder.Services.AddAuthorizationCore(options =>
+            {
+                options.AddPolicy(Policies.IsUser, policy => policy.RequireRole(Roles.UserRole, Roles.AdminRole));
+                options.AddPolicy(Policies.IsAdmin, policy => policy.RequireRole(Roles.AdminRole));
             });
 
-
-            builder.Services.AddApiAuthorization();
             builder.Services.AddMudServices(config =>
             {
                 config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;

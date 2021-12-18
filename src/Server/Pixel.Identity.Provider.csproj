@@ -46,8 +46,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.7" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Account\" />
-  </ItemGroup>
-
 </Project>

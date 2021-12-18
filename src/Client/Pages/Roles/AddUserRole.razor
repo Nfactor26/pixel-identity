@@ -1,5 +1,6 @@
 ﻿@inject IUserRolesService userRolesService
 @inject ISnackbar snackBar;
+@attribute [Authorize(Policy = Policies.IsAdmin)]
 
 <MudDialog>
     <DialogContent>       
