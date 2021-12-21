@@ -69,6 +69,7 @@ namespace Pixel.Identity.Provider.Extensions
               .SetLogoutEndpointUris("/connect/logout")
               .SetTokenEndpointUris("/connect/token")
               .SetUserinfoEndpointUris("/connect/userinfo")
+              .SetIntrospectionEndpointUris("/connect/introspect")
               .SetDeviceEndpointUris("/connect/device")
               .SetVerificationEndpointUris("connect/verify");
 
