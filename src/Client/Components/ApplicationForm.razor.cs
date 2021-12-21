@@ -67,7 +67,7 @@ namespace Pixel.Identity.UI.Client.Components
                 var customScopes = await ScopeService.GetAllAsync();
                 foreach (var customScope in customScopes)
                 {
-                    scopePermissions.Add(new SwitchItemViewModel(customScope.DisplayName, Application.Permissions.Contains(customScope.Name)));
+                    scopePermissions.Add(new SwitchItemViewModel(customScope.DisplayName, $"scp:{customScope.Name}", Application.Permissions.Contains(customScope.Name)));
                 }
             }              
         }
