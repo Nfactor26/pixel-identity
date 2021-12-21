@@ -21,14 +21,7 @@ namespace Pixel.Identity.Shared.ViewModels
         /// </summary>
         public string Name
         {
-            get
-            {
-                if (string.IsNullOrEmpty(name))
-                {
-                    return string.Empty;
-                }
-                return name.StartsWith("scp:") ? name : $"scp:{name}";
-            }
+            get => name ?? string.Empty;          
             set => name = value;
         }
 

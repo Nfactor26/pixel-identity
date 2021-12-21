@@ -103,13 +103,7 @@ namespace Pixel.Identity.Provider
             //    options.ClientId = Configuration["google-client-id"];
             //    options.ClientSecret = Configuration["google-secret"];
             //});
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(Policies.IsUser, policy => policy.RequireRole(Roles.UserRole, Roles.AdminRole));
-                options.AddPolicy(Policies.IsAdmin, policy => policy.RequireRole(Roles.AdminRole));
-            });       
-
+        
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -129,6 +123,14 @@ namespace Pixel.Identity.Provider
 
             services.AddIdentityWithMongo<ApplicationUser, ApplicationRole>(this.Configuration);
             services.AddOpenIdDictWithMongo(this.Configuration);
+        
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.IsUser, policy => policy.RequireRole(Roles.UserRole, Roles.AdminRole));
+                options.AddPolicy(Policies.IsAdmin, policy => policy.RequireRole(Roles.AdminRole));
+            });
+
+
 
             services.AddQuartz(options =>
             {

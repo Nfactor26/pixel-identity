@@ -69,6 +69,7 @@ namespace Pixel.Identity.Provider.Extensions
               .SetLogoutEndpointUris("/connect/logout")
               .SetTokenEndpointUris("/connect/token")
               .SetUserinfoEndpointUris("/connect/userinfo")
+              .SetIntrospectionEndpointUris("/connect/introspect")
               .SetDeviceEndpointUris("/connect/device")
               .SetVerificationEndpointUris("connect/verify");
 
@@ -79,8 +80,7 @@ namespace Pixel.Identity.Provider.Extensions
                // to run behind a reverse-proxy with tls termination
                options.UseAspNetCore().DisableTransportSecurityRequirement();
 
-               // Mark the "email", "profile" and "roles" scopes as supported scopes.
-               options.RegisterScopes(Scopes.Email, Scopes.Profile, Scopes.Roles, Scopes.OpenId);
+               options.DisableScopeValidation();
 
                // Note: this sample only uses the authorization code flow but you can enable
                // the other flows if you need to support implicit, password or client credentials.
