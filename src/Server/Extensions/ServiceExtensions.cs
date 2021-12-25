@@ -85,7 +85,7 @@ namespace Pixel.Identity.Provider.Extensions
                // Note: this sample only uses the authorization code flow but you can enable
                // the other flows if you need to support implicit, password or client credentials.
                //options.AllowDeviceCodeFlow();
-               options.AllowAuthorizationCodeFlow().AllowDeviceCodeFlow().AllowRefreshTokenFlow();
+               options.AllowAuthorizationCodeFlow().AllowDeviceCodeFlow().AllowRefreshTokenFlow().AllowClientCredentialsFlow();
 
                
                //OpenIdDict uses two types of credentials to secure the token it issues.
