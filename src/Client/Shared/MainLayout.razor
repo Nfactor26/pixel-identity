@@ -5,7 +5,7 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="4" Dense="false" Fixed="false">
+    <MudAppBar Elevation="4" Dense="false" Fixed="true">
         <MudToolBar DisableGutters="true">
             <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" />
         </MudToolBar>
@@ -21,8 +21,8 @@
     <MudDrawer @bind-Open="_drawerOpen" Elevation="4" ClipMode="DrawerClipMode.Docked" Variant="@DrawerVariant.Responsive">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent Class="mudContent">
-        <MudContainer MaxWidth="MaxWidth.False">
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" class="mt-8">
             @Body
         </MudContainer>
     </MudMainContent>
