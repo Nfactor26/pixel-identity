@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Pixel.Identity.Shared.csproj" />
+    <ProjectReference Include="..\Pixel.Identity.Shared\Pixel.Identity.Shared.csproj" />
   </ItemGroup>
 
 </Project>

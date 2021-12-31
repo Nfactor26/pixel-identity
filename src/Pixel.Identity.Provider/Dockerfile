@@ -3,16 +3,16 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
-#EXPOSE 443
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["src/Server/Pixel.Identity.Provider.csproj", "src/Server/"]
-COPY ["src/Client/Pixel.Identity.UI.Client.csproj", "src/Client/"]
-COPY ["src/Shared/Pixel.Identity.Shared.csproj", "src/Shared/"]
-RUN dotnet restore "src/Server/Pixel.Identity.Provider.csproj"
+COPY ["src/Pixel.Identity.Provider/Pixel.Identity.Provider.csproj", "src/Pixel.Identity.Provider/"]
+COPY ["src/Pixel.Identity.Shared/Pixel.Identity.Shared.csproj", "src/Pixel.Identity.Shared/"]
+COPY ["src/Pixel.Identity.UI.Client/Pixel.Identity.UI.Client.csproj", "src/Pixel.Identity.UI.Client/"]
+RUN dotnet restore "src/Pixel.Identity.Provider/Pixel.Identity.Provider.csproj"
 COPY . .
-WORKDIR "/src/src/Server"
+WORKDIR "/src/src/Pixel.Identity.Provider"
 RUN dotnet build "Pixel.Identity.Provider.csproj" -c Release -o /app/build
 
 FROM build AS publish

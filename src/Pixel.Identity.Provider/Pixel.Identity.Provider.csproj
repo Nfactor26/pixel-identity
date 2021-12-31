@@ -8,6 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <BaseOutputPath>..\..\.builds\Identity</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\Pixel.Identity.UI.Client.csproj" />
-    <ProjectReference Include="..\Shared\Pixel.Identity.Shared.csproj" />
+    <ProjectReference Include="..\Pixel.Identity.UI.Client\Pixel.Identity.UI.Client.csproj" />
+    <ProjectReference Include="..\Pixel.Identity.Shared\Pixel.Identity.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
