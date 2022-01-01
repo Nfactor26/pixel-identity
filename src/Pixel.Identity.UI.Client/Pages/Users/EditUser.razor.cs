@@ -27,10 +27,8 @@ namespace Pixel.Identity.UI.Client.Pages.Users
 
         UserDetailsViewModel user;
         IEnumerable<UserRoleViewModel> availableRoles = Enumerable.Empty<UserRoleViewModel>();
-        string roleToAdd;
-      
-        bool updated;
 
+        bool updated = false;
         DateTime? lockoutEndDate;
         TimeSpan? lockoutOffset;
 

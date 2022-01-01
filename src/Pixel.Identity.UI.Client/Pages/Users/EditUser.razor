@@ -1,5 +1,5 @@
 ﻿@page "/users/edit/{userName?}"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@attribute [Authorize(Policy = Policies.CanManageUsers)]
 
 @if (user != null)
 {

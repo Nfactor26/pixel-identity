@@ -582,7 +582,7 @@ namespace Mvc.Server
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
             // whether they should be included in access tokens, in identity tokens or in both.
-
+           
             switch (claim.Type)
             {
                 case Claims.Name:
@@ -608,12 +608,17 @@ namespace Mvc.Server
                         yield return Destinations.IdentityToken;
 
                     yield break;
-
+               
                 // Never include the security stamp in the access and identity tokens, as it's a secret value.
                 case "AspNet.Identity.SecurityStamp": yield break;
 
-                default:
+                default:                      
                     yield return Destinations.AccessToken;
+                    //we are using a custom prefix rc_ ( to indicate role claim ) which should be indluced in identity token
+                    if (claim.Type.StartsWith("rc_"))
+                    {                       
+                        yield return Destinations.IdentityToken;                       
+                    }
                     yield break;
             }
         }

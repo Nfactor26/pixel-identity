@@ -1,0 +1,31 @@
+﻿@page "/roles/list"
+@attribute [Authorize(Policy = Policies.CanManageRoles)]
+
+<MudTable Items="@(roles ?? Enumerable.Empty<UserRoleViewModel>())"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">User Roles</MudText>
+        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
+                       @onclick="NavigateToAddRolePage" Color="Color.Primary"></MudIconButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Role Name</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="#">
+            @context.RoleName
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           @onclick="()=> NavigateToEditRolePage(context)" Size="Size.Medium"></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="pageSizeOptions" RowsPerPageString="Results Per Page" />
+    </PagerContent>
+    <ColGroup>
+        <col />
+        <col style="width:20px;" />     
+    </ColGroup>
+</MudTable>

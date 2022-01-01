@@ -1,4 +1,5 @@
-﻿using Pixel.Identity.Shared.Request;
+﻿using Pixel.Identity.Shared.Models;
+using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace Pixel.Identity.UI.Client.Services
         Task<UserRoleViewModel> GetRoleByName(string roleName);
 
         Task<UserRoleViewModel> CreateRole(UserRoleViewModel userRoleViewModel);
+
+        Task<OperationResult> UpdateRoleAsync(UserRoleViewModel userRoleViewModel);
       
         Task<bool> AssignRolesToUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToAssign);
 
@@ -68,6 +71,19 @@ namespace Pixel.Identity.UI.Client.Services
             return null;
         }
 
+        public async Task<OperationResult> UpdateRoleAsync(UserRoleViewModel userRoleViewModel)
+        {
+            try
+            {
+                var response = await httpClient.PutAsJsonAsync<UserRoleViewModel>("api/roles", userRoleViewModel);
+                return await OperationResult.FromResponseAsync(response);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed(ex.Message);
+            }          
+        }
+
         public async Task<bool> AssignRolesToUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToAssign)
         {
             try
@@ -103,5 +119,6 @@ namespace Pixel.Identity.UI.Client.Services
             }
             return false;
         }
+       
     }
 }

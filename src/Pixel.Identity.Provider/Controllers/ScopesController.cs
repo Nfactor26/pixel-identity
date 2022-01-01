@@ -17,7 +17,7 @@ namespace Pixel.Identity.Provider.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.IsAdmin)]
+    [Authorize(Policy = Policies.CanManageScopes)]
     public class ScopesController : ControllerBase
     {
         private readonly IMapper mapper;

@@ -4,9 +4,12 @@
     <Authorized>
         <h2>Hello @context.User.Identity.Name, here's the list of your claims:</h2>
         <ul>
-            @foreach (var claim in context.User.Claims)
+            @foreach (var claimGroup in context.User.Claims.GroupBy(a => a.Type))
             {
-                <li><b>@claim.Type</b>: @claim.Value</li>
+                foreach(var claimValue in claimGroup.Select(s => s.Value).Distinct())
+                {
+                     <li><b>@claimGroup.Key</b>: @claimValue</li>
+                }               
             }
         </ul>
     </Authorized>

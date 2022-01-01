@@ -1,5 +1,5 @@
 ﻿@page "/scopes/list"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@attribute [Authorize(Policy = Policies.CanManageScopes)]
 
 <MudTable Items="@(scopes ?? Enumerable.Empty<ScopeViewModel>())"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">

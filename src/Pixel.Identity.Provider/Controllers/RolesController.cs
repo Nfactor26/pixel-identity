@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared;
 using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +17,7 @@ namespace Pixel.Identity.Provider.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.IsAdmin)]
+    [Authorize(Policy = Policies.CanManageRoles)]
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<ApplicationRole> roleManager;
@@ -32,7 +35,12 @@ namespace Pixel.Identity.Provider.Controllers
             var role = await this.roleManager.FindByNameAsync(roleName);
             if(role != null)
             {
-                return new UserRoleViewModel(role.Id, role.Name);
+                var userRoleViewModel = new UserRoleViewModel(role.Id, role.Name);
+                foreach (var claim in role.Claims)
+                {
+                    userRoleViewModel.Claims.Add(new ClaimViewModel(claim.Type, claim.Value));
+                }
+                return userRoleViewModel;
             }
             return NotFound();
         }
@@ -50,7 +58,7 @@ namespace Pixel.Identity.Provider.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRole(UserRoleViewModel userRole)
+        public async Task<IActionResult> AddRoleAsync(UserRoleViewModel userRole)
         {
            var result = await  roleManager.CreateAsync(new ApplicationRole(userRole.RoleName));
            if(result.Succeeded)
@@ -58,6 +66,38 @@ namespace Pixel.Identity.Provider.Controllers
                 return CreatedAtAction(nameof(Get), new { name = userRole.RoleName }, userRole);
            }
             return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.ToString())));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateRoleAsync(UserRoleViewModel userRole)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var role = await roleManager.FindByNameAsync(userRole.RoleName); 
+                    if(role != null)
+                    {
+                        role.Claims.Clear();
+                        foreach (var claim in userRole.Claims)
+                        {
+                            role.Claims.Add(new AspNetCore.Identity.MongoDbCore.Models.MongoClaim() 
+                            { 
+                                Type = claim.Type,
+                                Value = claim.Value
+                            });                           
+                        }
+                        await roleManager.UpdateAsync(role);
+                        return Ok();
+                    }                   
+                    return NotFound(new NotFoundResponse($"Failed to find role with name : {userRole.RoleName}"));
+                }
+                return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ProblemResponse(ex.Message));
+            }
         }
 
         [HttpPost("assign")]

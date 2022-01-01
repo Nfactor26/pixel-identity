@@ -13,7 +13,7 @@ namespace Pixel.Identity.Provider.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.IsAdmin)]
+    [Authorize(Policy = Policies.CanManageUsers)]
     public class UsersController : ControllerBase
     {
         private readonly IMapper mapper;

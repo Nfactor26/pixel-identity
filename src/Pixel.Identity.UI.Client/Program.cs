@@ -48,6 +48,7 @@ namespace Pixel.Identity.UI.Client
 
             builder.Services.AddTransient<IValidator<ApplicationViewModel>, ApplicationDescriptionValidator>();
             builder.Services.AddTransient<IValidator<ScopeViewModel>, ScopeValidator>();
+            builder.Services.AddTransient<IValidator<UserRoleViewModel>, UserRoleValidator>();
 
             //builder.Services.AddOidcAuthentication(options =>
             //{
@@ -77,8 +78,26 @@ namespace Pixel.Identity.UI.Client
 
             builder.Services.AddAuthorizationCore(options =>
             {
-                options.AddPolicy(Policies.IsUser, policy => policy.RequireRole(Roles.UserRole, Roles.AdminRole));
-                options.AddPolicy(Policies.IsAdmin, policy => policy.RequireRole(Roles.AdminRole));
+                options.AddPolicy(Policies.CanManageApplications, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(Claims.ReadWriteClaim, "applications");
+                });
+                options.AddPolicy(Policies.CanManageScopes, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(Claims.ReadWriteClaim, "scopes");
+                });
+                options.AddPolicy(Policies.CanManageUsers, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(Claims.ReadWriteClaim, "users");
+                });
+                options.AddPolicy(Policies.CanManageRoles, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(Claims.ReadWriteClaim, "roles");
+                });
             });
 
             builder.Services.AddMudServices(config =>

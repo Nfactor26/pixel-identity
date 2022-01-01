@@ -1,17 +1,17 @@
-﻿@page "/applications/new"
-@attribute [Authorize(Policy = Policies.CanManageApplications)]
+﻿@page "/roles/new"
+@attribute [Authorize(Policy = Policies.CanManageRoles)]
 
-@if (application != null)
+@if (model != null)
 {
     <MudText Typo="Typo.h4">Create New</MudText>
     <br />
     <MudPaper Elevation="4">
-        <EditForm Model="@application" OnValidSubmit="AddApplicationDetailsAsync">
-            <FluentValidator/>
+        <EditForm Model="@model" OnValidSubmit="AddRoleAsync">
+            <FluentValidator />
             <MudCard>
                 <MudCardContent>
-                    <CascadingValue Value="application">
-                        <ApplicationForm  Dialog="Dialog" />
+                    <CascadingValue Value="model">
+                        <RoleForm Dialog="Dialog"/>
                     </CascadingValue>
                 </MudCardContent>
                 <MudCardActions>

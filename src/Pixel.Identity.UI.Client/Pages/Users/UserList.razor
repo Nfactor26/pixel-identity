@@ -1,5 +1,5 @@
 ﻿@page "/users/list"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@attribute [Authorize(Policy = Policies.CanManageUsers)]
 
 <MudTable Items="@(users ?? Enumerable.Empty<UserDetailsViewModel>())"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">

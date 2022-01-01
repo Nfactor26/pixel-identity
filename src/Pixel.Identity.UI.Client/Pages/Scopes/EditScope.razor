@@ -1,5 +1,5 @@
 ﻿@page "/scopes/edit/{Id?}"
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@attribute [Authorize(Policy = Policies.CanManageScopes)]
 
 @if (scope != null)
 {
