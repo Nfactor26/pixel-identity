@@ -23,12 +23,15 @@ namespace Pixel.Identity.Provider
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = this.serviceProvider.CreateScope();
+           
+            //var context = scope.ServiceProvider.GetRequiredService<Store.Sql.Data.ApplicationDbContext>();
+            //await context.Database.EnsureCreatedAsync();
 
-            var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+            var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-            if (await manager.FindByClientIdAsync("pixel-identity-ui") is null)
+            if (await applicationManager.FindByClientIdAsync("pixel-identity-ui") is null)
             {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
                     ClientId = "pixel-identity-ui",
                     ConsentType = ConsentTypes.Explicit,
@@ -36,11 +39,11 @@ namespace Pixel.Identity.Provider
                     Type = ClientTypes.Public,
                     PostLogoutRedirectUris =
                     {
-                        new Uri($"https//:{configuration["IdentityHost"]}/authentication/logout-callback")
+                        new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")
                     },
                     RedirectUris =
                     {
-                        new Uri($"https//:{configuration["IdentityHost"]}/authentication/login-callback")                       
+                        new Uri($"{configuration["IdentityHost"]}/authentication/login-callback")                       
                     },
                     Permissions =
                     {
@@ -59,7 +62,7 @@ namespace Pixel.Identity.Provider
                     {
                         Requirements.Features.ProofKeyForCodeExchange
                     }
-                });
+                });               
             }
         }
 

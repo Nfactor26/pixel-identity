@@ -1,5 +1,9 @@
 ﻿namespace Pixel.Identity.Shared
 {
+    /// <summary>
+    /// Policies class holds the name of the different policies required by Pixel Identity
+    /// for authorization of users for access control.
+    /// </summary>
     public static class Policies
     {
         public const string CanManageApplications = nameof(CanManageApplications);

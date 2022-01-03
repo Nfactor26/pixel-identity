@@ -1,12 +1,9 @@
-﻿using AutoMapper;
-using Pixel.Identity.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Pixel.Identity.Shared.ViewModels
 {
-    [AutoMap(typeof(ApplicationUser))]
     public class UserDetailsViewModel
     {
         [Required]
@@ -29,8 +26,7 @@ namespace Pixel.Identity.Shared.ViewModels
         public bool LockoutEnabled { get; set; }
 
         public DateTimeOffset? LockoutEnd { get; set; }
-
-        [IgnoreMap]
+      
         [Required]
         public List<UserRoleViewModel> UserRoles { get; set; } = new ();
     }
