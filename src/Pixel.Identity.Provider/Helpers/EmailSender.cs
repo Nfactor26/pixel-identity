@@ -5,7 +5,7 @@ using MimeKit;
 using MimeKit.Text;
 using System.Threading.Tasks;
 
-namespace Pixel.Identity.Provider.Helpers
+namespace Pixel.Identity.Provider
 {
     public class EmailSender : IEmailSender
     {

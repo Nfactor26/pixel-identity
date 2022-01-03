@@ -1,18 +1,12 @@
-﻿using AutoMapper;
-using OpenIddict.Abstractions;
-using OpenIddict.MongoDb.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Pixel.Identity.Shared.ViewModels
 {
-    [AutoMap(typeof(OpenIddictScopeDescriptor))]
-    [AutoMap(typeof(OpenIddictMongoDbScope))]
     public class ScopeViewModel
     {
         /// <summary>
         /// Identifier of the scope
-        /// </summary>
-        [IgnoreMap]
+        /// </summary>     
         public string Id { get; set; }
 
         private string name;

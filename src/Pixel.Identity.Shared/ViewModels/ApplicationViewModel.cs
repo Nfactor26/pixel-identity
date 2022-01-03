@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using OpenIddict.Abstractions;
-using OpenIddict.MongoDb.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -10,11 +7,8 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Pixel.Identity.Shared.ViewModels
 {
-    [AutoMap(typeof(OpenIddictApplicationDescriptor))]
-    [AutoMap(typeof(OpenIddictMongoDbApplication))]
     public class ApplicationViewModel
-    {
-        [IgnoreMap]
+    {        
         public string Id { get; set; }
      
         /// <summary>
@@ -28,8 +22,7 @@ namespace Pixel.Identity.Shared.ViewModels
         /// </summary>
         [Required]
         public string Type { get; set; }
-
-        [IgnoreMap]
+               
         [IgnoreDataMember]
         public bool IsConfidentialClient => Type?.Equals(ClientTypes.Confidential) ?? false;
 
