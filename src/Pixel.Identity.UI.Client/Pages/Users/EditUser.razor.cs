@@ -44,7 +44,14 @@ namespace Pixel.Identity.UI.Client.Pages.Users
                 }
             }
 
-            availableRoles = await RolesService.GetAll();
+            //TODO : We need to change this logic so that instead of pre-populating roles dropdown, we should be able to 
+            //search for role on dialog
+            var  roles  = await RolesService.GetRolesAsync(new Identity.Shared.Request.GetRolesRequest()
+            { 
+                CurrentPage = 0,
+                PageSize = 100}
+            );
+            availableRoles = roles.Items;
         }
 
         async Task UpdateUserDetails()

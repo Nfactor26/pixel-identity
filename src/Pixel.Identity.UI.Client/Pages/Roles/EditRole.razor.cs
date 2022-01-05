@@ -2,10 +2,14 @@
 using MudBlazor;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Roles
 {
+    /// <summary>
+    /// Component to edit role
+    /// </summary>
     public partial class EditRole : ComponentBase
     {
         [Inject]
@@ -20,41 +24,24 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         [Parameter]
         public string Name { get; set; }
 
-        UserRoleViewModel model;
+        UserRoleViewModel model = new UserRoleViewModel() { RoleName = String.Empty };
 
         protected override async Task OnParametersSetAsync()
         {
             if (!string.IsNullOrEmpty(Name))
             {
-                model = await Service.GetRoleByName(Name);
-                if (model == null)
+                try
                 {
-                    SnackBar.Add("Failed to retrieve role.", Severity.Success, config =>
-                    {
-                        config.ShowCloseIcon = true;
-                    });
+                    this.model = await Service.GetRoleByNameAsync(Name);
                 }
-            }
-        }
-
-        async Task UpdateRoleAsync()
-        {
-            var result = await Service.UpdateRoleAsync(model);
-            if (result.IsSuccess)
-            {
-                SnackBar.Add("Updated successfully.", Severity.Success, config =>
+                catch (Exception ex)
                 {
-                    config.ShowCloseIcon = true;
-                });
-                return;
+                    SnackBar.Add($"Failed to retrieve role data for role : {Name}. {ex.Message}", Severity.Error);
+                }                
             }
-            foreach (var error in result.ErrorMessages)
+            else
             {
-                SnackBar.Add(error, Severity.Error, config =>
-                {
-                    config.ShowCloseIcon = true;
-                    config.RequireInteraction = true;
-                });
+                SnackBar.Add("No role specified to edit.", Severity.Error);
             }
         }
     }

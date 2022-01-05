@@ -71,5 +71,14 @@ namespace Pixel.Identity.Shared.Models
             }
 
         }
+
+        public override string ToString()
+        {
+            if(IsSuccess)
+            {
+                return $"{StatusCode} success";
+            }
+            return $"{StatusCode} : {string.Join(';', this.ErrorMessages)}";
+        }
     }
 }

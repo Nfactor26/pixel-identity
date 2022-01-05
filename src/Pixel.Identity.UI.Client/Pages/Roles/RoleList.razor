@@ -1,12 +1,15 @@
 ﻿@page "/roles/list"
 @attribute [Authorize(Policy = Policies.CanManageRoles)]
 
-<MudTable Items="@(roles ?? Enumerable.Empty<UserRoleViewModel>())"
-          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+<MudTable ServerData="@(new Func<TableState, Task<TableData<UserRoleViewModel>>>(GetRolesData))"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="rolesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">User Roles</MudText>
         <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
                        @onclick="NavigateToAddRolePage" Color="Color.Primary"></MudIconButton>
+        <MudSpacer/>
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="starts with" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Role Name</MudTh>
