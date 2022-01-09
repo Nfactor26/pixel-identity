@@ -1,4 +1,7 @@
-﻿using Pixel.Identity.Shared.Models;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Pixel.Identity.Shared.Models;
+using Pixel.Identity.Shared.Request;
+using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,14 +12,36 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Services
 {
+    /// <summary>
+    /// Service contract for consuming applications api to manage applications
+    /// </summary>
     public interface IApplicationService
     {
-        Task<IEnumerable<ApplicationViewModel>> GetAllAsync();
+        /// <summary>
+        /// Get all the available applications based on request
+        /// </summary>
+        /// <returns></returns>
+        Task<PagedList<ApplicationViewModel>> GetApplicationsAsync(GetApplicationsRequest request);
       
+        /// <summary>
+        /// Get application details given client id of the application
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
         Task<ApplicationViewModel> GetByClientIdAsync(string clientId);
 
+        /// <summary>
+        /// Add a new application
+        /// </summary>
+        /// <param name="applicationDescriptor"></param>
+        /// <returns></returns>
         Task<OperationResult> AddApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor);
 
+        /// <summary>
+        /// Update details of an existing application
+        /// </summary>
+        /// <param name="applicationDescriptor"></param>
+        /// <returns></returns>
         Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor);
        
     }
@@ -25,39 +50,33 @@ namespace Pixel.Identity.UI.Client.Services
     {
         private readonly HttpClient httpClient;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="httpClient"></param>
         public ApplicationService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<ApplicationViewModel>> GetAllAsync()
-        {           
-            try
+        /// <inheritdoc/>
+        public async Task<PagedList<ApplicationViewModel>> GetApplicationsAsync(GetApplicationsRequest request)
+        {
+            var queryStringParam = new Dictionary<string, string>
             {
-                var result = await httpClient.GetFromJsonAsync<IEnumerable<ApplicationViewModel>>("api/applications");
-                return result ?? Enumerable.Empty<ApplicationViewModel>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return Enumerable.Empty<ApplicationViewModel>();
+                ["currentPage"] = request.CurrentPage.ToString(),
+                ["pageSize"] = request.PageSize.ToString()
+            };
+            return await this.httpClient.GetFromJsonAsync<PagedList<ApplicationViewModel>>(QueryHelpers.AddQueryString("api/applications", queryStringParam));           
         }
 
+        /// <inheritdoc/>
         public async Task<ApplicationViewModel> GetByClientIdAsync(string clientId)
         {
-            try
-            {
-                var result = await httpClient.GetFromJsonAsync<ApplicationViewModel>($"api/applications/clientid/{clientId}");
-                return result;              
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return null;
+            return await httpClient.GetFromJsonAsync<ApplicationViewModel>($"api/applications/clientid/{clientId}");          
         }
 
+        /// <inheritdoc/>
         public async Task<OperationResult> AddApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
             try
@@ -71,6 +90,7 @@ namespace Pixel.Identity.UI.Client.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
             try

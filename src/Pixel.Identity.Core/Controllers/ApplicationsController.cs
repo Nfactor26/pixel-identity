@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Shared;
+using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 
@@ -26,16 +27,22 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         [HttpGet()]
-        public async  Task<IEnumerable<ApplicationViewModel>> GetAll()
+        public async  Task<PagedList<ApplicationViewModel>> GetAll([FromQuery] GetApplicationsRequest request)
         {
-            List<ApplicationViewModel> applicationDescriptors = new List<ApplicationViewModel>();
+            List<ApplicationViewModel> applicationDescriptors = new List<ApplicationViewModel>();            
             await foreach(var app in this.applicationManager.ListAsync(null, null, CancellationToken.None))
             {
                 var applicationDescriptor = mapper.Map<ApplicationViewModel>(app);
                 applicationDescriptor.ClientSecret = string.Empty;               
                 applicationDescriptors.Add(applicationDescriptor);
             }
-            return applicationDescriptors;        
+            return new PagedList<ApplicationViewModel>()
+            {
+               Items =  applicationDescriptors,
+               ItemsCount = applicationDescriptors.Count,
+               PageSize = request.PageSize,
+               PageCount = request.CurrentPage
+            };        
         }
 
         [HttpGet("clientId/{clientId}")]

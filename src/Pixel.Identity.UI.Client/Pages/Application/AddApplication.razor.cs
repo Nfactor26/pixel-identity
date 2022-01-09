@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Application
 {
+    /// <summary>
+    /// Component to add new application details
+    /// </summary>
     public partial class AddApplication : ComponentBase
     {
         [Inject]
@@ -22,33 +25,28 @@ namespace Pixel.Identity.UI.Client.Pages.Application
 
         ApplicationViewModel application = new ApplicationViewModel();
      
+        /// <summary>
+        /// Add new application details
+        /// </summary>
+        /// <returns></returns>
         async Task AddApplicationDetailsAsync()
         {
             var result = await Service.AddApplicationDescriptorAsync(application);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Added successfully.", Severity.Success, config =>
-                {
-                    config.ShowCloseIcon = true;                    
-                });
+                SnackBar.Add("Added successfully.", Severity.Success);
                 if(application.IsConfidentialClient)
                 {
-                    SnackBar.Add("Store client secret safely as it can't be viewed later.", Severity.Info, config =>
-                    {
-                        config.ShowCloseIcon = true;                        
-                    });
+                    SnackBar.Add("Store client secret safely as it can't be viewed later.", Severity.Info);
                 }              
                 application = new ApplicationViewModel();
                 return;
             }
-            foreach (var error in result.ErrorMessages)
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
             {
-              SnackBar.Add(error, Severity.Error, config =>
-              {
-                  config.ShowCloseIcon = true;
-                  config.RequireInteraction = true;
-              });
-            }
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
         }
     }
 }
