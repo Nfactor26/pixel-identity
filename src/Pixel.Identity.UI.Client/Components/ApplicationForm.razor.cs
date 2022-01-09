@@ -64,8 +64,12 @@ namespace Pixel.Identity.UI.Client.Components
         {
             if (Application != null)
             {
-                var customScopes = await ScopeService.GetAllAsync();
-                foreach (var customScope in customScopes)
+                var customScopes = await ScopeService.GetScopesAsync(new Identity.Shared.Request.GetScopesRequest()
+                {
+                    PageSize = 50,
+                    CurrentPage = 1
+                });
+                foreach (var customScope in customScopes.Items)
                 {
                     scopePermissions.Add(new SwitchItemViewModel(customScope.DisplayName, $"scp:{customScope.Name}", Application.Permissions.Contains(customScope.Name)));
                 }

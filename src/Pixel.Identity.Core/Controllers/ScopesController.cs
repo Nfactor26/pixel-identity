@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Shared;
+using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 
@@ -26,15 +27,22 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         [HttpGet()]
-        public async Task<IEnumerable<ScopeViewModel>> GetAll()
+        public async Task<PagedList<ScopeViewModel>> GetAll([FromQuery] GetScopesRequest request)
         {
             List<ScopeViewModel> scopeDescriptors = new List<ScopeViewModel>();
-            await foreach (var scope in this.scopeManager.ListAsync(null, null, CancellationToken.None))
+            long count = await this.scopeManager.CountAsync();
+            await foreach (var scope in this.scopeManager.ListAsync(request.Take, request.Skip, CancellationToken.None))
             {
-                var scopeDescriptor = mapper.Map<ScopeViewModel>(scope);           
+                var scopeDescriptor = mapper.Map<ScopeViewModel>(scope);
                 scopeDescriptors.Add(scopeDescriptor);
             }
-            return scopeDescriptors;
+            return new PagedList<ScopeViewModel>()
+            {
+                Items =  scopeDescriptors,
+                ItemsCount = (int)count,
+                CurrentPage = request.CurrentPage,
+                PageCount =  request.PageSize
+            };
         }
 
         [HttpGet("id/{id}")]

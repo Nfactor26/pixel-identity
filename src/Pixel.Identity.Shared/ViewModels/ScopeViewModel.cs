@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Pixel.Identity.Shared.ViewModels
 {
@@ -6,22 +7,25 @@ namespace Pixel.Identity.Shared.ViewModels
     {
         /// <summary>
         /// Identifier of the scope
-        /// </summary>     
+        /// </summary> 
+        [Required]
         public string Id { get; set; }
 
-        private string name;
+        private string name = string.Empty;
         /// <summary>
         /// Name of the scope
         /// </summary>
+        [Required]
         public string Name
         {
-            get => name ?? string.Empty;          
+            get => name;          
             set => name = value;
         }
 
         /// <summary>
         /// Display name of the scope
         /// </summary>
+        [Required]
         public string DisplayName { get; set; }
 
         /// <summary>
