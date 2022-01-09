@@ -24,6 +24,8 @@
 		<PackageReference Include="OpenIddict.AspNetCore" Version="3.1.1" />
 		<PackageReference Include="OpenIddict.Quartz" Version="3.1.1" />
 		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.3.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>

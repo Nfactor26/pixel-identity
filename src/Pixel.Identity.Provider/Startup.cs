@@ -50,6 +50,10 @@ namespace Pixel.Identity.Provider
             //Add plugin assembly type to application part so that controllers in this assembly can be discovered by asp.net
             services.AddControllersWithViews().AddApplicationPart(dbStorePlugin.GetType().Assembly);
             services.AddRazorPages();
+            services.AddSwaggerGen(c =>
+            {
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+            });
 
             services.AddAuthentication(options =>
             {
@@ -87,6 +91,12 @@ namespace Pixel.Identity.Provider
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pixel Persistence V1");
+            });
 
             //app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
