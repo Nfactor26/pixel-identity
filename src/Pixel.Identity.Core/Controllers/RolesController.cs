@@ -67,15 +67,18 @@ namespace Pixel.Identity.Core.Controllers
         public PagedList<UserRoleViewModel> GetAll([FromQuery] GetRolesRequest getRolesRequest)
         {
             List<UserRoleViewModel> userRoles = new();          
-            var count = this.roleManager.Roles.Count();
+            int count = 0;
             IQueryable<TRole> roles = default;
             if (!string.IsNullOrEmpty(getRolesRequest.RoleFilter))
             {
-                roles = this.roleManager.Roles.Where(r => r.Name.StartsWith(getRolesRequest.RoleFilter)).Skip(getRolesRequest.Skip).Take(getRolesRequest.Take);
+                count = this.roleManager.Roles.Where(r => r.Name.StartsWith(getRolesRequest.RoleFilter)).Count();
+                roles = this.roleManager.Roles.Where(r => r.Name.StartsWith(getRolesRequest.RoleFilter))
+                    .Skip(getRolesRequest.Skip).Take(getRolesRequest.Take).OrderBy(r => r.Name);
             }
             else
             {
-                roles = this.roleManager.Roles.Skip(getRolesRequest.Skip).Take(getRolesRequest.Take);
+                count = this.roleManager.Roles.Count();
+                roles = this.roleManager.Roles.Skip(getRolesRequest.Skip).Take(getRolesRequest.Take).OrderBy(r => r.Name);
             }
             foreach (var role in roles)
             {

@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
-using MudBlazor;
 using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -61,7 +59,7 @@ namespace Pixel.Identity.UI.Client.Services
         /// <param name="userName">Name of the user to assign role to</param>
         /// <param name="rolesToAssign">Name of the role to assign</param>
         /// <returns></returns>
-        Task<bool> AssignRolesToUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToAssign);
+        Task<OperationResult> AssignRolesToUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToAssign);
 
         /// <summary>
         /// Remove role from a user
@@ -69,7 +67,7 @@ namespace Pixel.Identity.UI.Client.Services
         /// <param name="userName">Name of the user for which role should be removed</param>
         /// <param name="rolesToRemove">Name of the role to remove</param>
         /// <returns></returns>
-        Task<bool> RemoveRolesFromUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToRemove);
+        Task<OperationResult> RemoveRolesFromUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToRemove);
     }
 
     /// <summary>
@@ -148,41 +146,33 @@ namespace Pixel.Identity.UI.Client.Services
         }
 
         /// <inheritdoc/>
-        public async Task<bool> AssignRolesToUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToAssign)
+        public async Task<OperationResult> AssignRolesToUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToAssign)
         {
             try
             {
                 var request = new AddUserRolesRequest(userName, rolesToAssign);
                 var result = await httpClient.PostAsJsonAsync<AddUserRolesRequest>("api/roles/assign", request);
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
+                return await OperationResult.FromResponseAsync(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
+                return OperationResult.Failed(ex.Message);
+            }           
         }
 
         /// <inheritdoc/>
-        public async Task<bool> RemoveRolesFromUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToRemove)
+        public async Task<OperationResult> RemoveRolesFromUserAsync(string userName, IEnumerable<UserRoleViewModel> rolesToRemove)
         {
             try
             {
                 var request = new RemoveUserRolesRequest(userName, rolesToRemove);
                 var result = await httpClient.PostAsJsonAsync<RemoveUserRolesRequest>("api/roles/remove", request);
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
+                return await OperationResult.FromResponseAsync(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
+                return OperationResult.Failed(ex.Message);
+            }          
         }    
     }
 }

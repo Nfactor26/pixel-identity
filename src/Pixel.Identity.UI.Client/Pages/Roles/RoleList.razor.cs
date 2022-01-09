@@ -35,7 +35,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
-        private async Task<TableData<UserRoleViewModel>> GetRolesData(TableState state)
+        private async Task<TableData<UserRoleViewModel>> GetRolesDataAsync(TableState state)
         {
             try
             {

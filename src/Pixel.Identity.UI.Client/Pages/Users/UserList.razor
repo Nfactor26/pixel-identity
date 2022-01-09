@@ -1,12 +1,12 @@
 ﻿@page "/users/list"
 @attribute [Authorize(Policy = Policies.CanManageUsers)]
 
-<MudTable Items="@(users ?? Enumerable.Empty<UserDetailsViewModel>())"
-          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+<MudTable ServerData="@(new Func<TableState, Task<TableData<UserDetailsViewModel>>>(GetUsersDataAsync))"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="usersTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Users</MudText>
-        <MudSpacer></MudSpacer>
-        <MudTextField Placeholder="Search" Adornment="Adornment.Start" @bind-Value="@searchString"
+        <MudSpacer/>
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="name or email starts with" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
