@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
@@ -30,7 +31,19 @@ namespace Pixel.Identity.UI.Client.Services
         /// <returns></returns>
         Task<UserDetailsViewModel> GetUserByNameAsync(string userName);
       
+        /// <summary>
+        /// Update the details of user
+        /// </summary>
+        /// <param name="userDetails"></param>
+        /// <returns></returns>
         Task<bool> UpdateUserAsync(UserDetailsViewModel userDetails);
+
+        /// <summary>
+        /// Delete user from backend.
+        /// </summary>
+        /// <param name="userDetails"></param>
+        /// <returns></returns>
+        Task<OperationResult> DeleteUserAsync(UserDetailsViewModel userDetails);
     }
 
     public class UsersService : IUsersService
@@ -49,7 +62,6 @@ namespace Pixel.Identity.UI.Client.Services
         /// <inheritdoc/>
         public async Task<PagedList<UserDetailsViewModel>> GetUsersAsync(GetUsersRequest request)
         {
-
             var queryStringParam = new Dictionary<string, string>
             {
                 ["currentPage"] = request.CurrentPage.ToString(),
@@ -84,6 +96,20 @@ namespace Pixel.Identity.UI.Client.Services
                 Console.WriteLine(ex.Message);
             }
             return false;
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> DeleteUserAsync(UserDetailsViewModel userDetails)
+        {
+            try
+            {              
+                var result = await httpClient.DeleteAsync($"api/users/{userDetails.UserName}");
+                return await OperationResult.FromResponseAsync(result);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed(ex.Message);
+            }
         }
     }
 }
