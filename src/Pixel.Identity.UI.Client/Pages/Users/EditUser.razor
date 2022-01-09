@@ -10,21 +10,21 @@
             <DataAnnotationsValidator />
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="User Name"
+                    <MudTextField Label="User Name" Disabled="true"
                                   @bind-Value="user.UserName" For="@(() => user.UserName)" />
-                    <MudTextField Label="Email" Class="mt-3"
+                    <MudTextField Label="Email" Class="mt-3" Disabled="true"
                                   @bind-Value="user.Email" For="@(() => user.Email)" />
-                    <MudTextField Label="Phone Number" Class="mt-3"
+                    <MudTextField Label="Phone Number" Class="mt-3" Disabled="true"
                                   @bind-Value="user.PhoneNumber" For="@(() => user.PhoneNumber)" />
                     <br />
 
-                    <MudSwitch @bind-Checked="user.EmailConfirmed" Label="Email Confirmed" Color="Color.Success" />
-                    <MudSwitch @bind-Checked="user.PhoneNumberConfirmed" Label="Phone Number Confirmed" Color="Color.Success" />
+                    <MudSwitch @bind-Checked="user.EmailConfirmed" Label="Email Confirmed" Color="Color.Success" Disabled="true" />
+                    <MudSwitch @bind-Checked="user.PhoneNumberConfirmed" Label="Phone Number Confirmed" Color="Color.Success" Disabled="true" />
                     <MudSwitch @bind-Checked="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" />
                     <MudSwitch @bind-Checked="user.LockoutEnabled" Label="Lock Out Enabled" Color="Color.Success" />
 
 
-                    <MudTextField Label="Access Failed Count" Class="mt-3"
+                    <MudTextField Label="Access Failed Count" Class="mt-3" Disabled="true"
                                   @bind-Value="user.AccessFailedCount" For="@(() => user.AccessFailedCount)" />
 
                     <MudGrid>

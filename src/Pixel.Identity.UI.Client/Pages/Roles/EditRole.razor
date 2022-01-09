@@ -6,19 +6,12 @@
     <MudText Typo="Typo.h4">Edit Role</MudText>
     <br />
     <MudPaper Elevation="4">
-        <EditForm Model="@model" OnValidSubmit="UpdateRoleAsync">
-            <FluentValidator />
-            <MudCard>
+       <MudCard>
                 <MudCardContent>
                     <CascadingValue Value="model">
                         <RoleForm Dialog="Dialog"/>
                     </CascadingValue>
-                </MudCardContent>
-                <MudCardActions>
-                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" 
-                     Color="Color.Primary" Class="ml-auto">Update</MudButton>
-                </MudCardActions>
+                </MudCardContent>               
             </MudCard>
-        </EditForm>
     </MudPaper>
 }

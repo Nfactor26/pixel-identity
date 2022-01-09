@@ -1,8 +1,8 @@
 ﻿@page "/scopes/list"
 @attribute [Authorize(Policy = Policies.CanManageScopes)]
 
-<MudTable Items="@(scopes ?? Enumerable.Empty<ScopeViewModel>())"
-          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4">
+<MudTable ServerData="@(new Func<TableState, Task<TableData<ScopeViewModel>>>(GetScopesDataAsync))"
+          Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="scopesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Scopes</MudText>
         <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"

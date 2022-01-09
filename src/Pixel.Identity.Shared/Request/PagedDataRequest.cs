@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace Pixel.Identity.Shared.Request
 {
-    public class UserRequest
+    /// <summary>
+    /// Base class for a paged data request
+    /// </summary>
+    [DataContract]
+    public class PagedDataRequest
     {
-        private readonly int maxPageSize = 50;
-      
+        protected readonly int maxPageSize = 50;
+
         private int currentPage;
+        /// <summary>
+        /// Current page for the request
+        /// </summary>
         [DataMember(IsRequired = true)]
         public int CurrentPage
         {
@@ -26,6 +28,9 @@ namespace Pixel.Identity.Shared.Request
         }
 
         private int pagesSize = 10;
+        /// <summary>
+        /// Page size for the request
+        /// </summary>
         [DataMember(IsRequired = true)]
         public int PageSize
         {
@@ -39,9 +44,15 @@ namespace Pixel.Identity.Shared.Request
             }
         }
 
+        /// <summary>
+        /// Number of items to skip
+        /// </summary>
         [IgnoreDataMember]
         public int Skip => (CurrentPage - 1) * PageSize;
 
+        /// <summary>
+        /// Number of items to take
+        /// </summary>
         [IgnoreDataMember]
         public int Take => PageSize;
     }

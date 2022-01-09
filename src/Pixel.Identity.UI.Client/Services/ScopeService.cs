@@ -1,4 +1,7 @@
-﻿using Pixel.Identity.Shared.Models;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Pixel.Identity.Shared.Models;
+using Pixel.Identity.Shared.Request;
+using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,14 +12,37 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Services
 {
+    /// <summary>
+    /// Service contract for consuming scopes api to manage sccopes
+    /// </summary>
     public interface IScopeService
     {
-        Task<IEnumerable<ScopeViewModel>> GetAllAsync();
+        /// <summary>
+        /// Get all the available scopes based on request
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<PagedList<ScopeViewModel>> GetScopesAsync(GetScopesRequest request);
 
+        /// <summary>
+        /// Get scope details given scope id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<ScopeViewModel> GetByIdAsync(string id);
 
+        /// <summary>
+        /// Add a new scope
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <returns></returns>
         Task<OperationResult> AddScopeAsync(ScopeViewModel scope);
        
+        /// <summary>
+        /// Update details of an existing scope
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <returns></returns>
         Task<OperationResult> UpdateScopeAsync(ScopeViewModel scope);
     }
 
@@ -24,39 +50,33 @@ namespace Pixel.Identity.UI.Client.Services
     {
         private readonly HttpClient httpClient;
 
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="httpClient"></param>
         public ScopeService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<ScopeViewModel>> GetAllAsync()
+        /// <inheritdoc/>
+        public async Task<PagedList<ScopeViewModel>> GetScopesAsync(GetScopesRequest request)
         {
-            try
+            var queryStringParam = new Dictionary<string, string>
             {
-                var result = await httpClient.GetFromJsonAsync<IEnumerable<ScopeViewModel>>("api/scopes");
-                return result ?? Enumerable.Empty<ScopeViewModel>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return Enumerable.Empty<ScopeViewModel>();
+                ["currentPage"] = request.CurrentPage.ToString(),
+                ["pageSize"] = request.PageSize.ToString()
+            };
+            return await this.httpClient.GetFromJsonAsync<PagedList<ScopeViewModel>>(QueryHelpers.AddQueryString("api/scopes", queryStringParam));          
         }
 
+        /// <inheritdoc/>
         public async Task<ScopeViewModel> GetByIdAsync(string id)
         {
-            try
-            {
-                var result = await httpClient.GetFromJsonAsync<ScopeViewModel>($"api/scopes/id/{id}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return null;
+            return await httpClient.GetFromJsonAsync<ScopeViewModel>($"api/scopes/id/{id}");          
         }
 
+        /// <inheritdoc/>
         public async Task<OperationResult> AddScopeAsync(ScopeViewModel scope)
         {
             try
@@ -70,6 +90,7 @@ namespace Pixel.Identity.UI.Client.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<OperationResult> UpdateScopeAsync(ScopeViewModel scope)
         {
             try

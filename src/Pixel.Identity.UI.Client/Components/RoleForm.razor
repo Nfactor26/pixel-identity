@@ -3,9 +3,9 @@
 <div class="d-flex flex-wrap">
     <MudText Typo="Typo.h6" Class="mt-2">Claims</MudText>
     <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
-                   @onclick="AddClaim" Color="Color.Primary"></MudIconButton>
+                   @onclick="AddClaimAsync" Color="Color.Primary"></MudIconButton>
 </div>
-<EditableCollection TItem="ClaimViewModel" TValue="ClaimViewModel" ItemSize="3" OnDeleteItem="@RemoveClaim"
+<EditableCollection TItem="ClaimViewModel" TValue="ClaimViewModel" ItemSize="3" OnDeleteItem="@RemoveClaimAsync"
                     Items="(Model.Claims ?? Enumerable.Empty<ClaimViewModel>())">
     <ItemTemplate Context="item">
         <MudText Color="Color.Info" Typo="Typo.subtitle1">@item.Type : @item.Value</MudText>

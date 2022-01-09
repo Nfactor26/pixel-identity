@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Scopes
 {
+    /// <summary>
+    /// component to add scope
+    /// </summary>
     public partial class AddScope : ComponentBase
     {
         [Inject]
@@ -19,26 +22,24 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
       
         ScopeViewModel scope = new ScopeViewModel();
 
+        /// <summary>
+        /// Create a new scope
+        /// </summary>
+        /// <returns></returns>
         async Task AddScopeAsync()
         {
             var result = await Service.AddScopeAsync(scope);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Added successfully.", Severity.Success, config =>
-                {
-                    config.ShowCloseIcon = true;
-                });
+                SnackBar.Add("Added successfully.", Severity.Success);
                 scope = new ScopeViewModel();
                 return;
             }
-            foreach (var error in result.ErrorMessages)
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
             {
-                SnackBar.Add(error, Severity.Error, config =>
-                {
-                    config.ShowCloseIcon = true;
-                    config.RequireInteraction = true;
-                });
-            }
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
         }
     }
 }

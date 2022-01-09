@@ -2,10 +2,14 @@
 using MudBlazor;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Scopes
 {
+    /// <summary>
+    /// component to edit scope
+    /// </summary>
     public partial class EditScope : ComponentBase
     {
         [Inject]
@@ -22,40 +26,45 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
 
         ScopeViewModel scope;
 
+        /// <summary>
+        /// Retrieve the Scope details when Id parameter is set
+        /// </summary>
+        /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
-            if (!string.IsNullOrEmpty(Id))
+            try
             {
-                scope = await Service.GetByIdAsync(Id);
-                if(scope == null)
+                if (!string.IsNullOrEmpty(Id))
                 {
-                    SnackBar.Add("Failed to retrieve Scope.", Severity.Success, config =>
-                    {
-                        config.ShowCloseIcon = true;
-                    });
+                    this.scope = await Service.GetByIdAsync(Id);
+                    return;
                 }
-            }          
+            }
+            catch (Exception ex)
+            {
+                SnackBar.Add($"Failed to retrieve scope. {ex.Message}", Severity.Error);
+            }
+
+            SnackBar.Add("No role specified to edit.", Severity.Error);
         }
 
+        /// <summary>
+        /// Update the details of scope 
+        /// </summary>
+        /// <returns></returns>
         async Task UpdateScopeAsync()
         {
             var result = await Service.UpdateScopeAsync(scope);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Updated successfully.", Severity.Success, config =>
-                {
-                    config.ShowCloseIcon = true;
-                });
+                SnackBar.Add("Updated successfully.", Severity.Success);
                 return;
             }
-            foreach (var error in result.ErrorMessages)
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
             {
-                SnackBar.Add(error, Severity.Error, config =>
-                {
-                    config.ShowCloseIcon = true;
-                    config.RequireInteraction = true;
-                });
-            }
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿<MudDialog>
+﻿@using Pixel.Identity.Shared.Request
+<MudDialog>
     <DialogContent>
         <MudGrid Spacing="2" Justify="Justify.Center">
             <MudItem xs="10" sm="10" md="10">
-                <MudSelect Label="Add Role" @bind-Value="@selectedOption" Class="mt-n2" Style="width:200px;">
-                    @foreach (var role in AvailableRoles)
-                    {
-                        <MudSelectItem Value="@(role.RoleName)">
-                            @(role.RoleName)
-                        </MudSelectItem>
-                    }
-                </MudSelect>
+                 <MudAutocomplete T="string" Label="Roles" @bind-Value="selectedOption" SearchFunc="@SearchRoles"
+                         ResetValueOnEmptyText="true"
+                         CoerceText="false" CoerceValue="false"
+                         AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
             </MudItem>
             <MudItem xs="2"  sm="2" md="2">
                 <MudIconButton OnClick="AddRole" Disabled="string.IsNullOrEmpty(selectedOption)"
@@ -21,13 +18,16 @@
 
 @code {
 
-    string selectedOption;
+    private string selectedOption;
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
 
-    [Parameter]
-    public IEnumerable<UserRoleViewModel> AvailableRoles { get; set; }
+    [Inject]
+    public ISnackbar SnackBar { get; set; }
+
+    [Inject]
+    public IUserRolesService RolesService { get; set; }
 
     void AddRole()
     {
@@ -38,4 +38,18 @@
     }
 
     void Cancel() => MudDialog.Cancel();
+
+    private async Task<IEnumerable<string>> SearchRoles(string value)
+    {        
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+            return new string[0];
+        var result = await RolesService.GetRolesAsync(new GetRolesRequest()
+        {
+             CurrentPage = 1,
+             PageSize = 100,
+             RoleFilter = value
+        });
+        return result.Items.Select(s => s.RoleName);
+    }
 }

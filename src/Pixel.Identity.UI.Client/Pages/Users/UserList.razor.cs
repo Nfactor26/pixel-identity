@@ -1,30 +1,83 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Users
 {
+    /// <summary>
+    /// Component for listing users
+    /// </summary>
     public partial class UserList : ComponentBase
     {
         [Inject]
-        public IUsersService UsersService { get; set; }
+        public IUsersService Service { get; set; }
+
+        [Inject]
+        public ISnackbar SnackBar { get; set; }
 
         [Inject]
         public NavigationManager Navigator { get; set; }
+       
+        private MudTable<UserDetailsViewModel> usersTable;
+        private GetUsersRequest usersRequest = new GetUsersRequest();
+        private readonly int[] pageSizeOptions = { 10, 20, 30, 40, 50 };
+        private bool resetCurrentPage = false;
 
-        IEnumerable<UserDetailsViewModel> users;
-        protected string searchString = "";
-        protected readonly int[] pageSizeOptions = { 10, 20, 30, 40, 50 };
-
-        protected override async Task OnInitializedAsync()
+        /// <summary>
+        /// Get roles from api endpoint for the current page of the data table
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        private async Task<TableData<UserDetailsViewModel>> GetUsersDataAsync(TableState state)
         {
-            users = await UsersService.GetUsersAsync();
+            try
+            {
+                usersRequest.CurrentPage = resetCurrentPage ? 1 : (state.Page + 1);
+                resetCurrentPage = false;
+                usersRequest.PageSize = state.PageSize;
+                var sessionPage = await Service.GetUsersAsync(usersRequest);
+
+                return new TableData<UserDetailsViewModel>
+                {
+                    Items = sessionPage.Items,
+                    TotalItems = sessionPage.ItemsCount
+                };
+            }
+            catch (System.Exception ex)
+            {
+                SnackBar.Add($"Error while retrieving users.{ex.Message}", Severity.Error);
+            }
+            return new TableData<UserDetailsViewModel>
+            {
+                Items = Enumerable.Empty<UserDetailsViewModel>(),
+                TotalItems = 0
+            };
         }
 
+        /// <summary>
+        /// Refresh data for the search query
+        /// </summary>
+        /// <param name="text"></param>
+        private void OnSearch(string text)
+        {
+            usersRequest.UsersFilter = string.Empty;
+            if (!string.IsNullOrEmpty(text))
+            {
+                usersRequest.UsersFilter = text;
+            }
+            resetCurrentPage = true;
+            usersTable.ReloadServerData();
+        }
+
+
+        /// <summary>
+        /// Navigate to the edit user page
+        /// </summary>
         void EditUser(UserDetailsViewModel userDetails)
         {
             Navigator.NavigateTo($"users/edit/{userDetails.UserName}");
