@@ -56,7 +56,7 @@ namespace Pixel.Identity.Core.Controllers
                     return userRoleViewModel;
                 }
             }           
-            return NotFound($"{roleName ?? ""} could not be located");
+            return NotFound(new NotFoundResponse($"{roleName ?? ""} could not be located"));
         }
 
         /// <summary>
@@ -110,7 +110,33 @@ namespace Pixel.Identity.Core.Controllers
                 return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.ToString())));
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
-        }       
+        }
+
+
+        [HttpDelete("{roleName}")]
+        public async Task<IActionResult> Delete(string roleName)
+        {
+            if (!string.IsNullOrEmpty(roleName))
+            {
+                var role = await roleManager.FindByNameAsync(roleName);
+                if (role != null)
+                {
+                    var users = await userManager.GetUsersInRoleAsync(roleName);
+                    if (!users.Any())
+                    {
+                        var result = await roleManager.DeleteAsync(role);
+                        if (result.Succeeded)
+                        {
+                            return Ok();
+                        }
+                        return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.ToString())));
+                    }
+                    return BadRequest(new BadRequestResponse(new[] { $"There are users with assigned role : {roleName}." }));
+                }
+                return NotFound(new NotFoundResponse($"Role : {roleName} doesn't exist."));
+            }
+            return BadRequest(new BadRequestResponse(new[] { "No role specified to delete" }));
+        }
 
         /// <summary>
         /// Add a new claim to a role
@@ -191,7 +217,7 @@ namespace Pixel.Identity.Core.Controllers
                 }
                 return Ok();
             }
-            return NotFound("User doesn't exist");
+            return NotFound(new NotFoundResponse("User doesn't exist"));
         }
 
         /// <summary>
@@ -215,7 +241,7 @@ namespace Pixel.Identity.Core.Controllers
                 }
                 return Ok();
             }
-            return NotFound("User doesn't exist");
+            return NotFound(new NotFoundResponse("User doesn't exist"));
         }
     }
 }

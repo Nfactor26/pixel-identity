@@ -14,14 +14,19 @@
     <HeaderContent>
         <MudTh>Role Name</MudTh>
         <MudTh></MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="#">
             @context.RoleName
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                            @onclick="()=> NavigateToEditRolePage(context)" Size="Size.Medium"></MudIconButton>
+        </MudTd>
+        <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                     @onclick="() => DeleteRoleAsync(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
     </RowTemplate>
     <PagerContent>
@@ -29,6 +34,7 @@
     </PagerContent>
     <ColGroup>
         <col />
-        <col style="width:20px;" />     
+        <col style="width:20px;" />  
+        <col style="width:20px;"/>
     </ColGroup>
 </MudTable>

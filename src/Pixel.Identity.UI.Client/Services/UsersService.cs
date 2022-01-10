@@ -5,10 +5,8 @@ using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Services
@@ -101,15 +99,8 @@ namespace Pixel.Identity.UI.Client.Services
         /// <inheritdoc/>
         public async Task<OperationResult> DeleteUserAsync(UserDetailsViewModel userDetails)
         {
-            try
-            {              
-                var result = await httpClient.DeleteAsync($"api/users/{userDetails.UserName}");
-                return await OperationResult.FromResponseAsync(result);
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failed(ex.Message);
-            }
+            var result = await httpClient.DeleteAsync($"api/users/{userDetails.UserName}");
+            return await OperationResult.FromResponseAsync(result);
         }
     }
 }

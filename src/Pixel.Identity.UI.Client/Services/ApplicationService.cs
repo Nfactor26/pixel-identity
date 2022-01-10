@@ -3,9 +3,7 @@ using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -79,29 +77,15 @@ namespace Pixel.Identity.UI.Client.Services
         /// <inheritdoc/>
         public async Task<OperationResult> AddApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
-            try
-            {
-                var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/create", applicationDescriptor);
-                return await OperationResult.FromResponseAsync(result);
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failed(ex.Message);
-            }
+            var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/create", applicationDescriptor);
+            return await OperationResult.FromResponseAsync(result);
         }
 
         /// <inheritdoc/>
         public async Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
-            try
-            {
-                var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/update", applicationDescriptor);
-                return await OperationResult.FromResponseAsync(result);
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failed(ex.Message);
-            }
+            var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/update", applicationDescriptor);
+            return await OperationResult.FromResponseAsync(result);
         }
     }
 }
