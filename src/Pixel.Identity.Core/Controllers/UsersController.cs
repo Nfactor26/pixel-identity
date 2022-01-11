@@ -30,7 +30,7 @@ namespace Pixel.Identity.Core.Controllers
         public UsersController(IMapper mapper, UserManager<TUser> userManager)
         {
             this.mapper = mapper;
-            this.userManager = userManager;           
+            this.userManager = userManager;
         }
 
         /// <summary>
@@ -43,24 +43,24 @@ namespace Pixel.Identity.Core.Controllers
         {
             int count = 0;
             IEnumerable<TUser> applicationUsers;
-            if(!string.IsNullOrEmpty(request.UsersFilter))
+            if (!string.IsNullOrEmpty(request.UsersFilter))
             {
                 count = this.userManager.Users.Where(u => u.UserName.StartsWith(request.UsersFilter)
                 || u.Email.StartsWith(request.UsersFilter)).Count();
                 applicationUsers = this.userManager.Users.Where(u => u.UserName.StartsWith(request.UsersFilter)
                 || u.Email.StartsWith(request.UsersFilter)).Skip(request.Skip).Take(request.Take).OrderBy(u => u.UserName);
-            }           
+            }
             else
             {
                 count = this.userManager.Users.Count();
                 applicationUsers = this.userManager.Users.OrderBy(u => u.UserName);
             }
-           
+
             var userDetails = mapper.Map<IEnumerable<UserDetailsViewModel>>(applicationUsers);
-            return new PagedList<UserDetailsViewModel>() 
-            { 
+            return new PagedList<UserDetailsViewModel>()
+            {
                 Items = new List<UserDetailsViewModel>(userDetails),
-                ItemsCount = count, 
+                ItemsCount = count,
                 CurrentPage = request.CurrentPage,
                 PageCount = request.PageSize
             };
@@ -75,14 +75,14 @@ namespace Pixel.Identity.Core.Controllers
         public async Task<ActionResult<UserDetailsViewModel>> GetUserByName(string userName)
         {
             var user = await userManager.FindByNameAsync(userName);
-            if(user != null)
+            if (user != null)
             {
                 var userDetails = mapper.Map<UserDetailsViewModel>(user);
                 var userRoles = await this.userManager.GetRolesAsync(user);
                 foreach (var userRole in userRoles)
                 {
                     userDetails.UserRoles.Add(new UserRoleViewModel(userRole));
-                }               
+                }
                 return userDetails;
             }
             return NotFound(new NotFoundResponse($"User with name : {userName} doesn't exist."));
@@ -93,20 +93,21 @@ namespace Pixel.Identity.Core.Controllers
         /// </summary>
         /// <param name="userDetails"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> Post(UserDetailsViewModel userDetails)
+        [HttpPost("{userId}")]
+        public async Task<IActionResult> Post(string userId, UserDetailsViewModel userDetails)
         {
-           if(ModelState.IsValid)
+           if(!string.IsNullOrEmpty(userId) && ModelState.IsValid)
            {
-                var user = await userManager.FindByEmailAsync(userDetails.Email);  
+                var user = await userManager.FindByIdAsync(userId);  
                 if(user != null)
                 {
-                    await userManager.SetTwoFactorEnabledAsync(user, userDetails.TwoFactorEnabled);
-                    await userManager.SetLockoutEnabledAsync(user, userDetails.LockoutEnabled);
-                    if (user.LockoutEnd.HasValue)
+                    await userManager.SetEmailAsync(user, userDetails.Email);
+                    await userManager.SetUserNameAsync(user, userDetails.UserName);
+                    if(!string.IsNullOrEmpty(userDetails.PhoneNumber))
                     {
-                        await userManager.SetLockoutEndDateAsync(user, userDetails.LockoutEnd);
+                        await userManager.SetPhoneNumberAsync(user, userDetails.PhoneNumber);
                     }
+                    await userManager.SetLockoutEnabledAsync(user, userDetails.LockoutEnabled);               
                     return Ok();
                 }
                 return NotFound(new NotFoundResponse("User doesn't exist."));

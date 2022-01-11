@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Users
 {
+    /// <summary>
+    /// Component for editing users
+    /// </summary>
     public partial class EditUser : ComponentBase
     {
         [Parameter]
@@ -30,40 +33,69 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         DateTime? lockoutEndDate;
         TimeSpan? lockoutOffset;
 
+        /// <summary>
+        /// Retrieve user deatails when userName parameter is set
+        /// </summary>
+        /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
             if(!string.IsNullOrEmpty(userName))
             {
-                user = await UsersService.GetUserByNameAsync(userName);
-                if (user.LockoutEnd.HasValue)
+                try
                 {
-                    lockoutEndDate = user.LockoutEnd.Value.UtcDateTime;
-                    lockoutOffset = user.LockoutEnd.Value.Offset;
+                    user = await UsersService.GetUserByNameAsync(userName);
                 }
+                catch (Exception ex)
+                {
+                    SnackBar.Add(ex.Message, Severity.Error, config =>
+                    {
+                        config.ShowCloseIcon = true;
+                        config.RequireInteraction = true;
+                    });
+                }           
             }           
         }
 
+        /// <summary>
+        /// Update the details of user
+        /// </summary>
+        /// <returns></returns>
         async Task UpdateUserDetails()
-        {          
-            if(lockoutEndDate.HasValue && lockoutOffset.HasValue)
+        {
+            var result = await UsersService.UpdateUserAsync(user);
+            if (result.IsSuccess)
             {
-                user.LockoutEnd = new DateTimeOffset(lockoutEndDate.Value, lockoutOffset.Value);
+                SnackBar.Add("User details updated successfully.", Severity.Success);
+                return;
             }
-            await UsersService.UpdateUserAsync(user);           
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
+            {
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
         }
 
+        /// <summary>
+        /// Remove a assigned role from user
+        /// </summary>
+        /// <param name="roleToDelete"></param>
+        /// <returns></returns>
         async Task DeleteRoleAsync(UserRoleViewModel roleToDelete)
         {
             var result = await RolesService.RemoveRolesFromUserAsync(user.UserName, new[] { roleToDelete });
             if(result.IsSuccess)
             {
                 user.UserRoles.Remove(roleToDelete);
-                SnackBar.Add($"Role was removed.", Severity.Success);
+                SnackBar.Add($"Role was successfully removed.", Severity.Success);
                 return;
             }
             SnackBar.Add($"Error while removing role.{result}", Severity.Error);
         }
 
+        /// <summary>
+        /// Assign a new role to user
+        /// </summary>
+        /// <returns></returns>
         async Task AddRoleAsync()
         {
             var parameters = new DialogParameters();           
@@ -71,20 +103,15 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             var result = await dialog.Result;          
             if (!result.Cancelled && result.Data is string role)
             {
-                //if(user.UserRoles.Any(r => r.RoleName.Equals(role)))
-                //{
-                //    SnackBar.Add($"Role : {role} already mapped to user.", Severity.Info);
-                //    return;
-                //}
                 var userRole = new UserRoleViewModel(role);
                 var assignRoleResult =  await RolesService.AssignRolesToUserAsync(user.UserName, new[] { userRole });
                 if (assignRoleResult.IsSuccess)
                 {
                     user.UserRoles.Add(userRole);
-                    SnackBar.Add($"Role was added.", Severity.Success);
+                    SnackBar.Add($"Role successfully assigned.", Severity.Success);
                     return;
                 }
-                SnackBar.Add($"Error while adding role.{result}", Severity.Error);
+                SnackBar.Add($"Error while assigning role.{result}", Severity.Error);
             }
         }
     }

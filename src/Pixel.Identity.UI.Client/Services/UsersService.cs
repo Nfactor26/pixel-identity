@@ -34,7 +34,7 @@ namespace Pixel.Identity.UI.Client.Services
         /// </summary>
         /// <param name="userDetails"></param>
         /// <returns></returns>
-        Task<bool> UpdateUserAsync(UserDetailsViewModel userDetails);
+        Task<OperationResult> UpdateUserAsync(UserDetailsViewModel userDetails);
 
         /// <summary>
         /// Delete user from backend.
@@ -79,21 +79,10 @@ namespace Pixel.Identity.UI.Client.Services
             return await httpClient.GetFromJsonAsync<UserDetailsViewModel>($"api/users/{userName}");
         }
 
-        public async Task<bool> UpdateUserAsync(UserDetailsViewModel userDetails)
+        public async Task<OperationResult> UpdateUserAsync(UserDetailsViewModel userDetails)
         {
-            try
-            {
-                var result = await httpClient.PostAsJsonAsync<UserDetailsViewModel>("api/users", userDetails);
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
+            var result = await httpClient.PostAsJsonAsync<UserDetailsViewModel>($"api/users/{userDetails.Id}", userDetails);
+            return await OperationResult.FromResponseAsync(result);
         }
 
         /// <inheritdoc/>
