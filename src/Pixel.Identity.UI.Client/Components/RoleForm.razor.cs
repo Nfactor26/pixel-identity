@@ -56,7 +56,7 @@ namespace Pixel.Identity.UI.Client.Components
                 Model.Claims.Remove(claim);
                 if(Model.Exists)
                 {
-                   var result =  await Service.removeClaimFromRoleAsync(Model.RoleName, claim);
+                   var result =  await Service.RemoveClaimFromRoleAsync(Model.RoleName, claim);
                     if (result.IsSuccess)
                     {
                         SnackBar.Add($"Claim was removed.", Severity.Success);

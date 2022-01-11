@@ -4,7 +4,6 @@ using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Components;
 using Pixel.Identity.UI.Client.Services;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Users

@@ -113,6 +113,22 @@ namespace Pixel.Identity.Core.Controllers
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
 
-        }       
+        }
+
+        [HttpDelete("{userName}")]
+        public async Task<IActionResult> Delete(string userName)
+        {
+            if (!string.IsNullOrEmpty(userName))
+            {
+                var user = await userManager.FindByNameAsync(userName);
+                if (user != null)
+                {
+                    await userManager.DeleteAsync(user);
+                    return Ok();
+                }
+                return NotFound(new NotFoundResponse("User doesn't exist."));
+            }
+            return BadRequest(new BadRequestResponse(new[] { "UserName is required" }));
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace Pixel.Identity.Core.Controllers
             };        
         }
 
-        [HttpGet("clientId/{clientId}")]
+        [HttpGet("{clientId}")]
         public async Task<ApplicationViewModel> Get(string clientId)
         {
             var app = await applicationManager.FindByClientIdAsync(clientId, CancellationToken.None);
@@ -54,7 +54,7 @@ namespace Pixel.Identity.Core.Controllers
             return applicationDescriptor;
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> Create([FromBody] ApplicationViewModel applicationDescriptor)
         {
             try
@@ -73,7 +73,7 @@ namespace Pixel.Identity.Core.Controllers
             }
         }
 
-        [HttpPost("update")]
+        [HttpPut]
         public async Task<IActionResult> Update([FromBody] ApplicationViewModel applicationDescriptor)
         {
             try
@@ -94,6 +94,30 @@ namespace Pixel.Identity.Core.Controllers
                     return NotFound(new NotFoundResponse($"Failed to find application with Id : {applicationDescriptor.Id}"));
                 }
                 return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ProblemResponse(ex.Message));
+            }
+        }
+
+        /// <summary>
+        /// Delete an application given it's clientId
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
+        [HttpDelete("{clientId}")]
+        public async Task<IActionResult> Delete(string clientId)
+        {
+            try
+            {
+                var existing = await applicationManager.FindByClientIdAsync(clientId);
+                if (existing != null)
+                {
+                    await applicationManager.DeleteAsync(existing);
+                    return Ok();
+                }
+                return NotFound(new NotFoundResponse($"Failed to find application with Id : {clientId}"));
             }
             catch (Exception ex)
             {

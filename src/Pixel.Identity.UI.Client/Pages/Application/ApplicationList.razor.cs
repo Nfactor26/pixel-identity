@@ -9,10 +9,16 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Application
 {
+    /// <summary>
+    /// Component for displaying applications
+    /// </summary>
     public partial class ApplicationList : ComponentBase
     {
         [Inject]
         public IApplicationService Service { get; set; }
+
+        [Inject]
+        public IDialogService DialogService { get; set; }
 
         [Inject]
         public ISnackbar SnackBar { get; set; }
@@ -55,20 +61,48 @@ namespace Pixel.Identity.UI.Client.Pages.Application
                 TotalItems = 0
             };
         }
-        
+
+        /// <summary>
+        /// Navigate to add new application page
+        /// </summary>
+        void AddNewApplication()
+        {
+            Navigator.NavigateTo($"applications/new");
+        }
+
+        /// <summary>
+        /// Navigate to edit application page
+        /// </summary>
+        /// <param name="application"></param>
         void EditApplication(ApplicationViewModel application)
         {
             Navigator.NavigateTo($"applications/edit/{application.ClientId}");
         }
 
-        void DeleteApplication(ApplicationViewModel application)
+        /// <summary>
+        /// Delete the application
+        /// </summary>
+        /// <param name="application"></param>
+        /// <returns></returns>
+        async Task DeleteApplicationAsync(ApplicationViewModel application)
         {
-           
-        }
-
-        void AddNewApplication()
-        {
-            Navigator.NavigateTo($"applications/new");
-        }
+            bool? dialogResult = await DialogService.ShowMessageBox("Warning", "Delete can't be undone !!",
+                yesText: "Delete!", cancelText: "Cancel", options: new DialogOptions() { FullWidth = true });
+            if (dialogResult.GetValueOrDefault())
+            {
+                var result = await Service.DeleteApplicationDescriptorAsync(application);
+                if (result.IsSuccess)
+                {
+                    SnackBar.Add("Deleted successfully.", Severity.Success);
+                    await applicationsTable.ReloadServerData();
+                    return;
+                }
+                SnackBar.Add(result.ToString(), Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = true;
+                });
+            }
+        }      
     }
 }

@@ -3,9 +3,7 @@ using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -43,7 +41,14 @@ namespace Pixel.Identity.UI.Client.Services
         /// <param name="applicationDescriptor"></param>
         /// <returns></returns>
         Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor);
-       
+
+        /// <summary>
+        /// Delete an existing application
+        /// </summary>
+        /// <param name="applicationDescriptor"></param>
+        /// <returns></returns>
+        Task<OperationResult> DeleteApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor);
+
     }
 
     public class ApplicationService : IApplicationService
@@ -73,35 +78,28 @@ namespace Pixel.Identity.UI.Client.Services
         /// <inheritdoc/>
         public async Task<ApplicationViewModel> GetByClientIdAsync(string clientId)
         {
-            return await httpClient.GetFromJsonAsync<ApplicationViewModel>($"api/applications/clientid/{clientId}");          
+            return await httpClient.GetFromJsonAsync<ApplicationViewModel>($"api/applications/{clientId}");          
         }
 
         /// <inheritdoc/>
         public async Task<OperationResult> AddApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
-            try
-            {
-                var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/create", applicationDescriptor);
-                return await OperationResult.FromResponseAsync(result);
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failed(ex.Message);
-            }
+            var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications", applicationDescriptor);
+            return await OperationResult.FromResponseAsync(result);
         }
 
         /// <inheritdoc/>
         public async Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
-            try
-            {
-                var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/update", applicationDescriptor);
-                return await OperationResult.FromResponseAsync(result);
-            }
-            catch (Exception ex)
-            {
-                return OperationResult.Failed(ex.Message);
-            }
+            var result = await httpClient.PutAsJsonAsync<ApplicationViewModel>("api/applications", applicationDescriptor);
+            return await OperationResult.FromResponseAsync(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> DeleteApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
+        {
+            var result = await httpClient.DeleteAsync($"api/applications/{applicationDescriptor.ClientId}");
+            return await OperationResult.FromResponseAsync(result);
         }
     }
 }

@@ -27,12 +27,12 @@
             @context.PhoneNumber
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                         @onclick="()=> EditUser(context)"   Size="Size.Medium" ></MudIconButton>
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                     @onclick="()=> DeleteUser(context)"  Size="Size.Medium" ></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                     @onclick="() => DeleteUserAsync(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
     </RowTemplate>
     <PagerContent>

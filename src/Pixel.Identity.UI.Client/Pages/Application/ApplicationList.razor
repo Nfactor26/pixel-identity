@@ -29,12 +29,12 @@
             @context.ConsentType
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                            @onclick="()=> EditApplication(context)" Size="Size.Medium"></MudIconButton>
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                           @onclick="()=> DeleteApplication(context)" Size="Size.Medium"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                           @onclick="()=> DeleteApplicationAsync(context)" Size="Size.Medium"></MudIconButton>
         </MudTd>
     </RowTemplate>
     <PagerContent>

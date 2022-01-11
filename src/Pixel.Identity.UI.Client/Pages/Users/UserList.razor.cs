@@ -3,7 +3,6 @@ using MudBlazor;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +15,9 @@ namespace Pixel.Identity.UI.Client.Pages.Users
     {
         [Inject]
         public IUsersService Service { get; set; }
+
+        [Inject]
+        public IDialogService DialogService { get; set; }
 
         [Inject]
         public ISnackbar SnackBar { get; set; }
@@ -82,10 +84,31 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         {
             Navigator.NavigateTo($"users/edit/{userDetails.UserName}");
         }
-
-        void DeleteUser(UserDetailsViewModel userDetails)
+         
+        /// <summary>
+        /// Permanently delete user from system. 
+        /// </summary>
+        /// <param name="userDetails"></param>
+        /// <returns></returns>
+        async Task DeleteUserAsync(UserDetailsViewModel userDetails)
         {
-
+            bool? dialogResult = await DialogService.ShowMessageBox("Warning", "Delete can't be undone !!", 
+                yesText: "Delete!", cancelText: "Cancel", options: new DialogOptions() { FullWidth = true });
+            if(dialogResult.GetValueOrDefault())
+            {
+                var result = await Service.DeleteUserAsync(userDetails);
+                if (result.IsSuccess)
+                {
+                    SnackBar.Add("Deleted successfully.", Severity.Success);
+                    await usersTable.ReloadServerData();
+                    return;
+                }
+                SnackBar.Add(result.ToString(), Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = true;
+                });
+            }           
         }
     }
 }

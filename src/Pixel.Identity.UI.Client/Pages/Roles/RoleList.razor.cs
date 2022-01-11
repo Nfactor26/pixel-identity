@@ -17,7 +17,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         public IUserRolesService Service { get; set; }
 
         [Inject]
-        public IDialogService Dialog { get; set; }
+        public IDialogService DialogService { get; set; }
 
         [Inject]
         public ISnackbar SnackBar { get; set; }
@@ -91,6 +91,33 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         protected void NavigateToEditRolePage(UserRoleViewModel role)
         {
             Navigator.NavigateTo($"roles/edit/{role.RoleName}");
+        }
+
+
+        /// <summary>
+        /// Permanently delete user from system. 
+        /// </summary>
+        /// <param name="userDetails"></param>
+        /// <returns></returns>
+        async Task DeleteRoleAsync(UserRoleViewModel userRole)
+        {
+            bool? dialogResult = await DialogService.ShowMessageBox("Warning", "Delete can't be undone !!",
+                yesText: "Delete!", cancelText: "Cancel", options: new DialogOptions() { FullWidth = true });
+            if (dialogResult.GetValueOrDefault())
+            {
+                var result = await Service.DeleteRoleAsync(userRole.RoleName);
+                if (result.IsSuccess)
+                {
+                    SnackBar.Add("Deleted successfully.", Severity.Success);
+                    await rolesTable.ReloadServerData();
+                    return;
+                }
+                SnackBar.Add(result.ToString(), Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = true;
+                });
+            }
         }
     }
 }
