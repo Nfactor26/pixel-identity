@@ -41,7 +41,14 @@ namespace Pixel.Identity.UI.Client.Services
         /// <param name="applicationDescriptor"></param>
         /// <returns></returns>
         Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor);
-       
+
+        /// <summary>
+        /// Delete an existing application
+        /// </summary>
+        /// <param name="applicationDescriptor"></param>
+        /// <returns></returns>
+        Task<OperationResult> DeleteApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor);
+
     }
 
     public class ApplicationService : IApplicationService
@@ -71,20 +78,27 @@ namespace Pixel.Identity.UI.Client.Services
         /// <inheritdoc/>
         public async Task<ApplicationViewModel> GetByClientIdAsync(string clientId)
         {
-            return await httpClient.GetFromJsonAsync<ApplicationViewModel>($"api/applications/clientid/{clientId}");          
+            return await httpClient.GetFromJsonAsync<ApplicationViewModel>($"api/applications/{clientId}");          
         }
 
         /// <inheritdoc/>
         public async Task<OperationResult> AddApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
-            var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/create", applicationDescriptor);
+            var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications", applicationDescriptor);
             return await OperationResult.FromResponseAsync(result);
         }
 
         /// <inheritdoc/>
         public async Task<OperationResult> UpdateApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
         {
-            var result = await httpClient.PostAsJsonAsync<ApplicationViewModel>("api/applications/update", applicationDescriptor);
+            var result = await httpClient.PutAsJsonAsync<ApplicationViewModel>("api/applications", applicationDescriptor);
+            return await OperationResult.FromResponseAsync(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> DeleteApplicationDescriptorAsync(ApplicationViewModel applicationDescriptor)
+        {
+            var result = await httpClient.DeleteAsync($"api/applications/{applicationDescriptor.ClientId}");
             return await OperationResult.FromResponseAsync(result);
         }
     }
