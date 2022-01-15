@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MudBlazor;
+using MudBlazor.Services;
 using Pixel.Identity.Core;
 using Pixel.Identity.Shared;
 using Quartz;
@@ -50,6 +52,7 @@ namespace Pixel.Identity.Provider
             //Add plugin assembly type to application part so that controllers in this assembly can be discovered by asp.net
             services.AddControllersWithViews().AddApplicationPart(dbStorePlugin.GetType().Assembly);
             services.AddRazorPages();
+            services.AddServerSideBlazor();
             services.AddSwaggerGen(c =>
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
@@ -58,6 +61,17 @@ namespace Pixel.Identity.Provider
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            });    
+
+            services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
+                config.SnackbarConfiguration.PreventDuplicates = false;
+                config.SnackbarConfiguration.NewestOnTop = false;
+                config.SnackbarConfiguration.ShowCloseIcon = true;
+                config.SnackbarConfiguration.VisibleStateDuration = 10000;
+                config.SnackbarConfiguration.HideTransitionDuration = 500;
+                config.SnackbarConfiguration.ShowTransitionDuration = 500;
             });
 
             ConfigureCors(services);
@@ -145,7 +159,8 @@ namespace Pixel.Identity.Provider
                             {
                                 typeof(IConfigurator),
                                 typeof(OpenIddictQuartzBuilder),
-                                typeof(UI.Client.Program)
+                                typeof(UI.Client.Program),
+                                typeof(Microsoft.AspNetCore.Identity.UI.Services.IEmailSender)
                             });
                             foreach (var type in loader.LoadDefaultAssembly().GetTypes()
                                 .Where(t => typeof(IConfigurator).IsAssignableFrom(t) && !t.IsAbstract))

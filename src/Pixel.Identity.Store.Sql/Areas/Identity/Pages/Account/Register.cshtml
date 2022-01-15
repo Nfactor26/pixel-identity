@@ -1,0 +1,69 @@
+﻿@page
+@model RegisterModel
+
+<div class="mud-container mud-container-maxwidth-sm mt-6">
+    <div class="mud-paper mud-elevation-4 mud-grid mud-grid-spacing-xs-3 mud-grid-justify-xs-flex-start">
+
+        <div class="mud-card mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-12">
+            <!--Registration form-->
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h2>Create a new account.</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-4">
+                    <button id="registerSubmit" type="submit" 
+                        class="mud-button-root mud-button mud-button-filled mud-button-filled-primary 
+                        mud-button-filled-size-medium mud-ripple mud-width-full ml-auto">
+                        Register
+                    </button>
+                </div>               
+            </form>
+        </div>
+
+
+        <!--External Auth-->
+        <div class="mud-card mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-12">
+            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+            {
+
+                <section>
+                    <hr />
+                    <p>Or Sign in with</p>
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    <button type="submit" class="mud-button-root mud-button mud-button-outlined mud-button-outlined-primary mud-button-outlined-size-medium mud-ripple"
+                                    name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                                        @provider.DisplayName
+                                    </button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                </section>
+            }
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}
