@@ -10,7 +10,7 @@
             <DataAnnotationsValidator />
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="User Name" @bind-Value="user.UserName" For="@(() => user.UserName)" />
+                    <MudTextField Label="User Name" @bind-Value="user.UserName" For="@(() => user.UserName)" Disabled="true" />
                     <MudTextField Label="Email" Class="mt-3" @bind-Value="user.Email" For="@(() => user.Email)" />
                     <MudTextField Label="Phone Number" Class="mt-3" @bind-Value="user.PhoneNumber" For="@(() => user.PhoneNumber)" />
                     <br />

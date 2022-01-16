@@ -101,14 +101,20 @@ namespace Pixel.Identity.Core.Controllers
                 var user = await userManager.FindByIdAsync(userId);  
                 if(user != null)
                 {
-                    await userManager.SetEmailAsync(user, userDetails.Email);
-                    await userManager.SetUserNameAsync(user, userDetails.UserName);
-                    if(!string.IsNullOrEmpty(userDetails.PhoneNumber))
+                    user.UserName = userDetails.Email; // done on purpose. we use email for both username and email
+                    user.Email = userDetails.Email;
+                    user.EmailConfirmed = true;
+                    user.LockoutEnabled = userDetails.LockoutEnabled;
+                    if (!string.IsNullOrEmpty(userDetails.PhoneNumber))
                     {
-                        await userManager.SetPhoneNumberAsync(user, userDetails.PhoneNumber);
+                        user.PhoneNumber = userDetails.PhoneNumber;
                     }
-                    await userManager.SetLockoutEnabledAsync(user, userDetails.LockoutEnabled);               
-                    return Ok();
+                    var result = await userManager.UpdateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                    return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.Description)));
                 }
                 return NotFound(new NotFoundResponse("User doesn't exist."));
             }
