@@ -10,17 +10,14 @@
             <DataAnnotationsValidator />
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="User Name" Disabled="true"
-                                  @bind-Value="user.UserName" For="@(() => user.UserName)" />
-                    <MudTextField Label="Email" Class="mt-3" Disabled="true"
-                                  @bind-Value="user.Email" For="@(() => user.Email)" />
-                    <MudTextField Label="Phone Number" Class="mt-3" Disabled="true"
-                                  @bind-Value="user.PhoneNumber" For="@(() => user.PhoneNumber)" />
+                    <MudTextField Label="User Name" @bind-Value="user.UserName" For="@(() => user.UserName)" Disabled="true" />
+                    <MudTextField Label="Email" Class="mt-3" @bind-Value="user.Email" For="@(() => user.Email)" />
+                    <MudTextField Label="Phone Number" Class="mt-3" @bind-Value="user.PhoneNumber" For="@(() => user.PhoneNumber)" />
                     <br />
 
                     <MudSwitch @bind-Checked="user.EmailConfirmed" Label="Email Confirmed" Color="Color.Success" Disabled="true" />
                     <MudSwitch @bind-Checked="user.PhoneNumberConfirmed" Label="Phone Number Confirmed" Color="Color.Success" Disabled="true" />
-                    <MudSwitch @bind-Checked="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" />
+                    <MudSwitch @bind-Checked="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" Disabled="true" />
                     <MudSwitch @bind-Checked="user.LockoutEnabled" Label="Lock Out Enabled" Color="Color.Success" />
 
 
@@ -32,10 +29,10 @@
                             <MudText Typo="Typo.h6">Lockout End</MudText>
                         </MudItem>
                         <MudItem xs="8" sm="4" md="2">
-                            <MudDatePicker @bind-Date="@lockoutEndDate" Editable="true" />
+                            <MudDatePicker @bind-Date="@lockoutEndDate" Editable="true" Disabled="true" />
                         </MudItem>
                         <MudItem xs="8" sm="4" md="2">
-                            <MudTimePicker AmPm="true" @bind-Time="lockoutOffset" />
+                            <MudTimePicker AmPm="true" @bind-Time="lockoutOffset" Disabled="true" />
                         </MudItem>
                     </MudGrid>
 

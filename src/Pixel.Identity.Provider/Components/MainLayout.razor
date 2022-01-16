@@ -1,0 +1,14 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudAppBar Elevation="4" Dense="false" Fixed="true">
+        <MudToolBar DisableGutters="true">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"/>
+        </MudToolBar>
+        <MudText Typo="Typo.h6" Class="ml-4">Pixel Identity Provider</MudText>      
+        <MudSpacer />
+        <LoginDisplay />
+</MudAppBar>

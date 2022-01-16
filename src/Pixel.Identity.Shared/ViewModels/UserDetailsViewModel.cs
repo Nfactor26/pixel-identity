@@ -5,7 +5,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Pixel.Identity.Shared.ViewModels
 {
     public class UserDetailsViewModel
-    {
+    {       
+        public string Id { get; set; }
+
         [Required]
         public string UserName { get; set; }
 
