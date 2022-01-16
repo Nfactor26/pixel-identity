@@ -1,9 +1,34 @@
-﻿@page "/users/edit/{userName?}"
+﻿@page "/users/edit/{userId?}"
 @attribute [Authorize(Policy = Policies.CanManageUsers)]
 
 @if (user != null)
 {
     <MudText Typo="Typo.h4">Edit Details</MudText>
+    <br />
+    @if (user.IsLockedOut)
+    {
+
+        <div role="alert" class="mud-alert mud-alert-outlined-warning mud-square mud-elevation-2">
+             <MudGrid Justify="Justify.FlexEnd">
+                <MudItem>
+                    <div class="mud-alert-icon mud-alert-icon-left">
+                        <svg class="mud-icon-root mud-svg-icon mud-inherit-text mud-icon-size-medium" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M0 0h24v24H0V0z" fill="none"></path><path d="M12 5.99L19.53 19H4.47L12 5.99M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z">
+                            </path>
+                        </svg>
+                    </div>
+                </MudItem>
+                <MudItem xs="10" Class="d-flex align-center" >
+                   User account is temporarily locked out until @user.LockoutEnd.GetValueOrDefault().ToString()
+                </MudItem>
+                <MudSpacer />
+                <MudItem xs="1">
+                    <MudButton Variant="Variant.Filled" Color="Color.Warning"
+                        @onclick="UnlockUserAccountAsync">Unlock</MudButton>
+                </MudItem>
+             </MudGrid>
+        </div>      
+    }
     <br />
     <MudPaper Elevation="4">
         <EditForm Model="@user" OnValidSubmit="UpdateUserDetails">
@@ -20,45 +45,41 @@
                     <MudSwitch @bind-Checked="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" Disabled="true" />
                     <MudSwitch @bind-Checked="user.LockoutEnabled" Label="Lock Out Enabled" Color="Color.Success" />
 
-
-                    <MudTextField Label="Access Failed Count" Class="mt-3" Disabled="true"
-                                  @bind-Value="user.AccessFailedCount" For="@(() => user.AccessFailedCount)" />
-
-                    <MudGrid>
-                        <MudItem xs="8" sm="4" md="2" Class="mt-6">
-                            <MudText Typo="Typo.h6">Lockout End</MudText>
-                        </MudItem>
-                        <MudItem xs="8" sm="4" md="2">
-                            <MudDatePicker @bind-Date="@lockoutEndDate" Editable="true" Disabled="true" />
-                        </MudItem>
-                        <MudItem xs="8" sm="4" md="2">
-                            <MudTimePicker AmPm="true" @bind-Time="lockoutOffset" Disabled="true" />
-                        </MudItem>
-                    </MudGrid>
-
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                    <MudGrid Justify="Justify.FlexEnd">
+                        @if (!user.IsLockedOut)
+                        {
+                            <MudItem xs="2" Class="auto-flex-basis">
+                                <MudButton Variant="Variant.Filled" Color="Color.Warning" @onclick="LockUserAccountAsync">Lock (90 days)</MudButton>
+                            </MudItem>
+                        }
+                        <MudItem xs="1">
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                        </MudItem>
+                    </MudGrid>
                 </MudCardActions>
             </MudCard>
         </EditForm>
     </MudPaper>
+
     <br />
-    <br />   
+    <br />
+
     <div class="d-flex flex-wrap">
         <MudText Typo="Typo.h4">Manage Roles</MudText>
         <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
-                       @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
+                   @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
     </div>
     <br />
-    
+
     <MudPaper Elevation="4" Class="px-4 py-2">
         <EditableCollection TItem="UserRoleViewModel" TValue="string" ItemSize="2"
-                            OnDeleteItem="@DeleteRoleAsync" OnAddNewItem="AddRoleAsync"
-                            Items="(user.UserRoles ?? Enumerable.Empty<UserRoleViewModel>())" NewItem="@string.Empty">
+                        OnDeleteItem="@DeleteRoleAsync" OnAddNewItem="AddRoleAsync"
+                        Items="(user.UserRoles ?? Enumerable.Empty<UserRoleViewModel>())" NewItem="@string.Empty">
             <ItemTemplate Context="item">
                 <MudText Typo="Typo.h6">@item.RoleName</MudText>
-            </ItemTemplate>            
+            </ItemTemplate>
         </EditableCollection>
     </MudPaper>
 

@@ -82,7 +82,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         /// </summary>
         void EditUser(UserDetailsViewModel userDetails)
         {
-            Navigator.NavigateTo($"users/edit/{userDetails.UserName}");
+            Navigator.NavigateTo($"users/edit/{userDetails.Id}");
         }
          
         /// <summary>

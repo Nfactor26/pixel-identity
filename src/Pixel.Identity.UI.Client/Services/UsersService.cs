@@ -28,7 +28,28 @@ namespace Pixel.Identity.UI.Client.Services
         /// <param name="userName">Name of the user</param>
         /// <returns></returns>
         Task<UserDetailsViewModel> GetUserByNameAsync(string userName);
-      
+
+        /// <summary>
+        /// Get user details given user id
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <returns></returns>
+        Task<UserDetailsViewModel> GetUserByIdAsync(string userId);
+
+        /// <summary>
+        /// Lock user account of a given user
+        /// </summary>
+        /// <param name="userDetails"></param>
+        /// <returns></returns>
+        Task<OperationResult> LockUserAccountAsync(UserDetailsViewModel userDetails);
+
+        /// <summary>
+        /// Unlock user account of a given user
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        Task<OperationResult> UnlockUserAccountAsync(UserDetailsViewModel userDetails);
+
         /// <summary>
         /// Update the details of user
         /// </summary>
@@ -76,7 +97,28 @@ namespace Pixel.Identity.UI.Client.Services
         /// <inheritdoc/>
         public async Task<UserDetailsViewModel> GetUserByNameAsync(string userName)
         {
-            return await httpClient.GetFromJsonAsync<UserDetailsViewModel>($"api/users/{userName}");
+            return await httpClient.GetFromJsonAsync<UserDetailsViewModel>($"api/users/name/{userName}");
+        }
+
+        /// <inheritdoc/>
+        public async Task<UserDetailsViewModel> GetUserByIdAsync(string userId)
+        {
+            return await httpClient.GetFromJsonAsync<UserDetailsViewModel>($"api/users/id/{userId}");            
+        }
+
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> LockUserAccountAsync(UserDetailsViewModel userDetails)
+        {
+            var result = await httpClient.PostAsJsonAsync<string>($"api/users/lock/", userDetails.Id);
+            return await OperationResult.FromResponseAsync(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> UnlockUserAccountAsync(UserDetailsViewModel userDetails)
+        {
+            var result = await httpClient.PostAsJsonAsync<string>($"api/users/unlock/", userDetails.Id);
+            return await OperationResult.FromResponseAsync(result);
         }
 
         public async Task<OperationResult> UpdateUserAsync(UserDetailsViewModel userDetails)

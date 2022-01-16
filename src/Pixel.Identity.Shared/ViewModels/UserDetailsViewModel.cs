@@ -28,6 +28,14 @@ namespace Pixel.Identity.Shared.ViewModels
         public bool LockoutEnabled { get; set; }
 
         public DateTimeOffset? LockoutEnd { get; set; }
+
+        public bool IsLockedOut
+        {
+            get 
+            {
+                return LockoutEnabled && LockoutEnd.HasValue;
+            }
+        }
       
         [Required]
         public List<UserRoleViewModel> UserRoles { get; set; } = new ();

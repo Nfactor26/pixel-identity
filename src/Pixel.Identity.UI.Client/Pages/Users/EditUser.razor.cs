@@ -14,7 +14,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
     public partial class EditUser : ComponentBase
     {
         [Parameter]
-        public string userName { get; set; }
+        public string userId { get; set; }
 
         [Inject]
         public IDialogService Dialog { get; set; }
@@ -28,32 +28,35 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         [Inject]
         public IUserRolesService RolesService { get; set; }
 
-        UserDetailsViewModel user;       
-           
-        DateTime? lockoutEndDate;
-        TimeSpan? lockoutOffset;
-
+        UserDetailsViewModel user;               
+      
         /// <summary>
         /// Retrieve user deatails when userName parameter is set
         /// </summary>
         /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
-            if(!string.IsNullOrEmpty(userName))
+            if(!string.IsNullOrEmpty(userId))
             {
-                try
-                {
-                    user = await UsersService.GetUserByNameAsync(userName);
-                }
-                catch (Exception ex)
-                {
-                    SnackBar.Add(ex.Message, Severity.Error, config =>
-                    {
-                        config.ShowCloseIcon = true;
-                        config.RequireInteraction = true;
-                    });
-                }           
+                user = await GetUserDetailsAsync(userId);
             }           
+        }
+
+        async Task<UserDetailsViewModel> GetUserDetailsAsync(string userId)
+        {
+            try
+            {
+                return await UsersService.GetUserByIdAsync(userId);
+            }
+            catch (Exception ex)
+            {
+                SnackBar.Add(ex.Message, Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = true;
+                });
+                return null;
+            }
         }
 
         /// <summary>
@@ -66,6 +69,46 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             if (result.IsSuccess)
             {
                 SnackBar.Add("User details updated successfully.", Severity.Success);
+                return;
+            }
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
+            {
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
+        }
+
+        /// <summary>
+        /// Temporariry lock user account for 90 days
+        /// </summary>
+        /// <returns></returns>
+        async Task LockUserAccountAsync()
+        {
+            var result = await UsersService.LockUserAccountAsync(user);
+            if (result.IsSuccess)
+            {
+                SnackBar.Add("User account locked successfully.", Severity.Success);
+                user = await GetUserDetailsAsync(user.Id);
+                return;
+            }
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
+            {
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
+        }
+
+        /// <summary>
+        /// Unlock user account
+        /// </summary>
+        /// <returns></returns>
+        async Task UnlockUserAccountAsync()
+        {
+            var result = await UsersService.UnlockUserAccountAsync(user);
+            if (result.IsSuccess)
+            {
+                SnackBar.Add("User account unlocked successfully.", Severity.Success);
+                this.user.LockoutEnd = null;
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>
