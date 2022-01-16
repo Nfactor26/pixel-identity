@@ -15,6 +15,7 @@
         <MudTh>Phone Number</MudTh>
         <MudTh></MudTh>
         <MudTh></MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="User Name">
@@ -25,6 +26,16 @@
         </MudTd>
         <MudTd DataLabel="Phone Number">
             @context.PhoneNumber
+        </MudTd>
+        <MudTd DataLabel="">
+            @if(context.IsLockedOut)
+            {
+                <MudIcon Icon="@Icons.Outlined.Lock" Color="Color.Warning" Title="Account is locked" />
+            }
+            else
+            {
+                <MudIcon Icon="@Icons.Outlined.LockOpen" Color="Color.Success" Title="Account is unlocked" />
+            }
         </MudTd>
         <MudTd DataLabel="">
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"

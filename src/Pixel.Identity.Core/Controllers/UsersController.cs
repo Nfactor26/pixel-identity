@@ -71,7 +71,7 @@ namespace Pixel.Identity.Core.Controllers
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>
-        [HttpGet("{userName}")]
+        [HttpGet("name/{userName}")]
         public async Task<ActionResult<UserDetailsViewModel>> GetUserByName(string userName)
         {
             var user = await userManager.FindByNameAsync(userName);
@@ -86,6 +86,54 @@ namespace Pixel.Identity.Core.Controllers
                 return userDetails;
             }
             return NotFound(new NotFoundResponse($"User with name : {userName} doesn't exist."));
+        }
+
+
+        [HttpGet("id/{userId}")]
+        public async Task<ActionResult<UserDetailsViewModel>> GetUserById(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var userDetails = mapper.Map<UserDetailsViewModel>(user);
+                var userRoles = await this.userManager.GetRolesAsync(user);
+                foreach (var userRole in userRoles)
+                {
+                    userDetails.UserRoles.Add(new UserRoleViewModel(userRole));
+                }
+                return userDetails;
+            }
+            return NotFound(new NotFoundResponse($"User with Id : {userId} doesn't exist"));
+        }
+
+        [HttpPost("lock")]
+        public async Task<IActionResult> LockUserAsync([FromBody] string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                await userManager.SetLockoutEnabledAsync(user, true);
+                await userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Now.AddDays(90));
+                await userManager.UpdateSecurityStampAsync(user);
+                return Ok();                
+            }
+            return NotFound(new NotFoundResponse($"User with Id : {userId} doesn't exist"));
+        }
+
+        [HttpPost("unlock")]
+        public async Task<IActionResult> UnlockUserAsync([FromBody] string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var result = await userManager.SetLockoutEndDateAsync(user, null);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.Description)));
+            }
+            return NotFound(new NotFoundResponse($"User with Id : {userId} doesn't exist"));
         }
 
         /// <summary>
