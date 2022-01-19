@@ -30,5 +30,11 @@ namespace Pixel.Identity.Core
         /// </summary>
         /// <param name="services"></param>
         void ConfigureAutoMap(IServiceCollection services);
+
+        /// <summary>
+        /// Add any additional services
+        /// </summary>
+        /// <param name="services"></param>
+        void AddServices(IServiceCollection services);
     }
 }
