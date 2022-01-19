@@ -8,7 +8,7 @@
         <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
                        @onclick="NavigateToAddScopePage" Color="Color.Primary"></MudIconButton>
         <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="starts with" Adornment="Adornment.Start"
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Name or Display Name" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
