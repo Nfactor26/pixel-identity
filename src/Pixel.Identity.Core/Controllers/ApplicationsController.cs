@@ -15,10 +15,10 @@ namespace Pixel.Identity.Core.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy = Policies.CanManageApplications)]
-    public class ApplicationsController : ControllerBase
+    public abstract class ApplicationsController : ControllerBase
     {
-        private readonly IMapper mapper;
-        private readonly IOpenIddictApplicationManager applicationManager;
+        protected readonly IMapper mapper;
+        protected readonly IOpenIddictApplicationManager applicationManager;
 
         public ApplicationsController(IMapper mapper, IOpenIddictApplicationManager applicationManager)
         {
@@ -27,24 +27,8 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         [HttpGet()]
-        public async  Task<PagedList<ApplicationViewModel>> GetAll([FromQuery] GetApplicationsRequest request)
-        {
-            List<ApplicationViewModel> applicationDescriptors = new List<ApplicationViewModel>();            
-            await foreach(var app in this.applicationManager.ListAsync(null, null, CancellationToken.None))
-            {
-                var applicationDescriptor = mapper.Map<ApplicationViewModel>(app);
-                applicationDescriptor.ClientSecret = string.Empty;               
-                applicationDescriptors.Add(applicationDescriptor);
-            }
-            return new PagedList<ApplicationViewModel>()
-            {
-               Items =  applicationDescriptors,
-               ItemsCount = applicationDescriptors.Count,
-               PageSize = request.PageSize,
-               PageCount = request.CurrentPage
-            };        
-        }
-
+        public abstract Task<PagedList<ApplicationViewModel>> GetAll([FromQuery] GetApplicationsRequest request);
+       
         [HttpGet("{clientId}")]
         public async Task<ApplicationViewModel> Get(string clientId)
         {

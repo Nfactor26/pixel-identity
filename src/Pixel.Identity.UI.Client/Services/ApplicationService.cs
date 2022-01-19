@@ -72,6 +72,10 @@ namespace Pixel.Identity.UI.Client.Services
                 ["currentPage"] = request.CurrentPage.ToString(),
                 ["pageSize"] = request.PageSize.ToString()
             };
+            if(!string.IsNullOrEmpty(request.ApplicationFilter))
+            {
+                queryStringParam.Add("applicationFilter", request.ApplicationFilter);
+            }
             return await this.httpClient.GetFromJsonAsync<PagedList<ApplicationViewModel>>(QueryHelpers.AddQueryString("api/applications", queryStringParam));           
         }
 

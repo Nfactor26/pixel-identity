@@ -63,6 +63,21 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         }
 
         /// <summary>
+        /// Refresh data for the search query
+        /// </summary>
+        /// <param name="text"></param>
+        private void OnSearch(string text)
+        {
+            applicationsRequest.ApplicationFilter = string.Empty;
+            if (!string.IsNullOrEmpty(text))
+            {
+                applicationsRequest.ApplicationFilter = text;
+            }
+            resetCurrentPage = true;
+            applicationsTable.ReloadServerData();
+        }
+
+        /// <summary>
         /// Navigate to add new application page
         /// </summary>
         void AddNewApplication()
