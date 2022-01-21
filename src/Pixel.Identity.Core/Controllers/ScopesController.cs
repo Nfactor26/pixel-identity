@@ -62,7 +62,7 @@ namespace Pixel.Identity.Core.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPut()]
         public async Task<IActionResult> Update([FromBody] ScopeViewModel scope)
         {
             try
