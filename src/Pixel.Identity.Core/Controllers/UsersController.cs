@@ -45,10 +45,10 @@ namespace Pixel.Identity.Core.Controllers
             IEnumerable<TUser> applicationUsers;
             if (!string.IsNullOrEmpty(request.UsersFilter))
             {
-                count = this.userManager.Users.Where(u => u.UserName.StartsWith(request.UsersFilter)
-                || u.Email.StartsWith(request.UsersFilter)).Count();
-                applicationUsers = this.userManager.Users.Where(u => u.UserName.StartsWith(request.UsersFilter)
-                || u.Email.StartsWith(request.UsersFilter)).Skip(request.Skip).Take(request.Take).OrderBy(u => u.UserName);
+                count = this.userManager.Users.Where(u => u.UserName.Contains(request.UsersFilter)
+                || u.Email.Contains(request.UsersFilter)).Count();
+                applicationUsers = this.userManager.Users.Where(u => u.UserName.Contains(request.UsersFilter)
+                || u.Email.Contains(request.UsersFilter)).Skip(request.Skip).Take(request.Take).OrderBy(u => u.UserName);
             }
             else
             {

@@ -66,5 +66,11 @@ namespace Pixel.Identity.Store.Sql
                options.UseQuartz();
            });
         }
-    }
+
+        ///<inheritdoc/>
+        public void AddServices(IServiceCollection services)
+        {
+            services.AddHostedService<Worker>();
+        }
+}
 }

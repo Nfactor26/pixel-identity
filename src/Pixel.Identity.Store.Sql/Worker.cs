@@ -1,13 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Pixel.Identity.Provider
+namespace Pixel.Identity.Store.Sql
 {
     public class Worker : IHostedService
     {
@@ -23,9 +18,9 @@ namespace Pixel.Identity.Provider
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             using var scope = this.serviceProvider.CreateScope();
-           
-            //var context = scope.ServiceProvider.GetRequiredService<Store.Sql.Data.ApplicationDbContext>();
-            //await context.Database.EnsureCreatedAsync();
+
+            var context = scope.ServiceProvider.GetRequiredService<Data.ApplicationDbContext>();
+            await context.Database.EnsureCreatedAsync();
 
             var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
@@ -64,6 +59,45 @@ namespace Pixel.Identity.Provider
                     }
                 });               
             }
+
+            var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+            if(await scopeManager.CountAsync() == 0 )
+            {
+                await scopeManager.CreateAsync(new OpenIddictScopeDescriptor()
+                {
+                    Name = "persistence-api",
+                    DisplayName = "Persistence Api"
+                });
+
+                await scopeManager.CreateAsync(new OpenIddictScopeDescriptor()
+                {
+                    Name = "offline_access",
+                    DisplayName = "Offline Access"
+                });
+            }
+
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            if(roleManager.Roles.Count() == 0)
+            {
+                await roleManager.CreateAsync(new ApplicationRole() { Name = "IdentityAdmin" });
+                var role = await roleManager.FindByNameAsync("IdentityAdmin");
+                await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "users"));
+                await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "roles"));
+                await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "applications"));
+                await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "scopes"));
+            }
+
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            if(userManager.Users.Count() == 0)
+            {
+                var adminUser = new ApplicationUser() { EmailConfirmed = true };
+                await userManager.SetUserNameAsync(adminUser, "admin@pixel.com");
+                await userManager.SetEmailAsync(adminUser, "admin@pixel.com");
+                await userManager.CreateAsync(adminUser, "Admi9@pixel");
+
+                //assign IdentityAdmin role to user
+                await userManager.AddToRoleAsync(adminUser, "IdentityAdmin");
+            }           
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

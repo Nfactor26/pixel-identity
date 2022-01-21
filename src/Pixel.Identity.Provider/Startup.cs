@@ -83,7 +83,8 @@ namespace Pixel.Identity.Provider
             ConfigureQuartz(services);    
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddHostedService<Worker>();
+          
+            dbStorePlugin.AddServices(services);
         }
 
         /// <summary>

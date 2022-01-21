@@ -20,7 +20,7 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
         public IDialogService Dialog { get; set; }
 
         [Inject]
-        public ISnackbar SnackBar { get; set; }
+        public ISnackbar SnackBar { get; set; }      
 
         [Inject]
         public NavigationManager Navigator { get; set; }
@@ -60,6 +60,47 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
                 Items = Enumerable.Empty<ScopeViewModel>(),
                 TotalItems = 0
             };
+        }
+
+        /// <summary>
+        /// Refresh data for the search query
+        /// </summary>
+        /// <param name="text"></param>
+        private void OnSearch(string text)
+        {
+            scopesRequest.ScopesFilter = string.Empty;
+            if (!string.IsNullOrEmpty(text))
+            {
+                scopesRequest.ScopesFilter = text;
+            }
+            resetCurrentPage = true;
+            scopesTable.ReloadServerData();
+        }
+
+        /// <summary>
+        /// Permanently delete user from system. 
+        /// </summary>
+        /// <param name="userDetails"></param>
+        /// <returns></returns>
+        async Task DeleteScopeAsync(ScopeViewModel scope)
+        {
+            bool? dialogResult = await Dialog.ShowMessageBox("Warning", "Are you sure you want to delete ?",
+                yesText: "Delete", cancelText: "Cancel", options: new DialogOptions() { FullWidth = true });
+            if (dialogResult.GetValueOrDefault())
+            {
+                var result = await Service.DeleteScopeAsync(scope);
+                if (result.IsSuccess)
+                {
+                    SnackBar.Add("Deleted successfully.", Severity.Success);
+                    await scopesTable.ReloadServerData();
+                    return;
+                }
+                SnackBar.Add(result.ToString(), Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = true;
+                });
+            }
         }
 
         /// <summary>

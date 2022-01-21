@@ -15,10 +15,10 @@ namespace Pixel.Identity.Core.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy = Policies.CanManageScopes)]
-    public class ScopesController : ControllerBase
+    public abstract class ScopesController : ControllerBase
     {
-        private readonly IMapper mapper;
-        private readonly IOpenIddictScopeManager scopeManager;
+        protected readonly IMapper mapper;
+        protected readonly IOpenIddictScopeManager scopeManager;
 
         public ScopesController(IMapper mapper, IOpenIddictScopeManager scopeManager)
         {
@@ -26,24 +26,14 @@ namespace Pixel.Identity.Core.Controllers
             this.scopeManager = scopeManager;
         }
 
+        /// <summary>
+        /// Get all the scpoes matching request criteria
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpGet()]
-        public async Task<PagedList<ScopeViewModel>> GetAll([FromQuery] GetScopesRequest request)
-        {
-            List<ScopeViewModel> scopeDescriptors = new List<ScopeViewModel>();
-            long count = await this.scopeManager.CountAsync();
-            await foreach (var scope in this.scopeManager.ListAsync(request.Take, request.Skip, CancellationToken.None))
-            {
-                var scopeDescriptor = mapper.Map<ScopeViewModel>(scope);
-                scopeDescriptors.Add(scopeDescriptor);
-            }
-            return new PagedList<ScopeViewModel>()
-            {
-                Items =  scopeDescriptors,
-                ItemsCount = (int)count,
-                CurrentPage = request.CurrentPage,
-                PageCount =  request.PageSize
-            };
-        }
+        public abstract Task<PagedList<ScopeViewModel>> GetAll([FromQuery] GetScopesRequest request);
+      
 
         [HttpGet("id/{id}")]
         public async Task<ScopeViewModel> Get(string id)
@@ -53,7 +43,7 @@ namespace Pixel.Identity.Core.Controllers
             return scope;
         }
 
-        [HttpPost("create")]
+        [HttpPost()]
         public async Task<IActionResult> Create([FromBody] ScopeViewModel scope)
         {
             try
@@ -72,7 +62,7 @@ namespace Pixel.Identity.Core.Controllers
             }
         }
 
-        [HttpPost("update")]
+        [HttpPut()]
         public async Task<IActionResult> Update([FromBody] ScopeViewModel scope)
         {
             try
@@ -99,5 +89,13 @@ namespace Pixel.Identity.Core.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ProblemResponse(ex.Message));
             }
         }
+
+        /// <summary>
+        /// Delete a scope with given Id if it is not in active use by any application
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{scopeId}")]
+        public abstract Task<IActionResult> Delete(string scopeId);
     }
 }

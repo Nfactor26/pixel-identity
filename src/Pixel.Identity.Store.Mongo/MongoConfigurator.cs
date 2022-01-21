@@ -10,7 +10,7 @@ namespace Pixel.Identity.Store.Mongo
     /// Configure Pixel Identity to use the MongoDb backend for asp.net identity and OpenIddict
     /// </summary>
     public class MongoConfigurator : IConfigurator
-    {
+    {       
         ///<inheritdoc/>
         public void ConfigureAutoMap(IServiceCollection services)
         {
@@ -40,8 +40,7 @@ namespace Pixel.Identity.Store.Mongo
                 //options.User.RequireUniqueEmail = true;               
             })
             .AddRoles<ApplicationRole>()
-            .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDbSettings.ConnectionString, mongoDbSettings.DatabaseName);            
-          
+            .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDbSettings.ConnectionString, mongoDbSettings.DatabaseName);
         }
 
         ///<inheritdoc/>
@@ -59,5 +58,12 @@ namespace Pixel.Identity.Store.Mongo
                 options.UseQuartz();
             });
         }
+
+        ///<inheritdoc/>
+        public void AddServices(IServiceCollection services)
+        {
+            services.AddHostedService<Worker>();
+        }
+
     }
 }
