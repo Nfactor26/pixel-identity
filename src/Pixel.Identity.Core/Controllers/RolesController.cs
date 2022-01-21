@@ -71,8 +71,8 @@ namespace Pixel.Identity.Core.Controllers
             IQueryable<TRole> roles = default;
             if (!string.IsNullOrEmpty(getRolesRequest.RoleFilter))
             {
-                count = this.roleManager.Roles.Where(r => r.Name.StartsWith(getRolesRequest.RoleFilter)).Count();
-                roles = this.roleManager.Roles.Where(r => r.Name.StartsWith(getRolesRequest.RoleFilter))
+                count = this.roleManager.Roles.Where(r => r.Name.Contains(getRolesRequest.RoleFilter)).Count();
+                roles = this.roleManager.Roles.Where(r => r.Name.Contains(getRolesRequest.RoleFilter))
                     .Skip(getRolesRequest.Skip).Take(getRolesRequest.Take).OrderBy(r => r.Name);
             }
             else
