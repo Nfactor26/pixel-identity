@@ -3,7 +3,6 @@ using Pixel.Identity.Shared.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
