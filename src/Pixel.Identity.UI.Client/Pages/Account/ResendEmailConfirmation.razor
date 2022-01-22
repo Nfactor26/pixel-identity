@@ -1,0 +1,19 @@
+﻿@page "/Account/ResendEmailConfirmation"
+@attribute [AllowAnonymous]
+
+<MudText Typo="Typo.h4">Resend Email Verification Link ?</MudText>
+<br />
+<MudPaper Elevation="4">
+    <EditForm Model="@model" OnValidSubmit="ResendEmailConfirmationLinkAsync">
+       <DataAnnotationsValidator/>
+        <MudCard>
+            <MudCardContent>
+                <MudTextField Label="Registered Email" Class="mt-3" @bind-Value="model.Email" autocomplete="username"
+                              For="@(() => model.Email)" InputType="InputType.Email" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Resend</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudPaper>
