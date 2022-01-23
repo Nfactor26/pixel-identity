@@ -12,7 +12,7 @@ namespace Pixel.Identity.Store.Mongo.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.CanManageUsers)]
+    [Authorize]
     public class UsersController : UsersController<ApplicationUser>
     {
         /// <summary>

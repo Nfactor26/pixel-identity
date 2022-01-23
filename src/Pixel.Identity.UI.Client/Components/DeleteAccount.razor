@@ -1,0 +1,19 @@
+﻿ <MudPaper Elevation="4">
+        <EditForm Model="@model">
+            <DataAnnotationsValidator />
+            <MudCard>
+                <MudCardContent>
+                    <MudAlert Severity="Severity.Error">Permantently delete you account. This operation can't be undone. </MudAlert>
+                    <MudTextField Label="Password" @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>                  
+                </MudCardContent>
+                <MudCardActions>
+                    <MudGrid Justify="Justify.FlexEnd">
+                        <MudItem xs="2" Class="auto-flex-basis">
+                                <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="DeleteAccountAsync">Delete Account</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+ </MudPaper>
+

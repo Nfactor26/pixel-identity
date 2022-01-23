@@ -15,7 +15,7 @@ namespace Pixel.Identity.Core.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = Policies.CanManageUsers)]
+    [Authorize]    
     public class UsersController<TUser> : Controller
         where TUser : IdentityUser<Guid>, new()
     {
@@ -39,6 +39,7 @@ namespace Pixel.Identity.Core.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Policy = Policies.CanManageUsers)]
         public PagedList<UserDetailsViewModel> GetAll([FromQuery] GetUsersRequest request)
         {
             int count = 0;
@@ -70,7 +71,7 @@ namespace Pixel.Identity.Core.Controllers
         /// Get the details of a user given user name
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns></returns>       
         [HttpGet("name/{userName}")]
         public async Task<ActionResult<UserDetailsViewModel>> GetUserByName(string userName)
         {
@@ -107,6 +108,7 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         [HttpPost("lock")]
+        [Authorize(Policy = Policies.CanManageUsers)]
         public async Task<IActionResult> LockUserAsync([FromBody] string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -121,6 +123,7 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         [HttpPost("unlock")]
+        [Authorize(Policy = Policies.CanManageUsers)]
         public async Task<IActionResult> UnlockUserAsync([FromBody] string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -142,6 +145,7 @@ namespace Pixel.Identity.Core.Controllers
         /// <param name="userDetails"></param>
         /// <returns></returns>
         [HttpPost("{userId}")]
+        [Authorize(Policy = Policies.CanManageUsers)]
         public async Task<IActionResult> Post(string userId, UserDetailsViewModel userDetails)
         {
            if(!string.IsNullOrEmpty(userId) && ModelState.IsValid)
@@ -171,6 +175,7 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         [HttpDelete("{userName}")]
+        [Authorize(Policy = Policies.CanManageUsers)]
         public async Task<IActionResult> Delete(string userName)
         {
             if (!string.IsNullOrEmpty(userName))

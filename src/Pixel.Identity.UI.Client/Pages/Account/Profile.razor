@@ -1,0 +1,57 @@
+﻿@page "/Account/Profile"
+
+@if(user != null)
+{
+    <MudCard Elevation="4">
+        <MudCardContent>
+            <MudTextField Label="User Name" @bind-Value="user.UserName" For="@(() => user.UserName)" Disabled="true" />
+                @if(!isEditingEmail)
+                {
+                   <MudGrid Spacing="8" Justify="Justify.FlexStart">
+                        <MudItem xs="11">
+                             <MudTextField Label="Email" Class="mt-3" @bind-Value="user.Email" For="@(() => user.Email)" Disabled="true" />
+                        </MudItem>
+                        <MudItem xs="1">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                                @onclick="ToggleEditEmail"  Size="Size.Medium" Class="mt-3 ml-4"></MudIconButton>
+                        </MudItem>
+                   </MudGrid>   
+                }
+                else
+                {
+                    <EditForm Model="@changeEmailModel" Class="mt-4 mb-4">
+                        <DataAnnotationsValidator />
+                            <MudCard>
+                                <MudCardContent>
+                                    <MudTextField Label="New Email" Class="mt-3" @bind-Value="changeEmailModel.NewEmail" For="@(() => changeEmailModel.NewEmail)"/>
+                                </MudCardContent>
+                                <MudCardActions>
+                                     <MudGrid Justify="Justify.FlexEnd">
+                                     </MudGrid>
+                                     <MudItem xs="1">
+                                         <MudButton Variant="Variant.Filled" Color="Color.Warning"
+                                             @onclick="ChangeEmailAsync">Update</MudButton>
+                                     </MudItem>
+                                    <MudItem xs="1">
+                                         <MudButton Variant="Variant.Filled" Color="Color.Warning"
+                                            @onclick="ToggleEditEmail">Cancel</MudButton>
+                                     </MudItem>                                    
+                                </MudCardActions>
+                          </MudCard>
+                    </EditForm>  
+                }                                   
+               
+            <MudTextField Label="Phone Number" Class="mt-3" @bind-Value="user.PhoneNumber" For="@(() => user.PhoneNumber)" Disabled="true"/>
+            <br />
+
+            <MudSwitch @bind-Checked="user.EmailConfirmed" Label="Email Confirmed" Color="Color.Success" Disabled="true" />
+            <MudSwitch @bind-Checked="user.PhoneNumberConfirmed" Label="Phone Number Confirmed" Color="Color.Success" Disabled="true" />
+            <MudSwitch @bind-Checked="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" Disabled="true" />
+            <MudSwitch @bind-Checked="user.LockoutEnabled" Label="Lock Out Enabled" Color="Color.Success" Disabled="true"/>
+
+        </MudCardContent>    
+    </MudCard>
+
+    <br/>
+    <DeleteAccount/>
+}

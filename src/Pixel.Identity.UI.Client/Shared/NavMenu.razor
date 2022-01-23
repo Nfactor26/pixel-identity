@@ -2,6 +2,12 @@
     <br />
     <br />
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Home</MudNavLink>
+    <AuthorizeView>
+         <MudNavGroup Title="Account" Expanded="false" Icon="@Icons.Material.Outlined.Dashboard">
+            <MudNavLink Href="/account/profile">Profile</MudNavLink>
+            <MudNavLink Href="/account/password">Password</MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
     <AuthorizeView Policy="@Policies.CanManageUsers">
         <MudNavLink Href="/users/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Users</MudNavLink>
     </AuthorizeView>

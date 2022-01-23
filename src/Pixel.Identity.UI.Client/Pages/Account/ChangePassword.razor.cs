@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Pixel.Identity.UI.Client.Pages.Account
 {
     /// <summary>
-    /// Component to resend email verification link
+    /// Component for updating password
     /// </summary>
-    public partial class ResendEmailConfirmation : ComponentBase
+    public partial class ChangePassword : ComponentBase
     {
         [Inject]
         public ISnackbar SnackBar { get; set; }
@@ -17,19 +17,19 @@ namespace Pixel.Identity.UI.Client.Pages.Account
         [Inject]
         public IAccountService AccountService { get; set; }
 
-        ResendEmailConfirmationModel model = new ();
+        ChangePasswordModel model = new();
+
 
         /// <summary>
-        /// Send password reset link
-        /// </summary>
+        /// Change user password
         /// <returns></returns>
-        async Task ResendEmailConfirmationLinkAsync()
+        async Task ChangePasswordAsync()
         {
-            var result = await AccountService.ResendEmailConfirmationAsync(model);
+            var result = await AccountService.ChangePasswordAsync(model);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Please check your mail for email confirmation link.", Severity.Success);
-                model.Email = string.Empty;
+                SnackBar.Add("Password update successfully.", Severity.Success);
+                model = new();
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>
