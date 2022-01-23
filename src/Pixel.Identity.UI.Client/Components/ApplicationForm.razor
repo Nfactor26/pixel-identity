@@ -56,16 +56,26 @@
 <ValidationMessage For="() => Application.Permissions"></ValidationMessage>
 <br />
 <MudExpansionPanels MultiExpansion="true">
-    <MudExpansionPanel Text="EndPoint Permissions" IsExpanded="true" HideIcon="true">
+    <MudExpansionPanel Text="EndPoint Permissions">
         <ToggleItemCollection Items="endPointPermissions" OnToggle="TogglePermission" />
     </MudExpansionPanel>
-    <MudExpansionPanel Text="Grant Type Permissions" IsExpanded="true" HideIcon="true">
+    <MudExpansionPanel Text="Grant Type Permissions">
         <ToggleItemCollection Items="grantTypePermissions" OnToggle="TogglePermission" />
     </MudExpansionPanel>
-    <MudExpansionPanel Text="Scope Permissions" IsExpanded="true" HideIcon="true">
-        <ToggleItemCollection Items="scopePermissions" OnToggle="TogglePermission" />
+    <MudExpansionPanel>
+         <TitleContent>
+                <div class="d-flex">
+                    <MudText>Scope Permissions</MudText>
+                    <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                        Title="Add custom scope"
+                        @onclick="AddScope" Color="Color.Primary" Class="ml-3" Style="padding:0;"></MudIconButton>                   
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <ToggleItemCollection Items="scopePermissions" OnToggle="TogglePermission" />
+            </ChildContent>        
     </MudExpansionPanel>
-    <MudExpansionPanel Text="Response Type Permissions" IsExpanded="true" HideIcon="true">
+    <MudExpansionPanel Text="Response Type Permissions">
         <MudGrid Spacing="2">
             <ToggleItemCollection Items="responseTypePermissions" OnToggle="TogglePermission" />
         </MudGrid>
@@ -76,7 +86,7 @@
 <MudText Typo="Typo.h6">Requirements</MudText>
 <br />
 <MudExpansionPanels MultiExpansion="true">
-    <MudExpansionPanel Text="Application requirements" IsExpanded="true" HideIcon="true">
+    <MudExpansionPanel Text="Application requirements">
         <ToggleItemCollection Items="requirements" OnToggle="ToggleRequirement" />
     </MudExpansionPanel>
 </MudExpansionPanels>
