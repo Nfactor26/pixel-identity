@@ -20,38 +20,3 @@
         }
     </DialogContent>
 </MudDialog>
-
-@code {
-
-    string error = null;
-    ClaimViewModel model = new ClaimViewModel();
-
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
-
-    [Inject]
-    public IUserRolesService Service { get; set; }
-
-    [Parameter]
-    public string RoleName { get; set; }
-
-    [Parameter]
-    public IEnumerable<ClaimViewModel> ExistingClaims { get; set; }
-
-    async Task AddNewClaimAsync()
-    {      
-        if (!ExistingClaims.Any(u => u.Type.Equals(model.Type) && u.Value.Equals(model.Value)))
-        {
-            //Don't try to add claim to role if role is not yet created.
-            if(!string.IsNullOrEmpty(RoleName))
-            {
-                await Service.AddClaimToRoleAsync(RoleName, model);                
-            }
-            MudDialog.Close(DialogResult.Ok<ClaimViewModel>(model));
-            return;
-        }
-        error = $"Claim with type {model.Type} already exists for role.";       
-    }
-
-    void Cancel() => MudDialog.Cancel();
-}

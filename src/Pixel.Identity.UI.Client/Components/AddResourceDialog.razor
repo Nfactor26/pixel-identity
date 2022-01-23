@@ -5,7 +5,7 @@
                 <MudTextField @bind-Value="@resource" Label="Resource" Class="mt-n3" @onfocus="(() => error = string.Empty)"
                               Variant="Variant.Text" Margin="Margin.None" Immediate="true" ></MudTextField>
             </MudItem>
-            <MudItem xs="2" Class="ml-n3">
+            <MudItem xs="2">
                 <MudIconButton OnClick="AddNewResource"  Disabled="string.IsNullOrEmpty(resource)"
                                Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
             </MudItem>
@@ -16,29 +16,3 @@
         }
     </DialogContent>
 </MudDialog>
-
-@code {
-
-    string error = null;
-    string resource = string.Empty;
-
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
-
-    [Parameter]
-    public IEnumerable<string> ExistingResources { get; set; }
-
-    void AddNewResource()
-    {      
-        if (!ExistingResources.Any(u => u.Equals(resource)))
-        {
-            MudDialog.Close(DialogResult.Ok<string>(resource));
-            return;
-        }
-        error = "Resource is already added.";
-        return;
-
-    }
-
-    void Cancel() => MudDialog.Cancel();
-}
