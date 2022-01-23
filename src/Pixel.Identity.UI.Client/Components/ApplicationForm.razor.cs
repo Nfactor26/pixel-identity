@@ -14,9 +14,9 @@ namespace Pixel.Identity.UI.Client.Components
         [Parameter]
         public IDialogService Dialog { get; set; }
 
-        [Inject]
-        public IScopeService ScopeService { get; set; }
-
+        [Parameter]
+        public ISnackbar SnackBar { get; set; }
+      
         [CascadingParameter]
         public ApplicationViewModel Application { get; set; }
 
@@ -60,22 +60,6 @@ namespace Pixel.Identity.UI.Client.Components
             (new SwitchItemViewModel(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange, false))
         };
 
-        protected override async Task OnInitializedAsync()
-        {
-            if (Application != null)
-            {
-                var customScopes = await ScopeService.GetScopesAsync(new Identity.Shared.Request.GetScopesRequest()
-                {
-                    PageSize = 50,
-                    CurrentPage = 1
-                });
-                foreach (var customScope in customScopes.Items)
-                {
-                    scopePermissions.Add(new SwitchItemViewModel(customScope.DisplayName, $"scp:{customScope.Name}", Application.Permissions.Contains(customScope.Name)));
-                }
-            }              
-        }
-
         protected override void OnParametersSet()
         {
             if(Application != null)
@@ -107,6 +91,28 @@ namespace Pixel.Identity.UI.Client.Components
                 {
                     item.IsSelected = true;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Add a new scope the application permissions list
+        /// </summary>
+        /// <returns></returns>
+        async Task AddScope()
+        {
+            var parameters = new DialogParameters();
+            var dialog = Dialog.Show<AddScopeDialog>("Add New Scope", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
+            var result = await dialog.Result;
+            if (!result.Cancelled && result.Data is ScopeViewModel customScope)
+            {
+                if(Application.Permissions.Contains(customScope.Name))
+                {
+                    SnackBar.Add($"Selected scope {customScope.DisplayName} already exists in application permission.", Severity.Error);
+                    return;
+                }
+                var scopeSwitchItem = new SwitchItemViewModel(customScope.DisplayName, $"scp:{customScope.Name}", false);
+                scopePermissions.Add(scopeSwitchItem);
+                TogglePermission(scopeSwitchItem);
             }
         }
 

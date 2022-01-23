@@ -42,6 +42,11 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             }           
         }
 
+        /// <summary>
+        /// Get user details for a given user id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         async Task<UserDetailsViewModel> GetUserDetailsAsync(string userId)
         {
             try
@@ -144,9 +149,8 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             var parameters = new DialogParameters();           
             var dialog = Dialog.Show<AddRoleDialog>("Add New Role", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
             var result = await dialog.Result;          
-            if (!result.Cancelled && result.Data is string role)
-            {
-                var userRole = new UserRoleViewModel(role);
+            if (!result.Cancelled && result.Data is UserRoleViewModel userRole)
+            {              
                 var assignRoleResult =  await RolesService.AssignRolesToUserAsync(user.UserName, new[] { userRole });
                 if (assignRoleResult.IsSuccess)
                 {

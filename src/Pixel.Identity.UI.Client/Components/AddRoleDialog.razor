@@ -1,55 +1,18 @@
 ﻿@using Pixel.Identity.Shared.Request
 <MudDialog>
     <DialogContent>
-        <MudGrid Spacing="2" Justify="Justify.Center">
-            <MudItem xs="10" sm="10" md="10">
-                 <MudAutocomplete T="string" Label="Roles" @bind-Value="selectedOption" SearchFunc="@SearchRoles"
-                         ResetValueOnEmptyText="true"
-                         CoerceText="false" CoerceValue="false"
+       <MudGrid Spacing="3" Justify="Justify.FlexStart">
+            <MudItem xs="10" Style="width:360px">
+                 <MudAutocomplete T="UserRoleViewModel" Label="Roles" @bind-Value="selectedOption" 
+                         SearchFunc="@SearchRoles" ToStringFunc="@(e=> e == null ? null : e.RoleName)"
+                         ResetValueOnEmptyText="true" CoerceText="false" CoerceValue="false"
+                         Class="mt-n3" Variant="Variant.Text" Margin="Margin.None" Immediate="true"
                          AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
             </MudItem>
-            <MudItem xs="2"  sm="2" md="2">
-                <MudIconButton OnClick="AddRole" Disabled="string.IsNullOrEmpty(selectedOption)"
+            <MudItem xs="2">
+                <MudIconButton OnClick="AddRole" Disabled="@(null == selectedOption)"
                                Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
             </MudItem>
         </MudGrid>     
     </DialogContent>
 </MudDialog>
-
-@code {
-
-    private string selectedOption;
-
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; }
-
-    [Inject]
-    public ISnackbar SnackBar { get; set; }
-
-    [Inject]
-    public IUserRolesService RolesService { get; set; }
-
-    void AddRole()
-    {
-        if(!string.IsNullOrEmpty(selectedOption))
-        {
-            MudDialog.Close(DialogResult.Ok<string>(selectedOption));            
-        }        
-    }
-
-    void Cancel() => MudDialog.Cancel();
-
-    private async Task<IEnumerable<string>> SearchRoles(string value)
-    {        
-        // if text is null or empty, don't return values (drop-down will not open)
-        if (string.IsNullOrEmpty(value))
-            return new string[0];
-        var result = await RolesService.GetRolesAsync(new GetRolesRequest()
-        {
-             CurrentPage = 1,
-             PageSize = 100,
-             RoleFilter = value
-        });
-        return result.Items.Select(s => s.RoleName);
-    }
-}
