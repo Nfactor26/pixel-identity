@@ -143,7 +143,7 @@ namespace Pixel.Identity.Provider
         private IConfigurator LoadDbStorePlugin()
         {
             string pluginToUse = Configuration["UsePlugin"] ?? throw new InvalidOperationException("Plugin to use is not configured");
-            var availablePlugins = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "Plugins\\DbStore"));
+            var availablePlugins = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "Plugins", "DbStore"));
             if(availablePlugins.Any())
             {
                 foreach (var pluginDir in availablePlugins)

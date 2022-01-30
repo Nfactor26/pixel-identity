@@ -33,9 +33,22 @@ namespace Pixel.Identity.Store.Sql
         {
             return services.AddDbContext<ApplicationDbContext>(options =>
             {
-                // Configure the context to use Microsoft SQL Server.
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-
+                string entityFrameworkProvider = configuration["EntityFrameworkProvider"] ??
+                    throw new InvalidOperationException("EntityFrameworkProvider is not configured");
+              
+                if (string.Equals(entityFrameworkProvider, "sqlserver", StringComparison.OrdinalIgnoreCase))
+                {
+                    options.UseSqlServer(configuration.GetConnectionString("SqlServerConnection"));
+                }                         
+                else if (string.Equals(entityFrameworkProvider, "postgresql", StringComparison.OrdinalIgnoreCase))
+                {                  
+                    options.UseNpgsql(configuration.GetConnectionString("PostgreServerConnection"));
+                }
+                else
+                {
+                    throw new ArgumentException($"{entityFrameworkProvider} is not a supported provider");
+                }
+              
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
                 // to replace the default OpenIddict entities.

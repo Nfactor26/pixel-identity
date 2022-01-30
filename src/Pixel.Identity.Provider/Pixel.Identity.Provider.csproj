@@ -33,15 +33,23 @@
 		<ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj" />
 		<ProjectReference Include="..\Pixel.Identity.Shared\Pixel.Identity.Shared.csproj" />
 		<ProjectReference Include="..\Pixel.Identity.UI.Client\Pixel.Identity.UI.Client.csproj" />
-	</ItemGroup>
-
-	<Target Name="PublishPlugins" BeforeTargets="Build">
-
+	</ItemGroup>	
+	
+	<Target Name="CopyPluginsOnPublish" AfterTargets="Publish">	
+		<ItemGroup>           
+            <PluginFiles Include="$(TargetDir)\Plugins\**\*.*"/>
+        </ItemGroup>
+		<!--<Message Importance="high" Text="Copy Plguins directory from $(TargetDir)\Plugins to $(PublishDir)" />-->
+		<MakeDir Directories="$(PublishDir)\Plugins"/>
+		<Copy SourceFiles="@(PluginFiles)"  DestinationFiles="@(PluginFiles -> '$(PublishDir)Plugins\%(RecursiveDir)%(Filename)%(Extension)')"/>
+	</Target>
+	
+	<Target Name="PublishPluginsOnBuild" BeforeTargets="Build">
 		<ItemGroup>
-			<PluginProject Include="..\Pixel.Identity.Store.Mongo\Pixel.Identity.Store.Mongo.csproj" />
-			<PluginProject Include="..\Pixel.Identity.Store.Sql\Pixel.Identity.Store.Sql.csproj" />
+			<PluginProject Include="..\Pixel.Identity.Store.Mongo\Pixel.Identity.Store.Mongo.csproj" />			
+			<PluginProject Include="..\Pixel.Identity.Store.Sql\Pixel.Identity.Store.Sql.csproj" />			
 		</ItemGroup>
-
+		<!--<Message Importance="high" Text="Executing build plugins now with PublishDir $(TargetDir)Plugins" />-->	
 		<MSBuild Projects="@(PluginProject)" Targets="Publish" Properties="PublishDir=$(TargetDir)Plugins\DbStore\%(FileName)\" />
 	</Target>
 
