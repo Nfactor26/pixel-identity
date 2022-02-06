@@ -1,0 +1,27 @@
+﻿@page
+@model LoginWithRecoveryCodeModel
+
+<div class="mud-container mud-container-maxwidth-sm mt-6">
+    <div class="mud-paper mud-elevation-4 mud-grid mud-grid-spacing-xs-3 mud-grid-justify-xs-flex-start">
+
+        <div class="mud-card mud-grid-item mud-grid-item-xs-12 mud-grid-item-sm-12">
+            <h2>Log in with a recovery code</h2>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group mt-4">
+                    <label asp-for="Input.RecoveryCode"></label>
+                    <input asp-for="Input.RecoveryCode" class="form-control" autocomplete="off" />
+                    <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
+                </div>
+               <div class="form-group mt-4">
+                    <button id="submit" type="submit" class="mud-button-root mud-button mud-button-filled mud-button-filled-primary mud-button-filled-size-medium mud-ripple mud-width-full ml-auto">Log in</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}
