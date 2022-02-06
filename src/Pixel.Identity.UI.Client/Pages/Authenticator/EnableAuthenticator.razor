@@ -1,0 +1,51 @@
+﻿@page "/Account/Authenticator/Enable"
+@attribute [Authorize]
+
+<MudCard Elevation="4">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Setup Authenticator by following below steps</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <ol class="ml-6 mr-6">
+            <li>
+                <p>
+                    Download a two-factor authenticator app like Microsoft Authenticator for
+                    <a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> and
+                    <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a> or
+                    Google Authenticator for
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> and
+                    <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>.
+                </p>
+            </li>
+            <li>
+                <p>Scan the QR Code or enter this key <kbd>@model.SharedKey</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
+                <div class="alert alert-info">Learn how to <a href="https://go.microsoft.com/fwlink/?Linkid=852423">enable QR code generation</a>.</div>
+                <div id="qrCode"></div>
+                <div id="qrCodeData" data-url="@model.AuthenticatorUri"></div>
+            </li>
+            <li>
+                <p>
+                    Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
+                    with a unique code. Enter the code in the confirmation box below.
+                </p>
+                <EditForm Model="@model" class="mt-n6 ml-n3">
+                    <DataAnnotationsValidator />
+                    <MudCard Elevation="0">
+                        <MudCardContent>
+                            <MudTextField Label="Code" @bind-Value="model.Code" For="@(() => model.Code)" InputType="InputType.Text" />
+                        </MudCardContent>                      
+                    </MudCard>
+                </EditForm>
+            </li>
+        </ol>
+    </MudCardContent>
+    <MudCardActions>
+        <MudGrid Justify="Justify.FlexEnd">
+            <MudItem xs="2" Class="auto-flex-basis">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="EnableAuthenticatorAsync">Enable Authenticator</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudCardActions>
+</MudCard>

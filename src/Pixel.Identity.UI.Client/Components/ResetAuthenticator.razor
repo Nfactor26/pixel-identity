@@ -1,0 +1,26 @@
+﻿<MudPaper Elevation="0">
+    <EditForm Model="@model">
+        <DataAnnotationsValidator />
+        <MudCard Elevation="0">
+            <MudCardContent>
+                <MudAlert Severity="Severity.Warning">
+                    <p>        
+                        <strong>If you reset your authenticator key your authenticator app will not work until you reconfigure it.</strong>
+                    </p>
+                    <p>
+                        This process disables 2FA until you verify your authenticator app.
+                        If you do not complete your authenticator app configuration you may lose access to your account.
+                    </p>
+                </MudAlert>
+                <MudTextField Label="Code" @bind-Value="model.Code" For="@(() => model.Code)" InputType="InputType.Text" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudGrid Justify="Justify.FlexEnd">
+                    <MudItem xs="2" Class="auto-flex-basis">
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="ResetAuthenticatorAsync">Reset Authenticator</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudPaper>

@@ -1,0 +1,21 @@
+﻿ 
+ <MudAlert Severity="Severity.Normal">You have @recoveryCodesCount unused recovery codes.You can <MudButton Variant="Variant.Text" Color="Color.Primary" 
+        @onclick="GenerateRecoveryCodesAsync">generate new codes</MudButton> if required.
+ </MudAlert>
+ <br/>
+
+
+@if(recoveryCodes.Count() > 0 )
+{
+    <MudAlert Severity="Severity.Warning">
+    Put these codes in a safe place.
+    If you lose your device and don't have the recovery codes you will lose access to your account.
+    </MudAlert>
+    <br/>
+
+    @foreach (var recoveryCode in recoveryCodes)
+    {
+        <code>@recoveryCode</code>
+        <br/>
+    }
+}
