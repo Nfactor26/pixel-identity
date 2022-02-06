@@ -12,7 +12,9 @@
 		<PackageReference Include="AutoMapper" Version="10.1.1">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.1">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
 		<PackageReference Include="MongoDB.Driver" Version="2.14.1" />
 		<PackageReference Include="OpenIddict.Abstractions" Version="3.1.1">
 			<ExcludeAssets>runtime</ExcludeAssets>
@@ -28,9 +30,7 @@
 		<ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj">
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
-		</ProjectReference>
-		<ProjectReference Include="..\Pixel.Identity.UI.Client\Pixel.Identity.UI.Client.csproj">		
-		</ProjectReference>
+		</ProjectReference>	
 	</ItemGroup>
 	
 </Project>

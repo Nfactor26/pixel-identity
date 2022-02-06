@@ -1,0 +1,18 @@
+﻿<MudPaper Elevation="0">
+    <EditForm Model="@model">
+        <DataAnnotationsValidator />
+        <MudCard Elevation="0">
+            <MudCardContent>
+                <MudAlert Severity="Severity.Warning">Disable two-factor authentication (2FA) with Authenticator app </MudAlert>
+                <MudTextField Label="Code" @bind-Value="model.Code" For="@(() => model.Code)" InputType="InputType.Text" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudGrid Justify="Justify.FlexEnd">
+                    <MudItem xs="2" Class="auto-flex-basis">
+                        <MudButton Variant="Variant.Filled" Color="Color.Error" @onclick="DisableAuthenticatorAsync">Disable 2FA</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
+</MudPaper>
