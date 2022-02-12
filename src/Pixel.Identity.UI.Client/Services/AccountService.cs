@@ -1,6 +1,7 @@
 ﻿using Pixel.Identity.Shared.Models;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Services
@@ -10,6 +11,12 @@ namespace Pixel.Identity.UI.Client.Services
     /// </summary>
     public interface IAccountService
     {
+        /// <summary>
+        /// Get whether user has account has a password.       
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> GetHasPasswordAsync();
+
         /// <summary>
         /// Send the password reset link to user registered email
         /// </summary>
@@ -29,6 +36,14 @@ namespace Pixel.Identity.UI.Client.Services
         /// <param name="model"></param>
         /// <returns></returns>
         Task<OperationResult> ChangePasswordAsync(ChangePasswordModel model);
+
+        /// <summary>
+        /// Set password for account (for users who used external provider and want to setup a local login)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<OperationResult> SetPasswordAsync(SetPasswordModel model);
+
 
         /// <summary>
         /// Change user email
@@ -62,9 +77,24 @@ namespace Pixel.Identity.UI.Client.Services
         }
 
         /// <inheritdoc/> 
+        public async Task<bool> GetHasPasswordAsync()
+        {
+            return await JsonSerializer.DeserializeAsync<bool>
+                       (await httpClient.GetStreamAsync($"api/account/haspassword"));
+        }
+
+        /// <inheritdoc/> 
         public async Task<OperationResult> ChangePasswordAsync(ChangePasswordModel model)
         {
             var result = await httpClient.PostAsJsonAsync<ChangePasswordModel>($"api/account/password/change", model);
+            return await OperationResult.FromResponseAsync(result);
+        }
+
+
+        /// <inheritdoc/> 
+        public async Task<OperationResult> SetPasswordAsync(SetPasswordModel model)
+        {
+            var result = await httpClient.PostAsJsonAsync<SetPasswordModel>($"api/account/password/set", model);
             return await OperationResult.FromResponseAsync(result);
         }
 

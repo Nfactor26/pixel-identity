@@ -1,4 +1,5 @@
 using McMaster.NETCore.Plugins;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using Pixel.Identity.Core;
 using Pixel.Identity.Shared;
 using Quartz;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -58,10 +60,14 @@ namespace Pixel.Identity.Provider
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
-            services.AddAuthentication(options =>
+            var authenticationBuilder = services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });    
+            foreach(var externalProvider in LoadExternalProviderPlugins())
+            {
+                externalProvider.AddProvider(this.Configuration, authenticationBuilder);
+            }
 
             services.AddMudServices(config =>
             {
@@ -174,6 +180,38 @@ namespace Pixel.Identity.Provider
             }           
             throw new Exception($"No DbStore plugin exists in Plugins\\DbStore directory");
         }   
+
+        /// <summary>
+        /// Load the external OAuth based authentication provider plugins to allow login with these external OAuth based providers
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<IExternalAuthProvider> LoadExternalProviderPlugins()
+        {
+            string pluginsDirectory = Path.Combine(AppContext.BaseDirectory, "Plugins", "OAuthProviders");
+            if (Directory.Exists(pluginsDirectory))
+            {
+                var availablePlugins = Directory.GetDirectories(pluginsDirectory);
+                if (availablePlugins.Any())
+                {
+                    foreach (var pluginDir in availablePlugins)
+                    {
+                        //The dll file containing pluginDir name in it's name will be picked as the plugin file
+                        var pluginFile = Directory.GetFiles(pluginDir, "*.dll").Where(f => f.Contains(pluginDir)).Single();
+                        var loader = PluginLoader.CreateFromAssemblyFile(pluginFile, sharedTypes: new[]
+                            {
+                                typeof(IExternalAuthProvider),
+                                typeof(AuthenticationBuilder)
+                        });
+                        foreach (var type in loader.LoadDefaultAssembly().GetTypes()
+                            .Where(t => typeof(IExternalAuthProvider).IsAssignableFrom(t) && !t.IsAbstract))
+                        {
+                            yield return (IExternalAuthProvider)Activator.CreateInstance(type);
+                        }
+                    }
+                }
+            }
+           
+        }
 
         /// <summary>
         /// Configure the Cors so that different clients can consume api

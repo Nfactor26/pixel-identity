@@ -49,6 +49,10 @@ namespace Pixel.Identity.UI.Client
             builder.Services.AddHttpClient<IAccountService, AccountService>(
             client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
+            builder.Services.AddHttpClient<IExternalLoginsService, ExternalLoginsService>(
+            client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+            .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
             builder.Services.AddHttpClient<IAuthenticatorService, AuthenticatorService>(
             client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();

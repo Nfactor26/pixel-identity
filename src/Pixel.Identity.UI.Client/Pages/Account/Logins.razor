@@ -1,0 +1,36 @@
+﻿@page "/Account/Logins"
+@using Pixel.Identity.Shared.Models
+@attribute [Authorize]
+
+@if (hasLocalAccount)
+{
+    <ChangePassword />
+}
+else
+{
+    <SetPassword />
+}
+
+<br />
+<br />
+
+@if (externalLogins?.Any() ?? false)
+{
+    <MudText Typo="Typo.h4">Manage External logins</MudText>
+    <br/>
+    <MudCard Elevation="4">
+        <MudCardContent>
+            <MudGrid Spacing="12" Justify="Justify.FlexStart" Class="p-2">
+                @foreach (var item in externalLogins)
+                {
+                    <MudItem xs="3" Class="py-2 px-0 ml-1 mr-2">
+                        <MudChip Label="true" Color="Color.Success" OnClose="@(() => RemoveExternalLoginAsync(item))"
+                                Disabled="@(externalLogins.Count() == 1 || hasLocalAccount)" Size="Size.Large">
+                            @item.ProviderDisplayName
+                        </MudChip>       
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+}

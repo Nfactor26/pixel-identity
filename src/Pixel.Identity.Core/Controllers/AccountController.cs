@@ -96,6 +96,58 @@ namespace Pixel.Identity.Core.Controllers
         }
 
         /// <summary>
+        /// Check if user has a password
+        /// </summary>
+        /// <returns>true if user has password, false otherwise</returns>
+        [Authorize]
+        [HttpGet("haspassword")]
+        public async Task<bool> HasPassword()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return false;
+            }
+            return await userManager.HasPasswordAsync(user);
+        }
+
+        /// <summary>
+        /// Update user password to a new value
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("password/set")]
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return NotFound(new NotFoundResponse("User could not be loaded."));
+                }
+
+                var hasPassword = await userManager.HasPasswordAsync(user);
+                if (hasPassword)
+                {
+                    return BadRequest(new BadRequestResponse(new [] { "Password is already set."}));
+                }
+
+                var addPasswordResult = await userManager.AddPasswordAsync(user, model.NewPassword);
+                if (!addPasswordResult.Succeeded)
+                {
+                    return BadRequest(new BadRequestResponse(addPasswordResult.Errors.Select(e => e.ToString())));
+                }
+
+                await signInManager.RefreshSignInAsync(user);
+                return Ok();
+            }
+
+            return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));           
+        }
+
+        /// <summary>
         /// Send a verification link to user registered email. User can click this link to verify
         /// the new email. Once verified email and name are automatically updated to new email value.
         /// </summary>
@@ -166,8 +218,8 @@ namespace Pixel.Identity.Core.Controllers
         /// Delete user account
         /// </summary>
         /// <param name="model"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
+        /// <returns></returns>      
+        [Authorize]
         [HttpPost("delete")]
         public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountModel model)
         {
