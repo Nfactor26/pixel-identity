@@ -7,27 +7,32 @@ using System.Threading.Tasks;
 namespace Pixel.Identity.UI.Client.Pages.Account
 {
     /// <summary>
-    /// Component for updating password
+    /// Users who used external provider for login can setup a local account by adding a password.
+    /// This will allow them to login using a local account when external login is not available due 
+    /// to any reason.
     /// </summary>
-    public partial class ChangePassword : ComponentBase
+    public partial class SetPassword : ComponentBase
     {
         [Inject]
         public ISnackbar SnackBar { get; set; }
 
         [Inject]
+        public NavigationManager Navigator { get; set; }
+
+        [Inject]
         public IAccountService AccountService { get; set; }
 
-        ChangePasswordModel model = new();
+        SetPasswordModel model = new();              
 
         /// <summary>
-        /// Change user password
+        /// Set user password
         /// <returns></returns>
-        async Task ChangePasswordAsync()
+        async Task SetPasswordAsync()
         {
-            var result = await AccountService.ChangePasswordAsync(model);
+            var result = await AccountService.SetPasswordAsync(model);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Password update successfully.", Severity.Success);
+                SnackBar.Add("Password added successfully.", Severity.Success);
                 model = new();
                 return;
             }
