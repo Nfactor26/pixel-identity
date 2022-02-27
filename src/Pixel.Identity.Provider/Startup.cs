@@ -1,17 +1,16 @@
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Pixel.Identity.Core;
+using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared;
 using Quartz;
 using System;
@@ -59,16 +58,7 @@ namespace Pixel.Identity.Provider
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
-
-            var authenticationBuilder = services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            });    
-            foreach(var externalProvider in LoadExternalProviderPlugins())
-            {
-                externalProvider.AddProvider(this.Configuration, authenticationBuilder);
-            }
-
+           
             services.AddMudServices(config =>
             {
                 config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
@@ -81,15 +71,24 @@ namespace Pixel.Identity.Provider
             });
 
             ConfigureCors(services);
-            
+
+            var authenticationBuilder = services.AddAuthentication();
+            foreach (var externalProvider in LoadExternalProviderPlugins())
+            {
+                externalProvider.AddProvider(this.Configuration, authenticationBuilder);
+            }
+
             ConfigureOpenIddict(services, dbStorePlugin);
 
             ConfigureAuthorizationPolicy(services);
 
-            ConfigureQuartz(services);    
+            ConfigureQuartz(services);
 
-            services.AddTransient<IEmailSender, EmailSender>();
-          
+            services.AddPlugin("Messenger", Configuration["EmailSenderPlugin"], new[] 
+            { 
+                typeof(IConfiguration), typeof(IEmailSender) 
+            });
+
             dbStorePlugin.AddServices(services);
         }
 
@@ -166,8 +165,7 @@ namespace Pixel.Identity.Provider
                             {
                                 typeof(IConfigurator),
                                 typeof(OpenIddictQuartzBuilder),
-                                typeof(UI.Client.Program),
-                                typeof(Microsoft.AspNetCore.Identity.UI.Services.IEmailSender)
+                                typeof(UI.Client.Program)
                             });
                             foreach (var type in loader.LoadDefaultAssembly().GetTypes()
                                 .Where(t => typeof(IConfigurator).IsAssignableFrom(t) && !t.IsAbstract))
@@ -275,9 +273,14 @@ namespace Pixel.Identity.Provider
         /// <param name="configurator"></param>
         private void ConfigureOpenIddict(IServiceCollection services, IConfigurator configurator)
         {
-             configurator.ConfigureIdentity(this.Configuration, services)
-            .AddDefaultUI()
+            //Configure Identity will call services.AddIdentity which will AddAuthentication  
+            configurator.ConfigureIdentity(this.Configuration, services) 
+            .AddSignInManager()
             .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(opts => {
+                opts.LoginPath = "/Identity/Account/Login";                
+            });           
 
             var openIdBuilder = services.AddOpenIddict()        
             // Register the OpenIddict server components.

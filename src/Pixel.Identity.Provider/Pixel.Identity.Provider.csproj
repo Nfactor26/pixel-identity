@@ -19,8 +19,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />	
 		<PackageReference Include="OpenIddict.AspNetCore" Version="3.1.1" />
 		<PackageReference Include="OpenIddict.Quartz" Version="3.1.1" />
 		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.3.3" />
@@ -37,20 +36,24 @@
 	
 	<Target Name="CopyPluginsOnPublish" AfterTargets="Publish">	
 		<ItemGroup>           
-            <PluginFiles Include="$(TargetDir)\Plugins\**\*.*"/>
+            <PluginFiles Include="$(TargetDir)\Plugins\**\*.*" />
         </ItemGroup>
 		<!--<Message Importance="high" Text="Copy Plguins directory from $(TargetDir)\Plugins to $(PublishDir)" />-->
-		<MakeDir Directories="$(PublishDir)\Plugins"/>
-		<Copy SourceFiles="@(PluginFiles)"  DestinationFiles="@(PluginFiles -> '$(PublishDir)Plugins\%(RecursiveDir)%(Filename)%(Extension)')"/>
+		<MakeDir Directories="$(PublishDir)\Plugins" />
+		<Copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(PublishDir)Plugins\%(RecursiveDir)%(Filename)%(Extension)')" />
 	</Target>
 	
 	<Target Name="PublishPluginsOnBuild" BeforeTargets="Build">
 		<ItemGroup>
-			<PluginProject Include="..\Pixel.Identity.Store.Mongo\Pixel.Identity.Store.Mongo.csproj" />			
-			<PluginProject Include="..\Pixel.Identity.Store.Sql\Pixel.Identity.Store.Sql.csproj" />			
+			<DbStorePluginProject Include="..\Pixel.Identity.Store.Mongo\Pixel.Identity.Store.Mongo.csproj" />
+			<DbStorePluginProject Include="..\Pixel.Identity.Store.Sql\Pixel.Identity.Store.Sql.csproj" />			
+		</ItemGroup>
+		<ItemGroup>
+			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj" />			
 		</ItemGroup>
 		<!--<Message Importance="high" Text="Executing build plugins now with PublishDir $(TargetDir)Plugins" />-->	
-		<MSBuild Projects="@(PluginProject)" Targets="Publish" Properties="PublishDir=$(TargetDir)Plugins\DbStore\%(FileName)\" />
+		<MSBuild Projects="@(DbStorePluginProject)" Targets="Publish" Properties="PublishDir=$(TargetDir)Plugins\DbStore\%(FileName)\" />
+		<MSBuild Projects="@(MessengerPluginProject)" Targets="Publish" Properties="PublishDir=$(TargetDir)Plugins\Messenger\%(FileName)\" />
 	</Target>
 
 </Project>

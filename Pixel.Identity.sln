@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.Sql", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Core", "src\Pixel.Identity.Core\Pixel.Identity.Core.csproj", "{E1581674-E28D-429B-B607-22EC81E44E89}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Messenger.Email", "src\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj", "{E7F60792-6D88-40BB-A4F5-F70CC6B81396}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,18 @@ Global
 		{E1581674-E28D-429B-B607-22EC81E44E89}.Release|x64.Build.0 = Release|Any CPU
 		{E1581674-E28D-429B-B607-22EC81E44E89}.Release|x86.ActiveCfg = Release|Any CPU
 		{E1581674-E28D-429B-B607-22EC81E44E89}.Release|x86.Build.0 = Release|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Debug|x64.Build.0 = Debug|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Debug|x86.Build.0 = Debug|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Release|x64.ActiveCfg = Release|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Release|x64.Build.0 = Release|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Release|x86.ActiveCfg = Release|Any CPU
+		{E7F60792-6D88-40BB-A4F5-F70CC6B81396}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
