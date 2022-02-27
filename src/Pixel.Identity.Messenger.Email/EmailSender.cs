@@ -1,11 +1,10 @@
 ﻿using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 using MimeKit.Text;
-using System.Threading.Tasks;
+using Pixel.Identity.Core;
 
-namespace Pixel.Identity.Provider
+namespace Pixel.Identity.Messenger.Email
 {
     public class EmailSender : IEmailSender
     {
@@ -31,7 +30,6 @@ namespace Pixel.Identity.Provider
                 await smtp.SendAsync(email);
                 await smtp.DisconnectAsync(true);
             }
-
         }
     }
 }

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Pixel.Identity.Core;
 using Pixel.Identity.Core.Pages;
 
 namespace Pixel.Identity.Store.Sql.Account
