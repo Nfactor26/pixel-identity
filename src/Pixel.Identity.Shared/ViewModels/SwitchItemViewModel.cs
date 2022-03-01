@@ -12,7 +12,7 @@
         {
             this.ItemValue = itemValue;
             this.IsSelected = isSelected;
-            this.DisplayName = itemValue.Contains(":") ? itemValue.Split(":")[1] : itemValue;
+            this.DisplayName = itemValue.Contains(":") ? itemValue.Substring(itemValue.IndexOf(":") + 1) : itemValue;
         }
 
         public SwitchItemViewModel(string displayName, string itemValue, bool isSelected)

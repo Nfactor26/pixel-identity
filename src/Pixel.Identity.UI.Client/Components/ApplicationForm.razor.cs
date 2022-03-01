@@ -2,7 +2,6 @@
 using MudBlazor;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Shared.ViewModels;
-using Pixel.Identity.UI.Client.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,6 +22,7 @@ namespace Pixel.Identity.UI.Client.Components
         List<SwitchItemViewModel> endPointPermissions = new List<SwitchItemViewModel>()
         {
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Authorization, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Device, false)),
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Introspection, false)),
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Logout, false)),
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.Endpoints.Revocation, false)),
@@ -32,10 +32,11 @@ namespace Pixel.Identity.UI.Client.Components
         List<SwitchItemViewModel> grantTypePermissions = new List<SwitchItemViewModel>()
         {
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode, false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials, false)),          
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.Implicit, false)),
             (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.Password, false)),
-            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.RefreshToken, false))
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.RefreshToken, false)),
+            (new SwitchItemViewModel(OpenIddictConstants.Permissions.GrantTypes.DeviceCode, false))
         };
 
         List<SwitchItemViewModel> responseTypePermissions = new List<SwitchItemViewModel>()
@@ -63,7 +64,7 @@ namespace Pixel.Identity.UI.Client.Components
         protected override void OnParametersSet()
         {
             if(Application != null)
-            {
+            {               
                 InitializePermissionState(endPointPermissions);
                 InitializePermissionState(grantTypePermissions);
                 InitializePermissionState(responseTypePermissions);
@@ -76,6 +77,7 @@ namespace Pixel.Identity.UI.Client.Components
         {
             foreach (var item in permissions)
             {
+                item.IsSelected = false;
                 if (Application.Permissions.Contains(item.ItemValue))
                 {
                     item.IsSelected = true;
@@ -87,6 +89,7 @@ namespace Pixel.Identity.UI.Client.Components
         {
             foreach (var item in requirements)
             {
+                item.IsSelected = false;
                 if (Application.Requirements.Contains(item.ItemValue))
                 {
                     item.IsSelected = true;

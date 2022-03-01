@@ -2,6 +2,7 @@
 using MudBlazor;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
+using System;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Application
@@ -23,8 +24,21 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         [Inject]
         public NavigationManager Navigator { get; set; }
 
-        ApplicationViewModel application = new ApplicationViewModel();
-     
+        ApplicationViewModel application = new ();
+
+        Func<ApplicationPreset, string> displayStringConverter = ci => ci.ToDisplayString();
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            this.application.ApplyPreset(ApplicationPreset.AuthorizationCodeFlow);
+        }
+
+        void ApplyPreset(ApplicationPreset preset)
+        {
+            this.application.ApplyPreset(preset);
+        }
+
         /// <summary>
         /// Add new application details
         /// </summary>
