@@ -3,20 +3,34 @@
 
 @if (application != null)
 {
-    <MudText Typo="Typo.h4">Create New</MudText>
+    <MudGrid Spacing="2" Justify="Justify.FlexStart" Class="p-2">
+         <MudItem xs="8">
+               <MudText Typo="Typo.h4">Create New</MudText>
+         </MudItem/>
+         <MudItem xs="4">
+              <MudSelect T="ApplicationPreset" ValueChanged="(v) => ApplyPreset(v)" Label="Apply Preset" 
+                AdornmentColor="Color.Secondary" FullWidth="false">
+                @foreach (ApplicationPreset item in Enum.GetValues(typeof(ApplicationPreset)))
+                {
+                    <MudSelectItem Value="@item">@displayStringConverter(item)</MudSelectItem>
+                }
+                </MudSelect>
+         </MudItem/>
+    </MudGrid>  
+
     <br />
     <MudPaper Elevation="4">
         <EditForm Model="@application" OnValidSubmit="AddApplicationDetailsAsync">
-            <FluentValidator/>
+            <FluentValidator />
             <MudCard>
                 <MudCardContent>
                     <CascadingValue Value="application">
-                        <ApplicationForm  Dialog="Dialog" />
+                        <ApplicationForm Dialog="Dialog" />
                     </CascadingValue>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                               Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                           Color="Color.Primary" Class="ml-auto">Create</MudButton>
                 </MudCardActions>
             </MudCard>
         </EditForm>

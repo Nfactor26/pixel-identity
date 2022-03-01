@@ -53,15 +53,13 @@ namespace Pixel.Identity.Shared.ViewModels
 
         /// <summary>
         /// Gets the callback URLs associated with the application.
-        /// </summary>
-        [Required]
+        /// </summary>      
         public List<Uri> RedirectUris { get; set; } = new();
 
 
         /// <summary>
         /// Gets the logout callback URLs associated with the application.
-        /// </summary>
-        [Required]
+        /// </summary>      
         public List<Uri> PostLogoutRedirectUris { get; set; } = new();
 
         /// <summary>
