@@ -51,7 +51,7 @@ namespace Pixel.Identity.Provider
             });
 
             //Add plugin assembly type to application part so that controllers in this assembly can be discovered by asp.net
-            services.AddControllersWithViews().AddApplicationPart(dbStorePlugin.GetType().Assembly);
+            services.AddControllersWithViews();               
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSwaggerGen(c =>
@@ -147,7 +147,7 @@ namespace Pixel.Identity.Provider
         /// <exception cref="Exception"></exception>
         private IConfigurator LoadDbStorePlugin()
         {
-            string pluginToUse = Configuration["UsePlugin"] ?? throw new InvalidOperationException("Plugin to use is not configured");
+            string pluginToUse = Configuration["DbPlugin"] ?? throw new InvalidOperationException("DbPlugin to use is not configured");
             var availablePlugins = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "Plugins", "DbStore"));
             if(availablePlugins.Any())
             {
