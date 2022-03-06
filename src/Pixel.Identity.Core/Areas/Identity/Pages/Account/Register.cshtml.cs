@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,37 +8,39 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 
-namespace Pixel.Identity.Core.Pages
+namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]   
-    public abstract class RegisterModel : PageModel    {
-       
+    [AllowAnonymous]
+    [IdentityDefaultUI(typeof(RegisterModel<>))]
+    public abstract class RegisterModel : PageModel
+    {
+
         [BindProperty]
         public InputModel Input { get; set; }
-     
+
         public string ReturnUrl { get; set; }
-       
+
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
-      
+
         public class InputModel
-        {           
+        {
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
-         
+
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
-         
+
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }
-      
+
         public virtual Task OnGetAsync(string returnUrl = null) => throw new NotImplementedException();
 
         public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
@@ -86,7 +88,7 @@ namespace Pixel.Identity.Core.Pages
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
-                {                  
+                {
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 using Pixel.Identity.Core;
+using Pixel.Identity.Core.Conventions;
 
 namespace Pixel.Identity.Store.Mongo
 {
@@ -63,7 +64,11 @@ namespace Pixel.Identity.Store.Mongo
         public void AddServices(IServiceCollection services)
         {
             services.AddControllersWithViews()
-                 .AddApplicationPart(typeof(ApplicationUser).Assembly);
+                 .AddApplicationPart(typeof(ApplicationUser).Assembly)
+                 .AddRazorPagesOptions(options =>
+                 {
+                     options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser>());
+                 });            
             services.AddHostedService<Worker>();
         }
 

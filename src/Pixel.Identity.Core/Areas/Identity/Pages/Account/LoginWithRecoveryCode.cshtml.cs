@@ -1,19 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
-namespace Pixel.Identity.Core.Pages
-{   
-    [AllowAnonymous]    
+namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
+{
+    [AllowAnonymous]
+    [IdentityDefaultUI(typeof(LoginWithRecoveryCodeModel<>))]
     public abstract class LoginWithRecoveryCodeModel : PageModel
-    {        
+    {
         [BindProperty]
         public InputModel Input { get; set; }
-     
+
         public string ReturnUrl { get; set; }
-    
+
         public class InputModel
         {
             [BindProperty]
@@ -22,9 +23,9 @@ namespace Pixel.Identity.Core.Pages
             [Display(Name = "Recovery Code")]
             public string RecoveryCode { get; set; }
         }
-      
+
         public virtual Task<IActionResult> OnGetAsync(string returnUrl = null) => throw new NotImplementedException();
-                
+
         public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
     }
 
@@ -32,12 +33,12 @@ namespace Pixel.Identity.Core.Pages
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;
-      
+
         public LoginWithRecoveryCodeModel(SignInManager<TUser> signInManager,
             UserManager<TUser> userManager)
         {
             this.signInManager = signInManager;
-            this.userManager = userManager;            
+            this.userManager = userManager;
         }
 
         public override async Task<IActionResult> OnGetAsync(string returnUrl = null)

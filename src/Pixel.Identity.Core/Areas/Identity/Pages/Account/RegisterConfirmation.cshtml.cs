@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Pixel.Identity.Core.Pages
+namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    [IdentityDefaultUI(typeof(RegisterConfirmationModel<>))]
     public class RegisterConfirmationModel : PageModel
     {
         public string Email { get; set; }

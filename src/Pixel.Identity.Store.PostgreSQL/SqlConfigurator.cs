@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pixel.Identity.Core;
+using Pixel.Identity.Core.Conventions;
 using Pixel.Identity.Store.PostgreSQL.Data;
 using Pixel.Identity.Store.Sql.Shared;
 using static OpenIddict.Abstractions.OpenIddictConstants;
@@ -72,7 +73,11 @@ namespace Pixel.Identity.Store.PostgreSQL
         {
             services.AddControllersWithViews()
                   .AddApplicationPart(typeof(ApplicationUser).Assembly)
-                  .AddApplicationPart(typeof(SqlConfigurator).Assembly);
+                  .AddApplicationPart(typeof(SqlConfigurator).Assembly)
+                  .AddRazorPagesOptions(options =>
+                  {
+                      options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser>());
+                  }); ;
             services.AddHostedService<Worker>();
         }
 }

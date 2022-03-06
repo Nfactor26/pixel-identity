@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 
-namespace Pixel.Identity.Core.Pages
+namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]   
+    [AllowAnonymous]
+    [IdentityDefaultUI(typeof(ConfirmEmailModel<>))]
     public abstract class ConfirmEmailModel : PageModel
-    {        
+    {
         [TempData]
         public string StatusMessage { get; set; }
-       
+
         public virtual Task<IActionResult> OnGetAsync(string userId, string code) => throw new NotImplementedException();
     }
 
