@@ -5,6 +5,7 @@ using Pixel.Identity.Core;
 using Pixel.Identity.Store.SqlServer.Data;
 using Pixel.Identity.Store.Sql.Shared;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+using Pixel.Identity.Core.Conventions;
 
 namespace Pixel.Identity.Store.SqlServer
 {
@@ -72,7 +73,11 @@ namespace Pixel.Identity.Store.SqlServer
         {
             services.AddControllersWithViews()
                 .AddApplicationPart(typeof(ApplicationUser).Assembly)
-                .AddApplicationPart(typeof(SqlConfigurator).Assembly);                
+                .AddApplicationPart(typeof(SqlConfigurator).Assembly)
+                .AddRazorPagesOptions(options =>
+                {
+                    options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser>());
+                }); ;                
             services.AddHostedService<Worker>();
         }
 }

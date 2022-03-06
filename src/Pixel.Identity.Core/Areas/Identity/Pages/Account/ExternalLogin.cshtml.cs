@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,38 +8,39 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 
-namespace Pixel.Identity.Core.Pages
+namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]   
+    [AllowAnonymous]
+    [IdentityDefaultUI(typeof(ExternalLoginModel<>))]
     public class ExternalLoginModel : PageModel
-    {      
+    {
         [BindProperty]
         public InputModel Input { get; set; }
-     
+
         public string ProviderDisplayName { get; set; }
-       
+
         public string ReturnUrl { get; set; }
 
         [TempData]
         public string ErrorMessage { get; set; }
-      
+
         public class InputModel
-        {           
+        {
             [Required]
             [EmailAddress]
             public string Email { get; set; }
         }
-     
+
         public virtual IActionResult OnGet() => throw new NotImplementedException();
-      
+
         public virtual IActionResult OnPost(string provider, string returnUrl = null) => throw new NotImplementedException();
 
         public virtual Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null) => throw new NotImplementedException();
-            
+
         public virtual Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null) => throw new NotImplementedException();
     }
 
-    public class ExternalLoginModel<TUser> : ExternalLoginModel where TUser :IdentityUser<Guid>, new()
+    public class ExternalLoginModel<TUser> : ExternalLoginModel where TUser : IdentityUser<Guid>, new()
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;

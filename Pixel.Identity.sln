@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Core", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Messenger.Email", "src\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj", "{E7F60792-6D88-40BB-A4F5-F70CC6B81396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixel.Identity.Store.PostgreSQL", "src\Pixel.Identity.Store.PostgreSQL\Pixel.Identity.Store.PostgreSQL.csproj", "{81343846-EC79-486E-930D-613E1B92E313}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.PostgreSQL", "src\Pixel.Identity.Store.PostgreSQL\Pixel.Identity.Store.PostgreSQL.csproj", "{81343846-EC79-486E-930D-613E1B92E313}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixel.Identity.Store.Sql.Shared", "src\Pixel.Identity.Store.Sql.Shared\Pixel.Identity.Store.Sql.Shared.csproj", "{F2BB8C99-30D7-4F6E-ABEC-3F218DF60870}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.Sql.Shared", "src\Pixel.Identity.Store.Sql.Shared\Pixel.Identity.Store.Sql.Shared.csproj", "{F2BB8C99-30D7-4F6E-ABEC-3F218DF60870}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.SqlServer", "src\Pixel.Identity.Store.SqlServer\Pixel.Identity.Store.SqlServer.csproj", "{E67F20E6-B228-467A-9C40-1B38EAD35367}"
 EndProject
