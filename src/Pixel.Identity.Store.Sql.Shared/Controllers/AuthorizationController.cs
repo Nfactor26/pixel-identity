@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Core.Controllers;
-using Pixel.Identity.Store.Mongo;
 
-namespace Pixel.Identity.Store.Mongo.Controllers
+namespace Pixel.Identity.Store.Sql.Shared.Controllers
 {
     /// <summary>
     /// Controller for handling OpenId protocol using OpenIdDict.

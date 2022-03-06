@@ -62,6 +62,8 @@ namespace Pixel.Identity.Store.Mongo
         ///<inheritdoc/>
         public void AddServices(IServiceCollection services)
         {
+            services.AddControllersWithViews()
+                 .AddApplicationPart(typeof(ApplicationUser).Assembly);
             services.AddHostedService<Worker>();
         }
 

@@ -105,8 +105,7 @@ services:
       - ./.config/identity.env  
     environment:     
       - ASPNETCORE_URLS=http://+
-      - UsePlugin=Pixel.Identity.Store.Sql
-      - EntityFrameworkProvider=PostgreSQL
+      - DbPlugin=Pixel.Identity.Store.PostgreSQL    
       - IdentityHost=https://identity.docker.localhost           
       # Certificates required by OpenIdDict for encyrption and signing
       - Identity:Certificates:EncryptionCertificatePath=/etc/certs/identity-encryption.pfx   

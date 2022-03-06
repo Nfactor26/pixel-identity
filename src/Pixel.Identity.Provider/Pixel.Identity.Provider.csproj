@@ -46,7 +46,8 @@
 	<Target Name="PublishPluginsOnBuild" BeforeTargets="Build">
 		<ItemGroup>
 			<DbStorePluginProject Include="..\Pixel.Identity.Store.Mongo\Pixel.Identity.Store.Mongo.csproj" />
-			<DbStorePluginProject Include="..\Pixel.Identity.Store.Sql\Pixel.Identity.Store.Sql.csproj" />			
+			<DbStorePluginProject Include="..\Pixel.Identity.Store.SqlServer\Pixel.Identity.Store.SqlServer.csproj" />
+			<DbStorePluginProject Include="..\Pixel.Identity.Store.PostgreSQL\Pixel.Identity.Store.PostgreSQL.csproj" />
 		</ItemGroup>
 		<ItemGroup>
 			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj" />			
