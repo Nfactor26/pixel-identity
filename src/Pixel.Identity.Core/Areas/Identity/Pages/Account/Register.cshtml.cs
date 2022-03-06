@@ -48,12 +48,12 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 
     public class RegisterModel<TUser> : RegisterModel where TUser : class
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
-        private readonly IUserStore<TUser> _userStore;
-        private readonly IUserEmailStore<TUser> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly SignInManager<TUser> signInManager;
+        private readonly UserManager<TUser> userManager;
+        private readonly IUserStore<TUser> userStore;
+        private readonly IUserEmailStore<TUser> emailStore;
+        private readonly ILogger<RegisterModel> logger;
+        private readonly IEmailSender emailSender;
 
         public RegisterModel(UserManager<TUser> userManager,
             IUserStore<TUser> userStore,
@@ -61,36 +61,38 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
-            _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
-            _signInManager = signInManager;
-            _logger = logger;
-            _emailSender = emailSender;
+            this.userManager = userManager;
+            this.userStore = userStore;
+            this.emailStore = GetEmailStore();
+            this.signInManager = signInManager;
+            this.logger = logger;
+            this.emailSender = emailSender;
         }
 
         public override async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public override async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                await userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                var result = await userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    logger.LogInformation("User created a new account with password.");
+                  
+                    var userId = await userManager.GetUserIdAsync(user);
+                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -98,16 +100,16 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    await emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if (userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        await signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -137,11 +139,11 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 
         private IUserEmailStore<TUser> GetEmailStore()
         {
-            if (!_userManager.SupportsUserEmail)
+            if (!userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<TUser>)_userStore;
+            return (IUserEmailStore<TUser>)userStore;
         }
     }
 }

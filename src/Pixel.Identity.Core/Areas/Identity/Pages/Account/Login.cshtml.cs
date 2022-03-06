@@ -43,13 +43,13 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 
     public class LoginModel<TUser> : LoginModel where TUser : IdentityUser<Guid>, new()
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
+        private readonly SignInManager<TUser> signInManager;
+        private readonly ILogger<LoginModel> logger;
 
         public LoginModel(SignInManager<TUser> signInManager, ILogger<LoginModel> logger)
         {
-            _signInManager = signInManager;
-            _logger = logger;
+            this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         public override async Task OnGetAsync(string returnUrl = null)
@@ -64,7 +64,7 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
         }
@@ -73,15 +73,16 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
+                    logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -90,10 +91,12 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
+                    logger.LogWarning("User account is locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
+                    logger.LogWarning("Invalid login attempt");
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
