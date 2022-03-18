@@ -17,6 +17,10 @@
     {
       "library": "twitter-bootstrap@4.5.0",
       "destination": "wwwroot/lib/twitter-bootstrap"
+    },
+    {
+      "library": "qrcodejs@1.0.0",
+      "destination": "wwwroot/lib/qrcodejs/"
     }
   ]
 }
