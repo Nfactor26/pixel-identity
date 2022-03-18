@@ -42,7 +42,7 @@ namespace Pixel.Identity.Core.Controllers
         [HttpGet("{roleName}")]
         public async Task<ActionResult<UserRoleViewModel>> Get(string roleName)
         {
-            if(!string.IsNullOrEmpty(roleName))
+            if (!string.IsNullOrEmpty(roleName))
             {
                 var role = await this.roleManager.FindByNameAsync(roleName);
                 if (role != null)
@@ -51,11 +51,11 @@ namespace Pixel.Identity.Core.Controllers
                     var claims = await this.roleManager.GetClaimsAsync(role) ?? Enumerable.Empty<Claim>();
                     foreach (var claim in claims)
                     {
-                        userRoleViewModel.Claims.Add(new ClaimViewModel(claim.Type, claim.Value));
+                        userRoleViewModel.Claims.Add(ClaimViewModel.FromClaim(claim));
                     }
                     return userRoleViewModel;
                 }
-            }           
+            }
             return NotFound(new NotFoundResponse($"{roleName ?? ""} could not be located"));
         }
 
@@ -66,7 +66,7 @@ namespace Pixel.Identity.Core.Controllers
         [HttpGet()]
         public PagedList<UserRoleViewModel> GetAll([FromQuery] GetRolesRequest getRolesRequest)
         {
-            List<UserRoleViewModel> userRoles = new();          
+            List<UserRoleViewModel> userRoles = new();
             int count = 0;
             IQueryable<TRole> roles = default;
             if (!string.IsNullOrEmpty(getRolesRequest.RoleFilter))
@@ -95,15 +95,15 @@ namespace Pixel.Identity.Core.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRoleAsync(UserRoleViewModel userRole)
         {
-           if(ModelState.IsValid)
-           {
+            if (ModelState.IsValid)
+            {
                 var result = await roleManager.CreateAsync(new TRole() { Name = userRole.RoleName });
                 if (result.Succeeded)
                 {
                     var role = await roleManager.FindByNameAsync(userRole.RoleName);
-                    foreach (var claim in userRole.Claims ?? Enumerable.Empty<ClaimViewModel>())
+                    foreach (var userClaim in userRole.Claims ?? Enumerable.Empty<ClaimViewModel>())
                     {
-                        await roleManager.AddClaimAsync(role, new Claim(claim.Type, claim.Value));
+                        await roleManager.AddClaimAsync(role, userClaim.ToClaim());
                     }
                     return Ok();
                 }
@@ -146,7 +146,7 @@ namespace Pixel.Identity.Core.Controllers
         [HttpPost("add/claim")]
         public async Task<IActionResult> AddClaimToRole([FromBody] AddClaimRequest request)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var role = await roleManager.FindByNameAsync(request.RoleName);
                 if (role != null)
@@ -154,15 +154,44 @@ namespace Pixel.Identity.Core.Controllers
                     var claims = await this.roleManager.GetClaimsAsync(role);
                     foreach (var claim in claims)
                     {
-                        if (claims.Any(a => a.Type.Equals(claim.Type) && a.Value.Equals(claim.Value)))
+                        if (claims.Any(a => a.Type.Equals(request.ClaimToAdd.Type) && a.Value.Equals(request.ClaimToAdd.Value)))
                         {
-                            return BadRequest(new BadRequestResponse(new []{ "Claim already exists for role" }));
-                        }                        
+                            return BadRequest(new BadRequestResponse(new[] { "Claim already exists for role" }));
+                        }
                     }
-                    await roleManager.AddClaimAsync(role, new Claim(request.ClaimToAdd.Type, request.ClaimToAdd.Value));
+                    await roleManager.AddClaimAsync(role, request.ClaimToAdd.ToClaim());
                     return Ok();
                 }
                 return NotFound(new NotFoundResponse($"Role : {request.RoleName} not found."));
+            }
+            return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+        }
+
+        /// <summary>
+        /// Modify details of an existing claim on role
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("update/claim")]
+        public async Task<IActionResult> UpdateClaimForRole([FromBody] UpdateClaimRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var role = await roleManager.FindByNameAsync(request.RoleName);
+                if (role != null)
+                {
+                    var claims = await this.roleManager.GetClaimsAsync(role);
+                    var claimToRemove = claims.FirstOrDefault(c => c.Type.Equals(request.Original.Type)
+                        && c.Value.Equals(request.Original.Value));
+                    if (claimToRemove != null)
+                    {
+                        await roleManager.RemoveClaimAsync(role, claimToRemove);
+                        await roleManager.AddClaimAsync(role, request.Modified.ToClaim());
+                    }
+                    return Ok();
+                }
+                return NotFound(new NotFoundResponse($"Role : {request.RoleName} not found."));
+
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }
@@ -181,14 +210,15 @@ namespace Pixel.Identity.Core.Controllers
                 if (role != null)
                 {
                     var claims = await this.roleManager.GetClaimsAsync(role);
-                    foreach (var claim in claims)
+                    if (claims != null)
                     {
-                        if (claims.Any(a => a.Type.Equals(request.ClaimToRemove.Type) && a.Value.Equals(request.ClaimToRemove.Value)))
+                        var claimToRemove = claims.FirstOrDefault(a => a.Type.Equals(request.ClaimToRemove.Type) && a.Value.Equals(request.ClaimToRemove.Value));
+                        if(claimToRemove != null)
                         {
-                            await roleManager.RemoveClaimAsync(role, claim);
-                            return Ok();                           
+                            await roleManager.RemoveClaimAsync(role, claimToRemove);
+                            return Ok();
                         }
-                    }
+                    }                   
                     return NotFound(new NotFoundResponse($"Claim doesn't exist on role."));
                 }
                 return NotFound(new NotFoundResponse($"Role : {request.RoleName} not found."));
@@ -205,12 +235,12 @@ namespace Pixel.Identity.Core.Controllers
         public async Task<IActionResult> AssignRolesToUser([FromBody] AddUserRolesRequest request)
         {
             var user = await userManager.FindByNameAsync(request.UserName);
-            if(user != null)
+            if (user != null)
             {
-               foreach(var role in request.RolesToAdd)
+                foreach (var role in request.RolesToAdd)
                 {
                     var isInRole = await userManager.IsInRoleAsync(user, role.RoleName);
-                    if(!isInRole)
+                    if (!isInRole)
                     {
                         await userManager.AddToRoleAsync(user, role.RoleName);
                     }
@@ -218,7 +248,7 @@ namespace Pixel.Identity.Core.Controllers
                 return Ok();
             }
             return NotFound(new NotFoundResponse("User doesn't exist"));
-        }
+        }       
 
         /// <summary>
         /// Remove specified role from a given user

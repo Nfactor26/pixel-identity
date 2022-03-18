@@ -52,6 +52,16 @@ namespace Pixel.Identity.UI.Client.Services
         Task<OperationResult> AddClaimToRoleAsync(string roleName, ClaimViewModel claimToAdd);
 
         /// <summary>
+        /// Modify an existing claim details
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <param name="original"></param>
+        /// <param name="modified"></param>
+        /// <returns></returns>
+        Task<OperationResult> UpdateClaimForRoleAsync(string roleName, ClaimViewModel original,
+            ClaimViewModel modified);
+
+        /// <summary>
         /// Remove an existing claim from role
         /// </summary>
         /// <param name="roleName"></param>
@@ -141,6 +151,15 @@ namespace Pixel.Identity.UI.Client.Services
         {
             var request = new RemoveClaimRequest(roleName, claimToRemove);
             var result = await httpClient.PostAsJsonAsync<RemoveClaimRequest>("api/roles/delete/claim", request);
+            return await OperationResult.FromResponseAsync(result);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> UpdateClaimForRoleAsync(string roleName, ClaimViewModel original,
+            ClaimViewModel modified)
+        {
+            var request = new UpdateClaimRequest(roleName, original, modified);
+            var result = await httpClient.PostAsJsonAsync<UpdateClaimRequest>("api/roles/update/claim", request);
             return await OperationResult.FromResponseAsync(result);
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Security.Claims;
 
 namespace Pixel.Identity.Shared.ViewModels
 {
@@ -23,6 +24,16 @@ namespace Pixel.Identity.Shared.ViewModels
         {
             Type = type;
             Value = value;
+        }
+
+        public static ClaimViewModel FromClaim(Claim claim)
+        {
+            return new ClaimViewModel(claim.Type, claim.Value);              
+        }
+
+        public Claim ToClaim()
+        {
+           return new Claim(this.Type, this.Value);                
         }
     }
 }

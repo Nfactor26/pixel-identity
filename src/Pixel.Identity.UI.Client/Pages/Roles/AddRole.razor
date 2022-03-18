@@ -10,9 +10,8 @@
             <FluentValidator />
             <MudCard>
                 <MudCardContent>
-                    <CascadingValue Value="model">
-                        <RoleForm Dialog="Dialog"/>
-                    </CascadingValue>
+                   <MudTextField Label="Role Name" HelperText="Required"
+                      @bind-Value="model.RoleName" For="@(() => model.RoleName)" />
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
