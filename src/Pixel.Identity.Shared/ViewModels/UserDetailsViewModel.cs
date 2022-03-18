@@ -39,5 +39,8 @@ namespace Pixel.Identity.Shared.ViewModels
       
         [Required]
         public List<UserRoleViewModel> UserRoles { get; set; } = new ();
+
+        [Required]
+        public List<ClaimViewModel> UserClaims { get; set; } = new();
     }
 }

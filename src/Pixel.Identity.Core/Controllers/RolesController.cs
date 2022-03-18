@@ -148,7 +148,7 @@ namespace Pixel.Identity.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var role = await roleManager.FindByNameAsync(request.RoleName);
+                var role = await roleManager.FindByNameAsync(request.Owner);
                 if (role != null)
                 {
                     var claims = await this.roleManager.GetClaimsAsync(role);
@@ -162,7 +162,7 @@ namespace Pixel.Identity.Core.Controllers
                     await roleManager.AddClaimAsync(role, request.ClaimToAdd.ToClaim());
                     return Ok();
                 }
-                return NotFound(new NotFoundResponse($"Role : {request.RoleName} not found."));
+                return NotFound(new NotFoundResponse($"Role : {request.Owner} not found."));
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }
@@ -177,7 +177,7 @@ namespace Pixel.Identity.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var role = await roleManager.FindByNameAsync(request.RoleName);
+                var role = await roleManager.FindByNameAsync(request.Owner);
                 if (role != null)
                 {
                     var claims = await this.roleManager.GetClaimsAsync(role);
@@ -190,7 +190,7 @@ namespace Pixel.Identity.Core.Controllers
                     }
                     return Ok();
                 }
-                return NotFound(new NotFoundResponse($"Role : {request.RoleName} not found."));
+                return NotFound(new NotFoundResponse($"Role : {request.Owner} not found."));
 
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
@@ -206,7 +206,7 @@ namespace Pixel.Identity.Core.Controllers
         {
             if (ModelState.IsValid)
             {
-                var role = await roleManager.FindByNameAsync(request.RoleName);
+                var role = await roleManager.FindByNameAsync(request.Owner);
                 if (role != null)
                 {
                     var claims = await this.roleManager.GetClaimsAsync(role);
@@ -221,7 +221,7 @@ namespace Pixel.Identity.Core.Controllers
                     }                   
                     return NotFound(new NotFoundResponse($"Claim doesn't exist on role."));
                 }
-                return NotFound(new NotFoundResponse($"Role : {request.RoleName} not found."));
+                return NotFound(new NotFoundResponse($"Role : {request.Owner} not found."));
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }

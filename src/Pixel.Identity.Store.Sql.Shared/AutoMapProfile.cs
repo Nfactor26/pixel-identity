@@ -27,7 +27,8 @@ namespace Pixel.Identity.Store.Sql.Shared
             .ForMember(d => d.Requirements, opt => opt.MapFrom(s => s.Requirements.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"'))));
 
             CreateMap<IdentityUser<Guid>, UserDetailsViewModel>()
-             .ForMember(d => d.UserRoles, opt => opt.Ignore());
+             .ForMember(d => d.UserRoles, opt => opt.Ignore())
+             .ForMember(d => d.UserClaims, opt => opt.Ignore());
 
             CreateMap<IdentityRole<Guid>, UserRoleViewModel>()
             .ForMember(d => d.RoleId, opt => opt.MapFrom(s => s.Id))

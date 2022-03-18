@@ -8,11 +8,11 @@ namespace Pixel.Identity.Shared.Request
     public class AddClaimRequest
     {
         /// <summary>
-        /// Role to which claim should be added
+        /// User or Role to which claim should be added
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]      
-        public string RoleName { get; set; }
+        public string Owner { get; set; }
 
         /// <summary>
         /// Claim to add to the role
@@ -32,11 +32,11 @@ namespace Pixel.Identity.Shared.Request
         /// <summary>
         /// constructor
         /// </summary>
-        /// <param name="roleName"></param>
+        /// <param name="owner"></param>
         /// <param name="claimToAdd"></param>
-        public AddClaimRequest(string roleName, ClaimViewModel claimToAdd)
+        public AddClaimRequest(string owner, ClaimViewModel claimToAdd)
         {
-            this.RoleName = roleName;
+            this.Owner = owner;
             this.ClaimToAdd = claimToAdd;
         }
     }

@@ -84,6 +84,11 @@ namespace Pixel.Identity.Core.Controllers
                 {
                     userDetails.UserRoles.Add(new UserRoleViewModel(userRole));
                 }
+                var userClaims = await this.userManager.GetClaimsAsync(user);
+                foreach (var claim in userClaims)
+                {
+                    userDetails.UserClaims.Add(ClaimViewModel.FromClaim(claim));
+                }
                 return userDetails;
             }
             return NotFound(new NotFoundResponse($"User with name : {userName} doesn't exist."));
@@ -101,6 +106,11 @@ namespace Pixel.Identity.Core.Controllers
                 foreach (var userRole in userRoles)
                 {
                     userDetails.UserRoles.Add(new UserRoleViewModel(userRole));
+                }
+                var userClaims = await this.userManager.GetClaimsAsync(user);
+                foreach(var claim in userClaims)
+                {
+                    userDetails.UserClaims.Add(ClaimViewModel.FromClaim(claim));
                 }
                 return userDetails;
             }
@@ -190,5 +200,84 @@ namespace Pixel.Identity.Core.Controllers
             }
             return BadRequest(new BadRequestResponse(new[] { "UserName is required" }));
         }
+
+        [HttpPost("add/claim")]
+        [Authorize(Policy = Policies.CanManageUsers)]
+        public async Task<IActionResult> AddUserClaim([FromBody] AddClaimRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(request.Owner);
+                if (user != null)
+                {
+                    var claims = await this.userManager.GetClaimsAsync(user);
+                    foreach (var claim in claims)
+                    {
+                        if (claims.Any(a => a.Type.Equals(request.ClaimToAdd.Type) && a.Value.Equals(request.ClaimToAdd.Value)))
+                        {
+                            return BadRequest(new BadRequestResponse(new[] { "Claim already exists for role" }));
+                        }
+                    }
+                    await userManager.AddClaimAsync(user, request.ClaimToAdd.ToClaim());
+                    return Ok();
+                }
+                return NotFound(new NotFoundResponse($"User : {request.Owner} not found."));
+            }
+            return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+        }
+
+        [HttpPost("update/claim")]
+        [Authorize(Policy = Policies.CanManageUsers)]
+        public async Task<IActionResult> UpdateUserClaim([FromBody] UpdateClaimRequest request)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(request.Owner);
+                if (user != null)
+                {
+                    var claims = await this.userManager.GetClaimsAsync(user);
+                    var claimToRemove = claims.FirstOrDefault(c => c.Type.Equals(request.Original.Type)
+                        && c.Value.Equals(request.Original.Value));
+                    if (claimToRemove != null)
+                    {
+                        await userManager.RemoveClaimAsync(user, claimToRemove);
+                        await userManager.AddClaimAsync(user, request.Modified.ToClaim());
+                    }
+                    return Ok();
+                }
+                return NotFound(new NotFoundResponse($"User : {request.Owner} not found."));
+
+            }
+            return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+        }
+
+        [HttpDelete("delete/claim")]
+        [Authorize(Policy = Policies.CanManageUsers)]
+        public async Task<IActionResult> DeleteUserClaim([FromBody] RemoveClaimRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByNameAsync(request.Owner);
+                if (user != null)
+                {
+                    var claims = await this.userManager.GetClaimsAsync(user);
+                    if (claims != null)
+                    {
+                        var claimToRemove = claims.FirstOrDefault(a => a.Type.Equals(request.ClaimToRemove.Type) && a.Value.Equals(request.ClaimToRemove.Value));
+                        if (claimToRemove != null)
+                        {
+                            await userManager.RemoveClaimAsync(user, claimToRemove);
+                            return Ok();
+                        }
+                    }
+                    return NotFound(new NotFoundResponse($"Claim doesn't exist on role."));
+                }
+                return NotFound(new NotFoundResponse($"Role : {request.Owner} not found."));
+            }
+            return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+        }
+
+
     }
 }

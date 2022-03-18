@@ -7,14 +7,14 @@ namespace Pixel.Identity.Shared.Request
     public class RemoveClaimRequest
     {
         /// <summary>
-        /// Role to which claim should be added
+        /// User or Role from which claim should be removed
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public string RoleName { get; set; }
+        public string Owner { get; set; }
 
         /// <summary>
-        /// Claim to add to the role
+        /// Claim to remove from the role
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
@@ -31,11 +31,11 @@ namespace Pixel.Identity.Shared.Request
         /// <summary>
         /// constructor
         /// </summary>
-        /// <param name="roleName"></param>
+        /// <param name="owner"></param>
         /// <param name="claimToRemove"></param>
-        public RemoveClaimRequest(string roleName, ClaimViewModel claimToRemove)
+        public RemoveClaimRequest(string owner, ClaimViewModel claimToRemove)
         {
-            this.RoleName = roleName;
+            this.Owner = owner;
             this.ClaimToRemove = claimToRemove;
         }
     }

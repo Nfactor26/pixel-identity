@@ -28,6 +28,9 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         [Inject]
         public IUserRolesService RolesService { get; set; }
 
+        [Inject]
+        public IUserClaimsService ClaimsService { get; set; }
+
         UserDetailsViewModel user;               
       
         /// <summary>
@@ -159,6 +162,73 @@ namespace Pixel.Identity.UI.Client.Pages.Users
                     return;
                 }
                 SnackBar.Add($"Error while assigning role.{result}", Severity.Error);
+            }
+        }
+
+        /// <summary>
+        /// Show a dialog to create and add a new claim to the role
+        /// </summary>
+        /// <returns></returns>
+        async Task AddClaimAsync()
+        {
+            var parameters = new DialogParameters();
+            parameters.Add("Owner", user.UserName);
+            parameters.Add("ExistingClaims", user.UserClaims);
+            parameters.Add("Service", ClaimsService);
+            var dialog = Dialog.Show<AddClaimDialog>("Add Claim", parameters, new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, CloseButton = true });
+            var result = await dialog.Result;
+            if (!result.Cancelled && result.Data is ClaimViewModel claim)
+            {
+                user.UserClaims.Add(claim);
+                SnackBar.Add($"Claim was added.", Severity.Success);
+            }
+        }
+
+        /// <summary>
+        /// Delete an existing claim from the role
+        /// </summary>
+        /// <param name="claim"></param>
+        /// <returns></returns>
+        async Task RemoveClaimAsync(ClaimViewModel claim)
+        {
+            if (user.UserClaims.Contains(claim))
+            {
+                user.UserClaims.Remove(claim);
+                var result = await ClaimsService.RemoveClaimAsync(user.UserName, claim);
+                if (result.IsSuccess)
+                {
+                    SnackBar.Add($"Claim {claim.Type}:{claim.Value} was removed.", Severity.Success);
+                }
+                else
+                {
+                    SnackBar.Add($"Failed to delete claim {claim.Type}:{claim.Value}. {result}", Severity.Error);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update details of existing claim
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="modified"></param>
+        /// <returns></returns>
+        async Task<bool> UpdateClaimAsync(ClaimViewModel original, ClaimViewModel modified)
+        {
+            try
+            {
+                var result = await ClaimsService.UpdateClaimAsync(user.UserName, original, modified);
+                if (result.IsSuccess)
+                {
+                    SnackBar.Add($"Claim was updated.", Severity.Success);
+                    return true;
+                }
+                SnackBar.Add(result.ToString(), Severity.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                SnackBar.Add($"Failed to update claim : {original.Type}. {ex.Message}", Severity.Error);
+                return false;
             }
         }
     }
