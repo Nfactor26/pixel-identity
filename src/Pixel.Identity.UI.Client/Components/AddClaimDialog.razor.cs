@@ -16,11 +16,11 @@ namespace Pixel.Identity.UI.Client.Components
         [CascadingParameter]
         MudDialogInstance MudDialog { get; set; }
 
-        [Inject]
-        public IUserRolesService Service { get; set; }
+        [Parameter]
+        public IClaimsService Service { get; set; }
 
         [Parameter]
-        public string RoleName { get; set; }
+        public string Owner { get; set; }
 
         [Parameter]
         public IEnumerable<ClaimViewModel> ExistingClaims { get; set; }
@@ -33,9 +33,9 @@ namespace Pixel.Identity.UI.Client.Components
             if (!ExistingClaims.Any(u => u.Type.Equals(model.Type) && u.Value.Equals(model.Value)))
             {
                 //Don't try to add claim to role if role is not yet created.
-                if (!string.IsNullOrEmpty(RoleName))
+                if (!string.IsNullOrEmpty(Owner))
                 {
-                    await Service.AddClaimToRoleAsync(RoleName, model);
+                    await Service.AddClaimAsync(Owner, model);
                 }
                 MudDialog.Close(DialogResult.Ok<ClaimViewModel>(model));
                 return;

@@ -20,13 +20,11 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 
     public class RegisterConfirmationModel<TUser> : RegisterConfirmationModel where TUser : class
     {
-        private readonly UserManager<TUser> userManager;
-        private readonly IEmailSender sender;
-
-        public RegisterConfirmationModel(UserManager<TUser> userManager, IEmailSender sender)
+        private readonly UserManager<TUser> userManager;      
+        
+        public RegisterConfirmationModel(UserManager<TUser> userManager)
         {
-            this.userManager = userManager;
-            this.sender = sender;
+            this.userManager = userManager;           
         }
 
         public override async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)

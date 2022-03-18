@@ -39,16 +39,19 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;
+        private readonly ILogger<LoginWith2faModel> logger;
 
         /// <summary>
         /// constructor
         /// </summary>
         /// <param name="signInManager"></param>
         /// <param name="userManager"></param>
-        public LoginWith2faModel(SignInManager<TUser> signInManager, UserManager<TUser> userManager)
+        public LoginWith2faModel(SignInManager<TUser> signInManager, UserManager<TUser> userManager,
+            ILogger<LoginWith2faModel> logger)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.logger = logger;
         }
 
         public override async Task<IActionResult> OnGetAsync(bool rememberMe, string returnUrl = null)
@@ -90,17 +93,17 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
-                //_logger.LogInformation(LoggerEventIds.UserLoginWith2FA, "User logged in with 2fa.");
+                logger.LogInformation("User logged in with 2fa.");
                 return LocalRedirect(returnUrl);
             }
             else if (result.IsLockedOut)
             {
-                //_logger.LogWarning(LoggerEventIds.UserLockout, "User account locked out.");
+                logger.LogWarning("User account locked out.");
                 return RedirectToPage("./Lockout");
             }
             else
             {
-                //_logger.LogWarning(LoggerEventIds.InvalidAuthenticatorCode, "Invalid authenticator code entered.");
+                logger.LogWarning("Invalid authenticator code entered by user");
                 ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
                 return Page();
             }

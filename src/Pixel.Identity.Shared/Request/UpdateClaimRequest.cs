@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 namespace Pixel.Identity.Shared.Request
 {
     [DataContract]
-    public class AddClaimRequest
+    public class UpdateClaimRequest
     {
-        /// <summary>
-        /// User or Role to which claim should be added
+        // <summary>
+        /// User or Role on which claim details should be updated
         /// </summary>
         [Required]
-        [DataMember(IsRequired = true)]      
+        [DataMember(IsRequired = true)]
         public string Owner { get; set; }
 
         /// <summary>
@@ -19,12 +19,19 @@ namespace Pixel.Identity.Shared.Request
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public ClaimViewModel ClaimToAdd { get; set; }
+        public ClaimViewModel Original { get; set; }
+
+        /// <summary>
+        /// Claim to add to the role
+        /// </summary>
+        [Required]
+        [DataMember(IsRequired = true)]
+        public ClaimViewModel Modified { get; set; }
 
         /// <summary>
         /// constructor
         /// </summary>
-        public AddClaimRequest()
+        public UpdateClaimRequest()
         {
 
         }
@@ -34,10 +41,11 @@ namespace Pixel.Identity.Shared.Request
         /// </summary>
         /// <param name="owner"></param>
         /// <param name="claimToAdd"></param>
-        public AddClaimRequest(string owner, ClaimViewModel claimToAdd)
+        public UpdateClaimRequest(string owner, ClaimViewModel original, ClaimViewModel modified)
         {
             this.Owner = owner;
-            this.ClaimToAdd = claimToAdd;
+            this.Original = original;
+            this.Modified = modified;
         }
     }
 }

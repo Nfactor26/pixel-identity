@@ -1,0 +1,44 @@
+﻿<MudTable Items="@(Claims ?? Enumerable.Empty<ClaimViewModel>())" Dense="false" Hover="true" ReadOnly="false"
+    CanCancelEdit="true" Filter="@(new Func<ClaimViewModel,bool>(FilterFunc))"
+          @bind-SelectedItem="selectedClaim" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="UpdateItemAsync" 
+          RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+          IsEditRowSwitchingBlocked="true" Elevation="4">
+           <ToolBarContent>
+        <MudText Typo="Typo.h6">Claims</MudText>
+        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                   @onclick="@(() => OnAddItem.InvokeAsync())" Color="Color.Primary"></MudIconButton>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <ColGroup>     
+        <col style="width:48%;" />
+        <col style="width:48%;" />       
+        <col style="width:4%;" />
+    </ColGroup>
+    <HeaderContent>      
+        <MudTh><MudTableSortLabel SortBy="new Func<ClaimViewModel, object>(x=>x.Type)">Type</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ClaimViewModel, object>(x=>x.Value)">Value</MudTableSortLabel></MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>        
+        <MudTd DataLabel="Type">@context.Type</MudTd>
+        <MudTd DataLabel="Value">@context.Value</MudTd>      
+         <MudTd DataLabel="">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                     @onclick="() => OnDeleteItem.InvokeAsync(context)"  Size="Size.Medium" ></MudIconButton>
+        </MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>        
+        <MudTd DataLabel="Type">
+            <MudTextField @bind-Value="@context.Type" Required />
+        </MudTd>
+        <MudTd DataLabel="Value">
+            <MudTextField @bind-Value="@context.Value" Required />
+        </MudTd>       
+        <MudTd></MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

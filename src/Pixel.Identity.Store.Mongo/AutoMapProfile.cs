@@ -21,7 +21,8 @@ namespace Pixel.Identity.Store.Mongo
             .ForMember(d => d.IsConfidentialClient, opt => opt.Ignore());
 
             CreateMap<IdentityUser<Guid>, UserDetailsViewModel>()
-             .ForMember(d => d.UserRoles, opt => opt.Ignore());
+             .ForMember(d => d.UserRoles, opt => opt.Ignore())
+             .ForMember(d => d.UserClaims, opt => opt.Ignore());
 
             CreateMap<IdentityRole<Guid>, UserRoleViewModel>()
             .ForMember(d => d.RoleId, opt => opt.MapFrom(s => s.Id))

@@ -33,12 +33,14 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;
+        private readonly ILogger<LoginWithRecoveryCodeModel> logger;
 
         public LoginWithRecoveryCodeModel(SignInManager<TUser> signInManager,
-            UserManager<TUser> userManager)
+            UserManager<TUser> userManager, ILogger<LoginWithRecoveryCodeModel> logger)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
+            this.logger = logger;
         }
 
         public override async Task<IActionResult> OnGetAsync(string returnUrl = null)
@@ -76,17 +78,17 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 
             if (result.Succeeded)
             {
-                //_logger.LogInformation(LoggerEventIds.UserLoginWithRecoveryCode, "User logged in with a recovery code.");
+                logger.LogInformation("User logged in with a recovery code.");
                 return LocalRedirect(returnUrl ?? Url.Content("~/"));
             }
             if (result.IsLockedOut)
             {
-                //_logger.LogWarning("User account locked out.");
+                logger.LogWarning("User account locked out.");
                 return RedirectToPage("./Lockout");
             }
             else
             {
-                //_logger.LogWarning(LoggerEventIds.InvalidRecoveryCode, "Invalid recovery code entered.");
+                logger.LogWarning("Invalid recovery code entered.");
                 ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
                 return Page();
             }

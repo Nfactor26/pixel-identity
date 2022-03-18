@@ -5,13 +5,16 @@
 {
     <MudText Typo="Typo.h4">Edit Role</MudText>
     <br />
-    <MudPaper Elevation="4">
-       <MudCard>
-                <MudCardContent>
-                    <CascadingValue Value="model">
-                        <RoleForm Dialog="Dialog"/>
-                    </CascadingValue>
-                </MudCardContent>               
-            </MudCard>
-    </MudPaper>
+
+    <MudCard Elevation="4">
+        <MudCardContent>
+            <MudTextField Label="Role Name" Class="mt-3" HelperText="Required" Disabled="model.Exists"
+                      @bind-Value="model.RoleName" For="@(() => model.RoleName)" />
+        </MudCardContent>
+
+    </MudCard>
+
+    <br />
+    <ClaimsManager Claims="model.Claims" OnAddItem="AddClaimAsync"
+               OnUpdateItem="UpdateClaimAsync" OnDeleteItem="RemoveClaimAsync" />
 }

@@ -57,6 +57,14 @@ namespace Pixel.Identity.UI.Client
             client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
+            builder.Services.AddHttpClient<IRoleClaimsService, RoleClaimsService>(
+            client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+             .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+            builder.Services.AddHttpClient<IUserClaimsService, UserClaimsService>(
+            client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+             .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
             builder.Services.AddTransient<IValidator<ApplicationViewModel>, ApplicationDescriptionValidator>();
             builder.Services.AddTransient<IValidator<ScopeViewModel>, ScopeValidator>();
             builder.Services.AddTransient<IValidator<UserRoleViewModel>, UserRoleValidator>();
