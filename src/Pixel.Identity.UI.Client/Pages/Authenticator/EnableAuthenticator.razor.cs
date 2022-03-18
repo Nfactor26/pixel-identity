@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
@@ -10,11 +11,14 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
     /// <summary>
     /// Component for setting up the authenticator for 2FA
     /// </summary>
-    public partial class EnableAuthenticator : ComponentBase
+    public partial class EnableAuthenticator : ComponentBase, IAsyncDisposable
     {
         
         [Inject]
         public IAuthenticatorService Service { get; set; }
+
+        [Inject]
+        public IJSRuntime JS { get; set; }
 
         [Inject]
         public NavigationManager Navigator { get; set; }
@@ -22,7 +26,8 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
         [Inject]
         public ISnackbar SnackBar { get; set; }
 
-        EnableAuthenticatorViewModel model = new();         
+        EnableAuthenticatorViewModel model = new();
+        IJSObjectReference? module;
 
         protected override async Task OnInitializedAsync()
         {
@@ -43,6 +48,15 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
             await base.OnInitializedAsync();
         }
 
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/Authenticator/EnableAuthenticator.razor.js");               
+            }
+            await GenerateQRCodeAsync();
+        }
+
         /// <summary>
         /// Enable the authenticator once user has completed the required setup steps
         /// </summary>
@@ -60,6 +74,24 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
                 return;
             }
             Navigator.NavigateTo("account/authenticator/manage");
+        }
+
+        public async Task GenerateQRCodeAsync()
+        {
+            if(module is not null)
+            {
+                await module.InvokeVoidAsync("generateQrCode");
+                return;
+            }
+           await Task.CompletedTask;
+        }        
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            if (module is not null)
+            {
+                await module.DisposeAsync();
+            }
         }
     }
 }
