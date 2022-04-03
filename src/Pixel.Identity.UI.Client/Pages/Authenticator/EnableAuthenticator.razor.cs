@@ -26,6 +26,9 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
         [Inject]
         public ISnackbar SnackBar { get; set; }
 
+        [Inject]
+        public IDialogService DialogService { get; set; }
+
         EnableAuthenticatorViewModel model = new();
         IJSObjectReference? module;
 
@@ -55,6 +58,7 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
                 module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/Authenticator/EnableAuthenticator.razor.js");               
             }
             await GenerateQRCodeAsync();
+
         }
 
         /// <summary>
@@ -73,6 +77,7 @@ namespace Pixel.Identity.UI.Client.Pages.Authenticator
                 });
                 return;
             }
+            await DialogService.ShowMessageBox("Success", "2FA is enabled and your account is more secure now. ");
             Navigator.NavigateTo("account/authenticator/manage");
         }
 
