@@ -3,7 +3,9 @@ using System.Reflection;
 
 namespace Pixel.Identity.Core.Conventions
 {
-    public class IdentityPageModelConvention<TUser> : IPageApplicationModelConvention where TUser : class
+    public class IdentityPageModelConvention<TUser, TKey> : IPageApplicationModelConvention
+        where TUser : class
+        where TKey : IEquatable<TKey>
     {
         public void Apply(PageApplicationModel model)
         {
@@ -14,7 +16,7 @@ namespace Pixel.Identity.Core.Conventions
             }
 
             ValidateTemplate(defaultUIAttribute.Template);
-            var templateInstance = defaultUIAttribute.Template.MakeGenericType(typeof(TUser));
+            var templateInstance = defaultUIAttribute.Template.MakeGenericType(typeof(TUser), typeof(TKey));
             model.ModelType = templateInstance.GetTypeInfo();
         }
 
@@ -25,7 +27,7 @@ namespace Pixel.Identity.Core.Conventions
                 throw new InvalidOperationException("Implementation type can't be abstract or non generic.");
             }
             var genericArguments = template.GetGenericArguments();
-            if (genericArguments.Length != 1)
+            if (genericArguments.Length != 2)
             {
                 throw new InvalidOperationException("Implementation type contains wrong generic arity.");
             }

@@ -9,7 +9,7 @@ namespace Pixel.Identity.Store.Sql.Shared.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthenticatorController : AuthenticatorController<ApplicationUser>
+    public class AuthenticatorController : AuthenticatorController<ApplicationUser, Guid>
     {
         public AuthenticatorController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, UrlEncoder urlEncoder)

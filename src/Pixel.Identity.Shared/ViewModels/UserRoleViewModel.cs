@@ -6,8 +6,8 @@ namespace Pixel.Identity.Shared.ViewModels
 {
     public class UserRoleViewModel
     {
-        [Required]     
-        public Guid RoleId { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        public string RoleId { get; set; }
 
         [Required]       
         public string RoleName { get; set; }
@@ -15,7 +15,7 @@ namespace Pixel.Identity.Shared.ViewModels
         [Required]       
         public List<ClaimViewModel> Claims { get; set; } = new List<ClaimViewModel>();
 
-        public bool Exists => !Guid.Empty.Equals(RoleId);
+        public bool Exists => !string.IsNullOrEmpty(RoleId);
 
         public UserRoleViewModel()
         {
@@ -23,11 +23,12 @@ namespace Pixel.Identity.Shared.ViewModels
         }
 
         public UserRoleViewModel(string roleName)
-        {          
+        {
+            this.RoleId = string.Empty;
             this.RoleName = roleName;
         }
 
-        public UserRoleViewModel(Guid roleId, string roleName) : this(roleName)
+        public UserRoleViewModel(string roleId, string roleName) : this(roleName)
         {
             this.RoleId = roleId;         
         }

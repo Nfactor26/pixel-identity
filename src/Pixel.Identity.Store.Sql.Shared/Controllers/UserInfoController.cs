@@ -9,7 +9,7 @@ namespace Pixel.Identity.Store.Sql.Shared.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class UserInfoController : UserinfoController<ApplicationUser>
+    public class UserInfoController : UserinfoController<ApplicationUser, Guid>
     {
         /// <summary>
         /// constructor

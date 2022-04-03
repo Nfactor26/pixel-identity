@@ -8,13 +8,14 @@ namespace Pixel.Identity.Core.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ExternalLoginsController<TUser> : Controller
-        where TUser : IdentityUser<Guid>, new()
+    public class ExternalLoginsController<TUser, TKey> : Controller
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly UserManager<TUser> userManager;
         private readonly SignInManager<TUser> signInManager;
         private readonly IUserStore<TUser> userStore;
-        private readonly ILogger<ExternalLoginsController<TUser>> logger;
+        private readonly ILogger<ExternalLoginsController<TUser, TKey>> logger;
 
         /// <summary>
         /// constructor
@@ -23,7 +24,7 @@ namespace Pixel.Identity.Core.Controllers
         /// <param name="signInManager"></param>       
         public ExternalLoginsController(UserManager<TUser> userManager,
             SignInManager<TUser> signInManager, IUserStore<TUser> userStore,
-            ILogger<ExternalLoginsController<TUser>> logger)
+            ILogger<ExternalLoginsController<TUser, TKey>> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;

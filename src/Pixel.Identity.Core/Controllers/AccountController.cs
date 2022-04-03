@@ -15,8 +15,9 @@ namespace Pixel.Identity.Core.Controllers
     /// <typeparam name="TUser"></typeparam>
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController<TUser> : Controller 
-        where TUser : IdentityUser<Guid>, new()
+    public class AccountController<TUser, TKey> : Controller 
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly UserManager<TUser> userManager;
         private readonly SignInManager<TUser> signInManager;

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [IdentityDefaultUI(typeof(LoginWith2faModel<>))]
+    [IdentityDefaultUI(typeof(LoginWith2faModel<,>))]
     public abstract class LoginWith2faModel : PageModel
     {
         [BindProperty]
@@ -35,7 +35,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnPostAsync(bool rememberMe, string returnUrl = null) => throw new NotImplementedException();
     }
 
-    public class LoginWith2faModel<TUser> : LoginWith2faModel where TUser : IdentityUser<Guid>, new()
+    public class LoginWith2faModel<TUser, TKey> : LoginWith2faModel
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;

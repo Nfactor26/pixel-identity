@@ -1,12 +1,27 @@
-﻿using AspNetCore.Identity.MongoDbCore.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
+using Pixel.Identity.Store.Mongo.Contracts;
+using System.Security.Claims;
 
-namespace Pixel.Identity.Store.Mongo
+namespace Pixel.Identity.Store.Mongo.Models
 {
     /// <summary>
-    /// ApplicationRole is the <see cref="IdentityRole"/> with Guid as primary key required by Asp.Net Identity
+    /// ApplicationRole with <see cref="ObjectId"/> as the Identifier type
     /// </summary>
-    public class ApplicationRole : MongoIdentityRole<Guid>
+    public class ApplicationRole : ApplicationRole<ObjectId>
     {
+
+    }
+
+    /// <summary>
+    /// ApplicationRole extends <see cref="IdentityRole{TKey}"/>
+    /// </summary>
+    public class ApplicationRole<TKey> : IdentityRole<TKey>, IDocument<TKey> where TKey : IEquatable<TKey>
+    {
+        public int Version { get; set; } = 1;
+
+        public List<IdentityRoleClaim<TKey>> Claims { get; set; } = new();
+
         /// <summary>
         /// constructor
         /// </summary>
@@ -22,6 +37,16 @@ namespace Pixel.Identity.Store.Mongo
         public ApplicationRole(string roleName) : base(roleName)
         {
 
+        }
+
+        /// <summary>
+        /// Check if role has specified <see cref="Claim"/>
+        /// </summary>
+        /// <param name="claim"></param>
+        /// <returns>True if Claim exists on Role</returns>
+        public virtual bool HasClaim(Claim claim)
+        {
+            return this.Claims.Any(c => c.ClaimType == claim.Type && c.ClaimValue == claim.Value);
         }
     }
 }

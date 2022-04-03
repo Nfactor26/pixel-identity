@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using Pixel.Identity.Core.Controllers;
 using Pixel.Identity.Shared;
+using Pixel.Identity.Store.Mongo.Models;
 
 namespace Pixel.Identity.Store.Mongo.Controllers
 {
@@ -13,7 +15,7 @@ namespace Pixel.Identity.Store.Mongo.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UsersController : UsersController<ApplicationUser>
+    public class UsersController : UsersController<ApplicationUser, ObjectId>
     {
         /// <summary>
         /// constructor

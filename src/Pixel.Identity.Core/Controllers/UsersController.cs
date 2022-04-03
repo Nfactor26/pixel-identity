@@ -16,8 +16,9 @@ namespace Pixel.Identity.Core.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]    
-    public class UsersController<TUser> : Controller
-        where TUser : IdentityUser<Guid>, new()
+    public class UsersController<TUser, TKey> : Controller
+        where TUser : IdentityUser<TKey>, new()
+        where TKey :  IEquatable<TKey>
     {
         private readonly IMapper mapper;
         private readonly UserManager<TUser> userManager;

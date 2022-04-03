@@ -9,6 +9,7 @@ using System.Text;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
+    [IdentityDefaultUI(typeof(ResetPasswordModel<,>))]
     public abstract class ResetPasswordModel : PageModel
     {
         [BindProperty]
@@ -40,7 +41,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnPostAsync() => throw new NotImplementedException();
     }
 
-    public class ResetPasswordModel<TUser> : ResetPasswordModel where TUser : IdentityUser<Guid>, new()
+    public class ResetPasswordModel<TUser, TKey> : ResetPasswordModel 
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly UserManager<TUser> userManager;
 

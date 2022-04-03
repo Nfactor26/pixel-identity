@@ -76,7 +76,7 @@ namespace Pixel.Identity.Store.SqlServer
                 .AddApplicationPart(typeof(SqlConfigurator).Assembly)
                 .AddRazorPagesOptions(options =>
                 {
-                    options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser>());
+                    options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser, Guid>());
                 }); ;                
             services.AddHostedService<Worker>();
         }
