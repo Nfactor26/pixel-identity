@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Core.Controllers;
-using Pixel.Identity.Store.Mongo;
+using Pixel.Identity.Store.Mongo.Models;
 
 namespace Pixel.Identity.Store.Mongo.Controllers
 {
@@ -9,7 +10,7 @@ namespace Pixel.Identity.Store.Mongo.Controllers
     /// Controller for handling OpenId protocol using OpenIdDict.
     /// It provides end points for authentication, tokens, sign out , etc.
     /// </summary>
-    public class AuthorizationController : AuthorizationController<ApplicationUser>
+    public class AuthorizationController : AuthorizationController<ApplicationUser, ObjectId>
     {
         /// <summary>
         /// constructor

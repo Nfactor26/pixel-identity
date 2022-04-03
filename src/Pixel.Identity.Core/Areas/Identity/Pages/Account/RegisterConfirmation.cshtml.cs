@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [IdentityDefaultUI(typeof(RegisterConfirmationModel<>))]
+    [IdentityDefaultUI(typeof(RegisterConfirmationModel<,>))]
     public class RegisterConfirmationModel : PageModel
     {
         public string Email { get; set; }
@@ -18,7 +18,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnGetAsync(string email, string returnUrl = null) => throw new NotImplementedException();
     }
 
-    public class RegisterConfirmationModel<TUser> : RegisterConfirmationModel where TUser : class
+    public class RegisterConfirmationModel<TUser, TKey> : RegisterConfirmationModel
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly UserManager<TUser> userManager;      
         

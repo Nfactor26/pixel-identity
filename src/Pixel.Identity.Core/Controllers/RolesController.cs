@@ -16,9 +16,10 @@ namespace Pixel.Identity.Core.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy = Policies.CanManageRoles)]
-    public class RolesController<TUser, TRole> : ControllerBase
-        where TUser : IdentityUser<Guid>, new()
-        where TRole : IdentityRole<Guid>, new()
+    public class RolesController<TUser, TRole, TKey> : ControllerBase
+        where TUser : IdentityUser<TKey>, new()
+        where TRole : IdentityRole<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly RoleManager<TRole> roleManager;
         private readonly UserManager<TUser> userManager;
@@ -47,7 +48,7 @@ namespace Pixel.Identity.Core.Controllers
                 var role = await this.roleManager.FindByNameAsync(roleName);
                 if (role != null)
                 {
-                    var userRoleViewModel = new UserRoleViewModel(role.Id, role.Name);
+                    var userRoleViewModel = new UserRoleViewModel(role.Id.ToString(), role.Name);
                     var claims = await this.roleManager.GetClaimsAsync(role) ?? Enumerable.Empty<Claim>();
                     foreach (var claim in claims)
                     {
@@ -82,7 +83,7 @@ namespace Pixel.Identity.Core.Controllers
             }
             foreach (var role in roles)
             {
-                userRoles.Add(new UserRoleViewModel(role.Id, role.Name));
+                userRoles.Add(new UserRoleViewModel(role.Id.ToString(), role.Name));
             }
             return new PagedList<UserRoleViewModel>(userRoles, count, getRolesRequest.CurrentPage, getRolesRequest.PageSize);
         }

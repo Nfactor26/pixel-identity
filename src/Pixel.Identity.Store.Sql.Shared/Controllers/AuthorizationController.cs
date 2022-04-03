@@ -8,7 +8,7 @@ namespace Pixel.Identity.Store.Sql.Shared.Controllers
     /// Controller for handling OpenId protocol using OpenIdDict.
     /// It provides end points for authentication, tokens, sign out , etc.
     /// </summary>
-    public class AuthorizationController : AuthorizationController<ApplicationUser>
+    public class AuthorizationController : AuthorizationController<ApplicationUser, Guid>
     {
         /// <summary>
         /// constructor

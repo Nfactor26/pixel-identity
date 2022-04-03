@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [IdentityDefaultUI(typeof(LoginWithRecoveryCodeModel<>))]
+    [IdentityDefaultUI(typeof(LoginWithRecoveryCodeModel<,>))]
     public abstract class LoginWithRecoveryCodeModel : PageModel
     {
         [BindProperty]
@@ -29,7 +29,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
     }
 
-    public class LoginWithRecoveryCodeModel<TUser> : LoginWithRecoveryCodeModel where TUser : IdentityUser<Guid>, new()
+    public class LoginWithRecoveryCodeModel<TUser, TKey> : LoginWithRecoveryCodeModel 
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;

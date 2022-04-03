@@ -12,7 +12,7 @@ namespace Pixel.Identity.Store.Sql.Shared.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Policy = Policies.CanManageRoles)]
-    public class RolesController : RolesController<ApplicationUser, ApplicationRole>
+    public class RolesController : RolesController<ApplicationUser, ApplicationRole, Guid>
     {
         /// <summary>
         /// constructor

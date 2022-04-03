@@ -76,7 +76,7 @@ namespace Pixel.Identity.Store.PostgreSQL
                   .AddApplicationPart(typeof(SqlConfigurator).Assembly)
                   .AddRazorPagesOptions(options =>
                   {
-                      options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser>());
+                      options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser, Guid>());
                   }); ;
             services.AddHostedService<Worker>();
         }

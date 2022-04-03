@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
 using OpenIddict.MongoDb.Models;
 using Pixel.Identity.Shared.ViewModels;
+using Pixel.Identity.Store.Mongo.Models;
 
 namespace Pixel.Identity.Store.Mongo
 {
@@ -20,11 +21,12 @@ namespace Pixel.Identity.Store.Mongo
             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
             .ForMember(d => d.IsConfidentialClient, opt => opt.Ignore());
 
-            CreateMap<IdentityUser<Guid>, UserDetailsViewModel>()
+            CreateMap<ApplicationUser, UserDetailsViewModel>()
+             .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
              .ForMember(d => d.UserRoles, opt => opt.Ignore())
              .ForMember(d => d.UserClaims, opt => opt.Ignore());
 
-            CreateMap<IdentityRole<Guid>, UserRoleViewModel>()
+            CreateMap<ApplicationRole, UserRoleViewModel>()
             .ForMember(d => d.RoleId, opt => opt.MapFrom(s => s.Id))
             .ForMember(d => d.RoleName, opt => opt.MapFrom(s => s.Name))
             .ForMember(d => d.Claims, opt => opt.Ignore());

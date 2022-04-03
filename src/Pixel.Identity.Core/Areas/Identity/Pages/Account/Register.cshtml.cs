@@ -11,7 +11,7 @@ using System.Text.Encodings.Web;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [IdentityDefaultUI(typeof(RegisterModel<>))]
+    [IdentityDefaultUI(typeof(RegisterModel<,>))]
     public abstract class RegisterModel : PageModel
     {
 
@@ -46,7 +46,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnPostAsync(string returnUrl = null) => throw new NotImplementedException();
     }
 
-    public class RegisterModel<TUser> : RegisterModel where TUser : class
+    public class RegisterModel<TUser, TKey> : RegisterModel 
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;

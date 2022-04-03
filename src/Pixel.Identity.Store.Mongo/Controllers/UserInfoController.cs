@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using Pixel.Identity.Core.Controllers;
+using Pixel.Identity.Store.Mongo.Models;
 
 namespace Pixel.Identity.Store.Mongo.Controllers
 {
@@ -9,7 +11,7 @@ namespace Pixel.Identity.Store.Mongo.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class UserInfoController : UserinfoController<ApplicationUser>
+    public class UserInfoController : UserinfoController<ApplicationUser, ObjectId>
     {
         /// <summary>
         /// constructor

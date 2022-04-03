@@ -11,7 +11,7 @@ using System.Text.Encodings.Web;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [IdentityDefaultUI(typeof(ExternalLoginModel<>))]
+    [IdentityDefaultUI(typeof(ExternalLoginModel<,>))]
     public class ExternalLoginModel : PageModel
     {
         [BindProperty]
@@ -40,7 +40,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null) => throw new NotImplementedException();
     }
 
-    public class ExternalLoginModel<TUser> : ExternalLoginModel where TUser : IdentityUser<Guid>, new()
+    public class ExternalLoginModel<TUser, TKey> : ExternalLoginModel 
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly SignInManager<TUser> signInManager;
         private readonly UserManager<TUser> userManager;

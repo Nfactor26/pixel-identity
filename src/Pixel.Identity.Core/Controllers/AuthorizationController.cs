@@ -25,8 +25,9 @@ namespace Pixel.Identity.Core.Controllers
     /// Controller for handling OpenId protocol using OpenIdDict. It provides end points for authentication, tokens, sign out , etc.
     /// It must be inherited in the DbStore plugin which should provide it with the desired type for TUser
     /// </summary>
-    public abstract class AuthorizationController<TUser> : Controller
-        where TUser : IdentityUser<Guid>, new()
+    public abstract class AuthorizationController<TUser, TKey> : Controller
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly IOpenIddictApplicationManager _applicationManager;
         private readonly IOpenIddictAuthorizationManager _authorizationManager;

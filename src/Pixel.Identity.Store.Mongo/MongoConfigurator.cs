@@ -1,9 +1,13 @@
-﻿using AspNetCore.Identity.MongoDbCore.Infrastructure;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Pixel.Identity.Core;
 using Pixel.Identity.Core.Conventions;
+using Pixel.Identity.Store.Mongo.Extensions;
+using Pixel.Identity.Store.Mongo.Models;
+using Pixel.Identity.Store.Mongo.Utils;
+using System.ComponentModel;
 
 namespace Pixel.Identity.Store.Mongo
 {
@@ -41,7 +45,8 @@ namespace Pixel.Identity.Store.Mongo
                 //options.User.RequireUniqueEmail = true;               
             })
             .AddRoles<ApplicationRole>()
-            .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(mongoDbSettings.ConnectionString, mongoDbSettings.DatabaseName);
+            .AddMongoDbStore<ApplicationUser, ApplicationRole, 
+                IdentityUserClaim, IdentityUserLogin<ObjectId>, IdentityUserToken<ObjectId>, IdentityRoleClaim, ObjectId>(mongoDbSettings);
         }
 
         ///<inheritdoc/>
@@ -62,12 +67,12 @@ namespace Pixel.Identity.Store.Mongo
 
         ///<inheritdoc/>
         public void AddServices(IServiceCollection services)
-        {
+        {        
             services.AddControllersWithViews()
                  .AddApplicationPart(typeof(ApplicationUser).Assembly)
                  .AddRazorPagesOptions(options =>
                  {
-                     options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser>());
+                     options.Conventions.Add(new IdentityPageModelConvention<ApplicationUser, ObjectId>());
                  });            
             services.AddHostedService<Worker>();
         }

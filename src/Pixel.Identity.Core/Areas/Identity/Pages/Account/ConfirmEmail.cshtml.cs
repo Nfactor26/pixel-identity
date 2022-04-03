@@ -8,7 +8,7 @@ using System.Text;
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    [IdentityDefaultUI(typeof(ConfirmEmailModel<>))]
+    [IdentityDefaultUI(typeof(ConfirmEmailModel<,>))]
     public abstract class ConfirmEmailModel : PageModel
     {
         [TempData]
@@ -17,7 +17,9 @@ namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
         public virtual Task<IActionResult> OnGetAsync(string userId, string code) => throw new NotImplementedException();
     }
 
-    public class ConfirmEmailModel<TUser> : ConfirmEmailModel where TUser : IdentityUser<Guid>, new()
+    public class ConfirmEmailModel<TUser, TKey> : ConfirmEmailModel 
+        where TUser : IdentityUser<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         private readonly UserManager<TUser> userManager;
         private readonly ILogger<ConfirmEmailModel> logger;
