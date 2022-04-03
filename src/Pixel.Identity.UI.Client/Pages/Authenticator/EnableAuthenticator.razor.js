@@ -1,6 +1,7 @@
 ﻿export function generateQrCode() {
     const uri = document.getElementById("qrCodeData").getAttribute('data-url');
-    if (uri == null) {
+    const title = document.getElementById("qrCode").getAttribute('title');
+    if (uri == null || title != null) {
         return;
     }
     new QRCode(document.getElementById("qrCode"),
