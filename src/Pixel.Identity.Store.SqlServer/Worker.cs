@@ -92,11 +92,11 @@ namespace Pixel.Identity.Store.SqlServer
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             if(userManager.Users.Count() == 0)
             {
-                var adminUser = new ApplicationUser() { EmailConfirmed = true };
+                var adminUser = new ApplicationUser();
                 await userManager.SetUserNameAsync(adminUser, "admin@pixel.com");
                 await userManager.SetEmailAsync(adminUser, "admin@pixel.com");
                 await userManager.CreateAsync(adminUser, "Admi9@pixel");
-
+                await userManager.ConfirmEmailAsync(adminUser, await userManager.GenerateEmailConfirmationTokenAsync(adminUser));
                 //assign IdentityAdmin role to user
                 await userManager.AddToRoleAsync(adminUser, "IdentityAdmin");
             }           
