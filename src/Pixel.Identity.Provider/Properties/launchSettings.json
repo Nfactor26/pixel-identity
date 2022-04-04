@@ -24,13 +24,15 @@
       },
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "applicationUrl": "http://localhost:44382",
+      "launchUrl": "http://localhost:44382/pauth",
       "dotnetRunMessages": "true",
       "COMPlus_ReadyToRun": "0"
     },
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "applicationUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/pauth",
       "publishAllPorts": true,
       "useSSL": true
     }
