@@ -5,7 +5,7 @@
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="applicationsTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Applications</MudText>
-        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
+        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                        @onclick="AddNewApplication" Color="Color.Primary"></MudIconButton>
         <MudSpacer></MudSpacer>
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Client Id or Display Name" Adornment="Adornment.Start"
