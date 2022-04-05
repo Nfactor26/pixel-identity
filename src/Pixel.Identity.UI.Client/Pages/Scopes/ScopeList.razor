@@ -5,7 +5,7 @@
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="scopesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Scopes</MudText>
-        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Large"
+        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                        @onclick="NavigateToAddScopePage" Color="Color.Primary"></MudIconButton>
         <MudSpacer/>
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Name or Display Name" Adornment="Adornment.Start"

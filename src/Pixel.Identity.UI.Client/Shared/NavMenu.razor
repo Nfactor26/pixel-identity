@@ -1,24 +1,24 @@
 ﻿<MudNavMenu>
     <br />
     <br />
-    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Home</MudNavLink>
+    <MudNavLink Href="./" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Home</MudNavLink>
     <AuthorizeView>
          <MudNavGroup Title="Account" Expanded="false" Icon="@Icons.Material.Outlined.Dashboard">
-            <MudNavLink Href="/account/profile">Profile</MudNavLink>
-            <MudNavLink Href="/account/logins">Logins</MudNavLink>
-            <MudNavLink Href="/account/authenticator/manage">Authenticator</MudNavLink>
+            <MudNavLink Href="./account/profile">Profile</MudNavLink>
+            <MudNavLink Href="./account/logins">Logins</MudNavLink>
+            <MudNavLink Href="./account/authenticator/manage">Authenticator</MudNavLink>
         </MudNavGroup>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.CanManageUsers">
-        <MudNavLink Href="/users/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Users</MudNavLink>
+        <MudNavLink Href="./users/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Users</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.CanManageRoles">
-        <MudNavLink Href="/roles/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Roles</MudNavLink>
+        <MudNavLink Href="./roles/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Roles</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.CanManageApplications">
-        <MudNavLink Href="/applications/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Applications</MudNavLink>
+        <MudNavLink Href="./applications/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Applications</MudNavLink>
     </AuthorizeView>
     <AuthorizeView Policy="@Policies.CanManageScopes">
-        <MudNavLink Href="/scopes/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Scopes</MudNavLink>
+        <MudNavLink Href="./scopes/list" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Dashboard">Scopes</MudNavLink>
     </AuthorizeView>
 </MudNavMenu>
