@@ -62,40 +62,40 @@ services:
       - mongo
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongo-express.rule=Host(`mongo.docker.localhost`)"
+      - "traefik.http.routers.mongo-express.rule=Host(`pixel.docker.localhost`) && PathPrefix(`/mongo`)"
       - "traefik.http.routers.mongo-express.tls=true"
     profiles:
       - mongo
     networks:
       - pixel-network
 
-  postgre:
+  postgres:
     image: postgres:14.1-alpine
-    container_name: pixel_identity_postgre
+    container_name: pixel_identity_postgres
     restart: always
     volumes:
       - postgre-pixel-identiy-store:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgreadmin
-      POSTGRES_PASSWORD: postgrepass
+      POSTGRES_USER: postgresadmin
+      POSTGRES_PASSWORD: postgrespass
       POSTGRES_DB: pixel_identity_db
     profiles:
-      - postgre
+      - postgres
     networks:
       - pixel-network
 
   adminer:
     image: adminer:latest
-    container_name: postgre_dashboard
+    container_name: postgres_dashboard
     restart: always   
     depends_on:
-      - postgre
+      - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.adminer.rule=Host(`postgre.docker.localhost`)"
+      - "traefik.http.routers.adminer.rule=Host(`pixel.docker.localhost`) && PathPrefix(`/adminer`)"
       - "traefik.http.routers.adminer.tls=true"
     profiles:
-      - postgre
+      - postgres
     networks:
       - pixel-network
 
@@ -104,23 +104,19 @@ services:
     env_file:
       - ./.config/identity.env  
     environment:     
-      - ASPNETCORE_URLS=http://+
-      - DbPlugin=Pixel.Identity.Store.PostgreSQL    
-      - IdentityHost=https://identity.docker.localhost           
+      - ASPNETCORE_URLS=http://+       
       # Certificates required by OpenIdDict for encyrption and signing
       - Identity:Certificates:EncryptionCertificatePath=/etc/certs/identity-encryption.pfx   
-      - Identity:Certificates:SigningCertificatePath=/etc/certs/identity-signing.pfx   
-      - ConnectionStrings:PostgreServerConnection=User ID=postgreadmin;Password=postgrepass;Server=postgre;Port=5432;Database=pixel_identity_db;
-      # Certificate settings when using https
+      - Identity:Certificates:SigningCertificatePath=/etc/certs/identity-signing.pfx 
+      # Certificate settings when using https.Commented by default as expected setup is behind a reverse proxy with tls termination.
       #-Kestrel:Certificates:Default:Path=/etc/certs/pixel-identity-cert.pem
       #-Kestrel:Certificates:Default:KeyPath=/etc/certs/pixel-identity-key.pem 
     volumes:
-      - ./.certificates:/etc/certs:ro
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro      
+      # volume mount for providing required certificates for OpenIdDict or Kestrel (when using https)
+      - ./.certificates:/etc/certs:ro 
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pixel-identity.rule=Host(`identity.docker.localhost`)"
+      - "traefik.http.routers.pixel-identity.rule=Host(`pixel.docker.localhost`) && PathPrefix(`/pauth`)"
       - "traefik.http.routers.pixel-identity.tls=true"    
     networks:
       - pixel-network

@@ -2,7 +2,7 @@
 http:
   routers:
     traefik:
-      rule: "Host(`traefik.docker.localhost`)"
+      rule: "Host(`pixel.docker.localhost`)"
       service: "api@internal"
       tls:
         domains:
