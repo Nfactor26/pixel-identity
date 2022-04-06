@@ -2,7 +2,6 @@ using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -312,15 +311,15 @@ namespace Pixel.Identity.Provider
                 //options.AllowDeviceCodeFlow();
                 options.AllowAuthorizationCodeFlow().AllowDeviceCodeFlow().AllowRefreshTokenFlow().AllowClientCredentialsFlow();
 
-
+                //https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
                 //OpenIdDict uses two types of credentials to secure the token it issues.
                 //1.Encryption credentials are used to ensure the content of tokens cannot be read by malicious parties
                 if (string.IsNullOrEmpty(Configuration["Identity:Certificates:EncryptionCertificatePath"]))
                 {
-
                     var encryptionKeyBytes = File.ReadAllBytes(Configuration["Identity:Certificates:EncryptionCertificatePath"]);
                     X509Certificate2 encryptionKey = new X509Certificate2(encryptionKeyBytes, Configuration["Identity:EncryptionCertificateKey"],
                          X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet);
+                    options.AddEncryptionCertificate(encryptionKey);
                 }
                 else
                 {
