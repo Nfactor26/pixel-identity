@@ -192,12 +192,10 @@ namespace Pixel.Identity.Store.Mongo.Stores
         /// <param name="claim">The associated claim.</param>
         /// <returns>The role claim entity.</returns>
         protected virtual TRoleClaim CreateRoleClaim(TRole role, Claim claim)
-        {
-            var id = role.Claims.Count() + 1;
+        {            
             var roleClaim = new TRoleClaim()
             {
-                RoleId = role.Id,
-                Id = id
+                RoleId = role.Id               
             };
             roleClaim.InitializeFromClaim(claim);
             return roleClaim;

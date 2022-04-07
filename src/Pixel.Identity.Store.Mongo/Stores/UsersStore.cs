@@ -609,12 +609,10 @@ namespace Pixel.Identity.Store.Mongo.Stores
 
         /// <inheritdoc/>
         protected override TUserClaim CreateUserClaim(TUser user, Claim claim)
-        {
-            int id = user.Claims.Count() + 1;
+        {            
             var roleClaim = new TUserClaim()
             {
-                UserId = user.Id,
-                Id = id
+                UserId = user.Id               
             };
             roleClaim.InitializeFromClaim(claim);
             return roleClaim;
