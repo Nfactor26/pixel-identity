@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Pixel.Identity.Core;
 using Pixel.Identity.Core.Conventions;
@@ -33,6 +34,21 @@ namespace Pixel.Identity.Store.Mongo
         ///<inheritdoc/>
         public IdentityBuilder ConfigureIdentity(IConfiguration configuration, IServiceCollection services)
         {
+
+            BsonClassMap.RegisterClassMap<IdentityUserClaim<ObjectId>>(cm =>
+            {
+                cm.AutoMap();
+                cm.UnmapMember(m => m.Id);
+                cm.UnmapMember(m => m.UserId);
+            });
+
+            BsonClassMap.RegisterClassMap<IdentityRoleClaim<ObjectId>>(cm =>
+            {
+                cm.AutoMap();
+                cm.UnmapMember(m => m.Id);
+                cm.UnmapMember(m => m.RoleId);
+            });
+
             var mongoDbSettings = configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
             return services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
