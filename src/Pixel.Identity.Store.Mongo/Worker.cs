@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Store.Mongo.Models;
+using System.Security.Claims;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Pixel.Identity.Store.Mongo
@@ -78,10 +79,19 @@ namespace Pixel.Identity.Store.Mongo
                 {
                     await roleManager.CreateAsync(new ApplicationRole() { Name = "IdentityAdmin" });
                     var role = await roleManager.FindByNameAsync("IdentityAdmin");
-                    await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "users"));
-                    await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "roles"));
-                    await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "applications"));
-                    await roleManager.AddClaimAsync(role, new System.Security.Claims.Claim("rc_read_write", "scopes"));
+                   
+                    await AddClaimAsync("identity_read_write", "users");
+                    await AddClaimAsync("identity_read_write", "roles");
+                    await AddClaimAsync("identity_read_write", "applications");
+                    await AddClaimAsync("identity_read_write", "scopes");
+                   
+                    async Task AddClaimAsync(string type, string value)
+                    {
+                        var claim = new Claim(type, value);
+                        claim.Properties.Add("IncludeInAccessToken", "true");
+                        claim.Properties.Add("IncludeInIdentityToken", "true");
+                        await roleManager.AddClaimAsync(role, claim);
+                    }
                 }
 
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();

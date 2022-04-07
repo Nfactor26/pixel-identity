@@ -607,17 +607,40 @@ namespace Pixel.Identity.Core.Controllers
                         yield return Destinations.IdentityToken;
 
                     yield break;
-               
-                // Never include the security stamp in the access and identity tokens, as it's a secret value.
-                case "AspNet.Identity.SecurityStamp": yield break;
 
-                default:                      
-                    yield return Destinations.AccessToken;
-                    //we are using a custom prefix rc_ ( to indicate role claim ) which should be indluced in identity token
-                    if (claim.Type.StartsWith("rc_"))
-                    {                       
-                        yield return Destinations.IdentityToken;                       
+                // Never include the security stamp in the access and identity tokens, as it's a secret value.
+                case "AspNet.Identity.SecurityStamp":
+                    yield break;
+
+                default:
+                    //claim desinations are set by OpenIdDict using Claims.Private.ClaimDestinationsMap payload from token during exchange
+                    //We need to add them back from .destinations property otherwise they are lost
+                    if (claim.Properties.ContainsKey(".destinations"))
+                    {
+                        if (claim.Properties[".destinations"].Contains(Destinations.AccessToken))
+                            yield return Destinations.AccessToken;
+                        if (claim.Properties[".destinations"].Contains(Destinations.IdentityToken))
+                            yield return Destinations.IdentityToken;
+                        yield break;
                     }
+                    
+                    if (claim.Properties.ContainsKey("IncludeInAccessToken"))
+                    {
+                        if (bool.TryParse(claim.Properties["IncludeInAccessToken"], out bool includeInAccessToken)
+                            && includeInAccessToken)
+                        {
+                            yield return Destinations.AccessToken;
+                        }                        
+                    }
+                    
+                    if (claim.Properties.ContainsKey("IncludeInIdentityToken"))
+                    {                       
+                        if (bool.TryParse(claim.Properties["IncludeInIdentityToken"], out bool includeInIdentityToken)
+                            && includeInIdentityToken)
+                        {
+                            yield return Destinations.IdentityToken;
+                        }
+                    }                  
                     yield break;
             }
         }

@@ -6,7 +6,7 @@
     /// </summary>
     public static class Claims  
     {
-        public const string ReadOnlyClaim = "rc_read_only";
-        public const string ReadWriteClaim = "rc_read_write";        
+        public const string ReadOnlyClaim = "identity_read_only";
+        public const string ReadWriteClaim = "identity_read_write";        
     }
 }

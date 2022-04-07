@@ -33,4 +33,14 @@
 		<ProjectReference Include="..\Pixel.Identity.Store.Sql.Shared\Pixel.Identity.Store.Sql.Shared.csproj" />		
 	</ItemGroup>
 
+	<ItemGroup>
+		<Using Include="Microsoft.AspNetCore.Identity" />
+		<Using Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+		<Using Include="Pixel.Identity.Store.Sql.Shared.Models" />
+		<Using Include="Pixel.Identity.Store.Sql.Shared.Stores" />
+		<Using Include="System.Security.Claims"/>
+	</ItemGroup>
+
+
 </Project>
