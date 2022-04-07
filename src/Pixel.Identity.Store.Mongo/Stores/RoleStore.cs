@@ -16,7 +16,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
     /// <typeparam name="TRoleClaim">Type representing a <see cref="IdentityRoleClaim{TKey}"/></typeparam>
     /// <typeparam name="TKey">Identifier type for documents e.g. Guid or ObjectId</typeparam>
     public class RoleStore<TRole, TRoleClaim, TKey> : IQueryableRoleStore<TRole>, IRoleClaimStore<TRole>
-        where TRole : ApplicationRole<TKey>       
+        where TRole : ApplicationRole<TKey, TRoleClaim>       
         where TRoleClaim : IdentityRoleClaim<TKey>, new()
        where TKey : IEquatable<TKey>
     {

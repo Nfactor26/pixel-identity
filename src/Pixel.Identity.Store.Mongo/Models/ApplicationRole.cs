@@ -8,7 +8,7 @@ namespace Pixel.Identity.Store.Mongo.Models
     /// <summary>
     /// ApplicationRole with <see cref="ObjectId"/> as the Identifier type
     /// </summary>
-    public class ApplicationRole : ApplicationRole<ObjectId>
+    public class ApplicationRole : ApplicationRole<ObjectId, IdentityRoleClaim>
     {
 
     }
@@ -16,11 +16,13 @@ namespace Pixel.Identity.Store.Mongo.Models
     /// <summary>
     /// ApplicationRole extends <see cref="IdentityRole{TKey}"/>
     /// </summary>
-    public class ApplicationRole<TKey> : IdentityRole<TKey>, IDocument<TKey> where TKey : IEquatable<TKey>
+    public class ApplicationRole<TKey, TRoleClaim> : IdentityRole<TKey>, IDocument<TKey>
+        where TRoleClaim : IdentityRoleClaim<TKey>, new()
+        where TKey : IEquatable<TKey>
     {
         public int Version { get; set; } = 1;
 
-        public List<IdentityRoleClaim<TKey>> Claims { get; set; } = new();
+        public List<TRoleClaim> Claims { get; set; } = new();
 
         /// <summary>
         /// constructor

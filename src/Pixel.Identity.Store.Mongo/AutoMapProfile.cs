@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
 using OpenIddict.MongoDb.Models;
 using Pixel.Identity.Shared.ViewModels;
