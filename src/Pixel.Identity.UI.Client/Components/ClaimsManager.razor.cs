@@ -20,14 +20,24 @@ namespace Pixel.Identity.UI.Client.Components
 
         [Parameter]
         public EventCallback<ClaimViewModel> OnDeleteItem { get; set; }
+        
 
         [Parameter]
         public Func<ClaimViewModel, ClaimViewModel, Task<bool>> OnUpdateItem { get; set; }
+
+        private MudTable<ClaimViewModel> table;
 
 
         private ClaimViewModel selectedClaim = null;
         private ClaimViewModel elementBeforeEdit;
         private string searchString = "";
+
+        void EditItem(ClaimViewModel model)
+        {
+            selectedClaim = model;
+            table.SetEditingItem(model);
+            BackupItem(model);
+        }
 
         async Task UpdateItemAsync()
         {
@@ -40,17 +50,25 @@ namespace Pixel.Identity.UI.Client.Components
 
         void BackupItem(object element)
         {
-            elementBeforeEdit = new()
+            if(element is ClaimViewModel beforeEdit)
             {
-                Type = ((ClaimViewModel)element).Type,
-                Value = ((ClaimViewModel)element).Value               
-            };
+                elementBeforeEdit = new()
+                {
+                    Type = beforeEdit.Type,
+                    Value = beforeEdit.Value,
+                    IncludeInAccessToken = beforeEdit.IncludeInAccessToken,
+                    IncludeInIdentityToken = beforeEdit.IncludeInIdentityToken
+                };
+            }
+           
         }
 
         void ResetItemToOriginalValues(object element)
         {
             ((ClaimViewModel)element).Type = elementBeforeEdit.Type;
-            ((ClaimViewModel)element).Value = elementBeforeEdit.Value;          
+            ((ClaimViewModel)element).Value = elementBeforeEdit.Value;
+            ((ClaimViewModel)element).IncludeInAccessToken = elementBeforeEdit.IncludeInAccessToken;
+            ((ClaimViewModel)element).IncludeInIdentityToken = elementBeforeEdit.IncludeInIdentityToken;
         }
 
         private bool FilterFunc(ClaimViewModel element)
