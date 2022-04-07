@@ -607,6 +607,19 @@ namespace Pixel.Identity.Store.Mongo.Stores
             return userWithLogin?.Logins.FirstOrDefault(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey);
         }
 
+        /// <inheritdoc/>
+        protected override TUserClaim CreateUserClaim(TUser user, Claim claim)
+        {
+            int id = user.Claims.Count() + 1;
+            var roleClaim = new TUserClaim()
+            {
+                UserId = user.Id,
+                Id = id
+            };
+            roleClaim.InitializeFromClaim(claim);
+            return roleClaim;
+        }
+
         #endregion protected overridden methods
 
         #region Helper methods       

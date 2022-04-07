@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -29,6 +29,14 @@
 			<Private>false</Private>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Microsoft.AspNetCore.Identity" />
+		<Using Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<Using Include="Microsoft.EntityFrameworkCore" />
+		<Using Include="Pixel.Identity.Store.Sql.Shared.Models" />
+		<Using Include="System.Security.Claims"/>
 	</ItemGroup>
 
 </Project>

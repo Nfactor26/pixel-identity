@@ -1,26 +1,24 @@
-﻿using Microsoft.AspNetCore.Identity;
-namespace Pixel.Identity.Store.Sql.Shared
+﻿namespace Pixel.Identity.Store.Sql.Shared.Models;
+
+/// <summary>
+/// ApplicationUser is the <see cref="IdentityUser"/> with Guid as primary key required by Asp.Net Identity
+/// </summary>
+public class ApplicationUser : IdentityUser<Guid>
 {
     /// <summary>
-    /// ApplicationUser is the <see cref="IdentityUser"/> with Guid as primary key required by Asp.Net Identity
+    /// constructor
     /// </summary>
-    public class ApplicationUser : IdentityUser<Guid>
+    public ApplicationUser()
     {
-        /// <summary>
-        /// constructor
-        /// </summary>
-        public ApplicationUser()
-        {
 
-        }
+    }
 
-        /// <summary>
-        /// constructor
-        /// </summary>
-        /// <param name="userName">name of the user</param>      
-        public ApplicationUser(string userName) : base(userName)
-        {
+    /// <summary>
+    /// constructor
+    /// </summary>
+    /// <param name="userName">name of the user</param>      
+    public ApplicationUser(string userName) : base(userName)
+    {
 
-        }
     }
 }

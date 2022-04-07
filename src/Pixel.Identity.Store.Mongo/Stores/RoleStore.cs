@@ -178,13 +178,11 @@ namespace Pixel.Identity.Store.Mongo.Stores
         }
 
         /// <inheritdoc/>  
-        public async Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = default)
+        public Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = default)
         {
             Guard.Argument(role).NotNull();
-            ThrowIfDisposedOrCancelled(cancellationToken);
-
-            var dbRole = await rolesCollection.FindFirstOrDefaultAsync(x => x.Id.Equals(role.Id), cancellationToken: cancellationToken).ConfigureAwait(false);
-            return dbRole?.Claims.Select(e => e.ToClaim()).ToList() ?? Enumerable.Empty<Claim>().ToList();
+            ThrowIfDisposedOrCancelled(cancellationToken);            
+            return Task.FromResult<IList<Claim>>(role.Claims.Select(e => e.ToClaim()).ToList());
         }
 
         /// <summary>
@@ -195,7 +193,12 @@ namespace Pixel.Identity.Store.Mongo.Stores
         /// <returns>The role claim entity.</returns>
         protected virtual TRoleClaim CreateRoleClaim(TRole role, Claim claim)
         {
-            var roleClaim = new TRoleClaim();
+            var id = role.Claims.Count() + 1;
+            var roleClaim = new TRoleClaim()
+            {
+                RoleId = role.Id,
+                Id = id
+            };
             roleClaim.InitializeFromClaim(claim);
             return roleClaim;
         }

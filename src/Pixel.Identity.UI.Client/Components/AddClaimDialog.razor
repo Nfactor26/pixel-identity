@@ -1,22 +1,29 @@
 ﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Add new claim
+        </MudText>
+    </TitleContent>
     <DialogContent>
-        <MudGrid Spacing="3" Justify="Justify.FlexStart">
-            <MudItem xs="6" Style="width:240px">
-                <MudTextField @bind-Value="@model.Type" Label="Type" Class="mt-n3" @onfocus="(() => error = string.Empty)"
-                              Variant="Variant.Text" Margin="Margin.None" Immediate="true" ></MudTextField>
-            </MudItem>
-             <MudItem xs="5" Style="width:180px">
-                <MudTextField @bind-Value="@model.Value" Label="Value" Class="mt-n3" @onfocus="(() => error = string.Empty)"
-                              Variant="Variant.Text" Margin="Margin.None" Immediate="true" ></MudTextField>
-            </MudItem>
-            <MudItem xs="1" Class="ml-n3">
-                <MudIconButton OnClick="AddNewClaimAsync"  Disabled="string.IsNullOrEmpty(model.Type) || string.IsNullOrEmpty(model.Value)"
-                               Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
-            </MudItem>
-        </MudGrid>
+        <MudTextField @bind-Value="@model.Type" Label="Type"  @onfocus="(() => error = string.Empty)"
+                      Variant="Variant.Text" Immediate="true"></MudTextField>
+        <MudTextField @bind-Value="@model.Value" Label="Value" @onfocus="(() => error = string.Empty)"
+                      Variant="Variant.Text" Immediate="true"></MudTextField>
+
+        <MudSwitch @bind-Checked="model.IncludeInAccessToken" Label="Include in access token" Color="Color.Primary" />
+
+        <MudSwitch @bind-Checked="model.IncludeInIdentityToken" Label="Include in identity token" Color="Color.Primary" />
+
         @if (!string.IsNullOrEmpty(error))
         {
             <MudAlert Severity="Severity.Error">@error</MudAlert>
         }
     </DialogContent>
+    <DialogActions>
+        <MudButton  OnClick="AddNewClaimAsync" 
+                Disabled="string.IsNullOrEmpty(model.Type) || string.IsNullOrEmpty(model.Value)"
+                Color="Color.Primary" Variant="Variant.Filled">
+                Add
+        </MudButton>
+    </DialogActions>
 </MudDialog>
