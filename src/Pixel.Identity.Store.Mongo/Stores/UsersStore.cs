@@ -22,7 +22,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
     public class UserStore<TUser, TRole, TUserClaim, TUserLogin, TUserToken, TRoleClaim, TKey>
        : UserStoreBase<TUser, TRole, TKey, TUserClaim, TUserLogin, TUserToken,TRoleClaim>
        where TUser : ApplicationUser<TKey, TUserClaim, TUserLogin, TUserToken>
-       where TRole : ApplicationRole<TKey>
+       where TRole : ApplicationRole<TKey, TRoleClaim>
        where TUserClaim : IdentityUserClaim<TKey>, new()
        where TUserLogin : IdentityUserLogin<TKey>, new()
        where TUserToken : IdentityUserToken<TKey>, new()
@@ -677,7 +677,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
         UserStoreBase<TUser, TKey, TUserClaim, TUserLogin, TUserToken>,
         IUserRoleStore<TUser>
         where TUser : ApplicationUser<TKey, TUserClaim, TUserLogin, TUserToken>
-        where TRole : ApplicationRole<TKey>
+        where TRole : ApplicationRole<TKey, TRoleClaim>
         where TKey : IEquatable<TKey>
         where TUserClaim : IdentityUserClaim<TKey>, new()        
         where TUserLogin : IdentityUserLogin<TKey>, new()

@@ -1,12 +1,9 @@
 ﻿using Dawn;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Pixel.Identity.Store.Mongo.Models;
 using Pixel.Identity.Store.Mongo.Stores;
-using Pixel.Identity.Store.Mongo.Utils;
-using System.ComponentModel;
 
 namespace Pixel.Identity.Store.Mongo.Extensions
 {
@@ -14,7 +11,7 @@ namespace Pixel.Identity.Store.Mongo.Extensions
     {
         public static IdentityBuilder AddMongoDbStore<TUser, TRole, TUserClaim, TUserLogin, TUserToken, TRoleClaim, TKey>(this IdentityBuilder builder, MongoDbSettings dbSettings)
               where TUser : ApplicationUser<TKey, TUserClaim, TUserLogin, TUserToken>, new ()
-              where TRole : ApplicationRole<TKey>, new ()
+              where TRole : ApplicationRole<TKey, TRoleClaim>, new ()
               where TUserClaim : IdentityUserClaim<TKey>, new()
               where TRoleClaim : IdentityRoleClaim<TKey>, new()
               where TUserLogin : IdentityUserLogin<TKey>, new()

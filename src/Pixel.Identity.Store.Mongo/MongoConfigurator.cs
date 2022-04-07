@@ -6,8 +6,6 @@ using Pixel.Identity.Core;
 using Pixel.Identity.Core.Conventions;
 using Pixel.Identity.Store.Mongo.Extensions;
 using Pixel.Identity.Store.Mongo.Models;
-using Pixel.Identity.Store.Mongo.Utils;
-using System.ComponentModel;
 
 namespace Pixel.Identity.Store.Mongo
 {
