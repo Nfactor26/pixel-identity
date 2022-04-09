@@ -1,10 +1,10 @@
 ﻿namespace Pixel.Identity.Store.Sql.Shared.Stores;
 
-public class UsersStore : UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid,
+public class ApplicationUserStore : UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid,
     IdentityUserClaim, IdentityUserRole<Guid>, IdentityUserLogin<Guid>,
     IdentityUserToken<Guid>, IdentityRoleClaim>
 {
-    public UsersStore(ApplicationDbContext context, IdentityErrorDescriber describer = null)
+    public ApplicationUserStore(ApplicationDbContext context, IdentityErrorDescriber describer = null)
         : base(context, describer)
     {
     }

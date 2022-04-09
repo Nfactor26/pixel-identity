@@ -1,10 +1,10 @@
 ﻿namespace Pixel.Identity.Store.Sql.Shared.Stores;
 
-public class RoleStore : RoleStore<ApplicationRole, ApplicationDbContext, Guid, IdentityUserRole<Guid>, IdentityRoleClaim>
+public class ApplicationRoleStore : RoleStore<ApplicationRole, ApplicationDbContext, Guid, IdentityUserRole<Guid>, IdentityRoleClaim>
 {
     private DbSet<IdentityRoleClaim> RoleClaims { get { return Context.Set<IdentityRoleClaim>(); } }
 
-    public RoleStore(ApplicationDbContext context, IdentityErrorDescriber describer = null)
+    public ApplicationRoleStore(ApplicationDbContext context, IdentityErrorDescriber describer = null)
         : base(context, describer)
     {
     }

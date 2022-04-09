@@ -15,7 +15,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
     /// <typeparam name="TRole">Type representing a <see cref="IdentityRole{TKey}"/></typeparam>
     /// <typeparam name="TRoleClaim">Type representing a <see cref="IdentityRoleClaim{TKey}"/></typeparam>
     /// <typeparam name="TKey">Identifier type for documents e.g. Guid or ObjectId</typeparam>
-    public class RoleStore<TRole, TRoleClaim, TKey> : IQueryableRoleStore<TRole>, IRoleClaimStore<TRole>
+    public class ApplicationRoleStore<TRole, TRoleClaim, TKey> : IQueryableRoleStore<TRole>, IRoleClaimStore<TRole>
         where TRole : ApplicationRole<TKey, TRoleClaim>       
         where TRoleClaim : IdentityRoleClaim<TKey>, new()
        where TKey : IEquatable<TKey>
@@ -36,7 +36,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
         /// </summary>
         /// <param name="rolesCollection"></param>
         /// <param name="describer"></param>
-        public RoleStore(IMongoCollection<TRole> rolesCollection, IdentityErrorDescriber describer)
+        public ApplicationRoleStore(IMongoCollection<TRole> rolesCollection, IdentityErrorDescriber describer)
         {
             this.rolesCollection = rolesCollection;
             this.ErrorDescriber = describer ?? new IdentityErrorDescriber();
