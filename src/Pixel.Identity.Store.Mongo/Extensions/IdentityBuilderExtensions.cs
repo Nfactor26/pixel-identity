@@ -30,12 +30,12 @@ namespace Pixel.Identity.Store.Mongo.Extensions
 
             builder.Services.TryAddScoped<IUserStore<TUser>>(provider =>
             {
-                return new UserStore<TUser, TRole, TUserClaim, TUserLogin, TUserToken, TRoleClaim, TKey>(usersCollection, rolesCollection, identityErrorDescriber);
+                return new ApplicationUserStore<TUser, TRole, TUserClaim, TUserLogin, TUserToken, TRoleClaim, TKey>(usersCollection, rolesCollection, identityErrorDescriber);
             });
 
             builder.Services.TryAddScoped<IRoleStore<TRole>>(provider =>
             {
-                return new RoleStore<TRole, TRoleClaim, TKey>(rolesCollection, identityErrorDescriber);
+                return new ApplicationRoleStore<TRole, TRoleClaim, TKey>(rolesCollection, identityErrorDescriber);
             });
 
             return builder;

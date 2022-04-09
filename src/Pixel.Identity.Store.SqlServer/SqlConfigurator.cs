@@ -47,8 +47,8 @@ public class SqlConfigurator : IConfigurator
             options.SignIn.RequireConfirmedAccount = true;
         })
        .AddRoles<ApplicationRole>()
-       .AddRoleStore<RoleStore>()
-       .AddUserStore<UsersStore>();
+       .AddRoleStore<ApplicationRoleStore>()
+       .AddUserStore<ApplicationUserStore>();
     }
 
     ///<inheritdoc/>

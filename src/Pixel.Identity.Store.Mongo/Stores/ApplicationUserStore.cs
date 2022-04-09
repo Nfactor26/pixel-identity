@@ -19,7 +19,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
     /// <typeparam name="TUserToken">Type representing a <see cref="IdentityUserToken{TKey}"/></typeparam>
     /// <typeparam name="TRoleClaim">Type representing a <see cref="IdentityRoleClaim{TKey}"/></typeparam>
     /// <typeparam name="TKey">Identifier type for documents e.g. Guid or ObjectId</typeparam>
-    public class UserStore<TUser, TRole, TUserClaim, TUserLogin, TUserToken, TRoleClaim, TKey>
+    public class ApplicationUserStore<TUser, TRole, TUserClaim, TUserLogin, TUserToken, TRoleClaim, TKey>
        : UserStoreBase<TUser, TRole, TKey, TUserClaim, TUserLogin, TUserToken,TRoleClaim>
        where TUser : ApplicationUser<TKey, TUserClaim, TUserLogin, TUserToken>
        where TRole : ApplicationRole<TKey, TRoleClaim>
@@ -45,7 +45,7 @@ namespace Pixel.Identity.Store.Mongo.Stores
         /// </summary>
         /// <param name="rolesCollection"></param>
         /// <param name="describer"></param>
-        public UserStore(IMongoCollection<TUser> usersCollection, IMongoCollection<TRole> rolesCollection, IdentityErrorDescriber describer)
+        public ApplicationUserStore(IMongoCollection<TUser> usersCollection, IMongoCollection<TRole> rolesCollection, IdentityErrorDescriber describer)
             : base(describer)
         {
             this.usersCollection = usersCollection;
