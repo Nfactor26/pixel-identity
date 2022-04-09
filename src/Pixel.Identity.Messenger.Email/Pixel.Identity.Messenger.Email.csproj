@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>  
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
 
