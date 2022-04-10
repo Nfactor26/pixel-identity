@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.Sql.Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.SqlServer", "src\Pixel.Identity.Store.SqlServer\Pixel.Identity.Store.SqlServer.csproj", "{E67F20E6-B228-467A-9C40-1B38EAD35367}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixel.Identity.Messenger.Console", "src\Pixel.Identity.Messenger.Console\Pixel.Identity.Messenger.Console.csproj", "{137631D2-6F14-43A2-885D-F61C63B7058C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,18 @@ Global
 		{E67F20E6-B228-467A-9C40-1B38EAD35367}.Release|x64.Build.0 = Release|Any CPU
 		{E67F20E6-B228-467A-9C40-1B38EAD35367}.Release|x86.ActiveCfg = Release|Any CPU
 		{E67F20E6-B228-467A-9C40-1B38EAD35367}.Release|x86.Build.0 = Release|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Debug|x64.Build.0 = Debug|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Debug|x86.Build.0 = Debug|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Release|x64.ActiveCfg = Release|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Release|x64.Build.0 = Release|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Release|x86.ActiveCfg = Release|Any CPU
+		{137631D2-6F14-43A2-885D-F61C63B7058C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

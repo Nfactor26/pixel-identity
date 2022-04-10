@@ -30,6 +30,9 @@ public class SqlConfigurator : IDataStoreConfigurator
     ///<inheritdoc/>
     public IdentityBuilder ConfigureIdentity(IConfiguration configuration, IServiceCollection services)
     {
+        var identityOptions = new IdentityOptions();
+        configuration.GetSection(nameof(IdentityOptions)).Bind(identityOptions);
+
         return services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlServer(configuration.GetConnectionString("SqlServerConnection"));
@@ -44,7 +47,24 @@ public class SqlConfigurator : IDataStoreConfigurator
             options.ClaimsIdentity.UserNameClaimType = Claims.Name;
             options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
             options.ClaimsIdentity.RoleClaimType = Claims.Role;
-            options.SignIn.RequireConfirmedAccount = true;
+
+            options.SignIn.RequireConfirmedPhoneNumber = identityOptions.SignIn.RequireConfirmedPhoneNumber;
+            options.SignIn.RequireConfirmedEmail = identityOptions.SignIn.RequireConfirmedEmail;
+            options.SignIn.RequireConfirmedAccount = identityOptions.SignIn.RequireConfirmedAccount;
+
+            options.User.AllowedUserNameCharacters = identityOptions.User.AllowedUserNameCharacters;
+            options.User.RequireUniqueEmail = identityOptions.User.RequireUniqueEmail;
+
+            options.Password.RequiredLength = identityOptions.Password.RequiredLength;
+            options.Password.RequiredUniqueChars = identityOptions.Password.RequiredUniqueChars;
+            options.Password.RequireNonAlphanumeric = identityOptions.Password.RequireNonAlphanumeric;
+            options.Password.RequireLowercase = identityOptions.Password.RequireLowercase;
+            options.Password.RequireUppercase = identityOptions.Password.RequireUppercase;
+            options.Password.RequireDigit = identityOptions.Password.RequireDigit;
+
+            options.Lockout.AllowedForNewUsers = identityOptions.Lockout.AllowedForNewUsers;
+            options.Lockout.MaxFailedAccessAttempts = identityOptions.Lockout.MaxFailedAccessAttempts;
+            options.Lockout.DefaultLockoutTimeSpan = identityOptions.Lockout.DefaultLockoutTimeSpan;
         })
        .AddRoles<ApplicationRole>()
        .AddRoleStore<ApplicationRoleStore>()
