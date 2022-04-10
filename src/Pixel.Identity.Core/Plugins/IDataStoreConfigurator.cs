@@ -7,7 +7,7 @@ namespace Pixel.Identity.Core
     /// IConfigurator is the extension mechanism for backend plugins to have a chance to configure the database to be used
     /// by the asp.net identity and openiddict.
     /// </summary>
-    public interface IConfigurator
+    public interface IDataStoreConfigurator
     {
         /// <summary>
         /// Configure Asp.Net identity for database to be used

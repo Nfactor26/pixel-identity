@@ -13,7 +13,7 @@ namespace Pixel.Identity.Store.Mongo
     /// <summary>
     /// Configure Pixel Identity to use the MongoDb backend for asp.net identity and OpenIddict
     /// </summary>
-    public class MongoConfigurator : IConfigurator
+    public class MongoConfigurator : IDataStoreConfigurator
     {       
         ///<inheritdoc/>
         public void ConfigureAutoMap(IServiceCollection services)
