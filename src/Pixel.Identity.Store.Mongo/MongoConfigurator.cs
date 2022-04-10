@@ -49,14 +49,33 @@ namespace Pixel.Identity.Store.Mongo
                 cm.UnmapMember(m => m.RoleId);
             });
 
+            var identityOptions = new IdentityOptions();
+            configuration.GetSection(nameof(IdentityOptions)).Bind(identityOptions);
+
             var mongoDbSettings = configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
             return services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.ClaimsIdentity.UserNameClaimType = OpenIddict.Abstractions.OpenIddictConstants.Claims.Name;
                 options.ClaimsIdentity.UserIdClaimType = OpenIddict.Abstractions.OpenIddictConstants.Claims.Subject;
                 options.ClaimsIdentity.RoleClaimType = OpenIddict.Abstractions.OpenIddictConstants.Claims.Role;
-                options.SignIn.RequireConfirmedAccount = true;
-                //options.User.RequireUniqueEmail = true;               
+
+                options.SignIn.RequireConfirmedPhoneNumber = identityOptions.SignIn.RequireConfirmedPhoneNumber;
+                options.SignIn.RequireConfirmedEmail = identityOptions.SignIn.RequireConfirmedEmail;
+                options.SignIn.RequireConfirmedAccount = identityOptions.SignIn.RequireConfirmedAccount;
+
+                options.User.AllowedUserNameCharacters = identityOptions.User.AllowedUserNameCharacters;
+                options.User.RequireUniqueEmail = identityOptions.User.RequireUniqueEmail;
+
+                options.Password.RequiredLength = identityOptions.Password.RequiredLength;
+                options.Password.RequiredUniqueChars = identityOptions.Password.RequiredUniqueChars;              
+                options.Password.RequireNonAlphanumeric = identityOptions.Password.RequireNonAlphanumeric;                         
+                options.Password.RequireLowercase = identityOptions.Password.RequireLowercase;
+                options.Password.RequireUppercase = identityOptions.Password.RequireUppercase;
+                options.Password.RequireDigit = identityOptions.Password.RequireDigit;
+
+                options.Lockout.AllowedForNewUsers = identityOptions.Lockout.AllowedForNewUsers;
+                options.Lockout.MaxFailedAccessAttempts = identityOptions.Lockout.MaxFailedAccessAttempts;  
+                options.Lockout.DefaultLockoutTimeSpan = identityOptions.Lockout.DefaultLockoutTimeSpan;
             })
             .AddRoles<ApplicationRole>()
             .AddMongoDbStore<ApplicationUser, ApplicationRole, 

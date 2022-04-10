@@ -50,7 +50,8 @@
 			<DbStorePluginProject Include="..\Pixel.Identity.Store.PostgreSQL\Pixel.Identity.Store.PostgreSQL.csproj" />
 		</ItemGroup>
 		<ItemGroup>
-			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj" />			
+			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj" />
+			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Console\Pixel.Identity.Messenger.Console.csproj" />
 		</ItemGroup>
 		<!--<Message Importance="high" Text="Executing build plugins now with PublishDir $(TargetDir)Plugins" />-->	
 		<MSBuild Projects="@(DbStorePluginProject)" Targets="Publish" Properties="PublishDir=$(TargetDir)Plugins\DbStore\%(FileName)\" />
