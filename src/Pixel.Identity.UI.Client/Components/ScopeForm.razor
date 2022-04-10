@@ -1,5 +1,5 @@
 ﻿<MudTextField Label="Name"
-              @bind-Value="Scope.Name" For="@(() => Scope.Name)" Disabled="true"/>
+              @bind-Value="Scope.Name" For="@(() => Scope.Name)" Disabled="!string.IsNullOrEmpty(Scope.Id)"/>
 <MudTextField Label="Display Name" Class="mt-3"
               @bind-Value="Scope.DisplayName" For="@(() => Scope.DisplayName)" />
 <MudTextField Label="Description" Class="mt-3"
