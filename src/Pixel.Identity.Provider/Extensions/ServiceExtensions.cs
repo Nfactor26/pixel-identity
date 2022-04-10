@@ -46,18 +46,19 @@ namespace Pixel.Identity.Provider.Extensions
         /// <param name="pluginName"></param>
         /// <param name="sharedTypes"></param>
         /// <returns></returns>
-        public static IServiceCollection AddPlugin(this IServiceCollection services, string pluginType, string pluginName, Type[] sharedTypes)
+        public static IServiceCollection AddPlugin<T>(this IServiceCollection services, Plugin plugin,
+            Action<T, IServiceCollection> configure)
         {         
-            string pluginsDirectory = Path.Combine(AppContext.BaseDirectory, "Plugins", "", pluginType, pluginName);           
+            string pluginsDirectory = Path.Combine(AppContext.BaseDirectory, plugin.Path, plugin.Name);           
             if (Directory.Exists(pluginsDirectory))
             {
-                var pluginFile = Directory.GetFiles(pluginsDirectory, "*.dll").Where(f => Path.GetFileNameWithoutExtension(f).Equals(pluginName)).Single();
-                var loader = PluginLoader.CreateFromAssemblyFile(pluginFile, sharedTypes: sharedTypes);
+                var pluginFile = Directory.GetFiles(pluginsDirectory, "*.dll").Where(f => Path.GetFileNameWithoutExtension(f).Equals(plugin.Name)).Single();
+                var loader = PluginLoader.CreateFromAssemblyFile(pluginFile, c => { c.PreferSharedTypes = true; }) ;
                 foreach (var type in loader.LoadDefaultAssembly().GetTypes()
-                    .Where(t => typeof(IServicePlugin).IsAssignableFrom(t) && !t.IsAbstract))
+                    .Where(t => typeof(T).IsAssignableFrom(t) && !t.IsAbstract))
                 {
-                    var servicePlugin =  (IServicePlugin)Activator.CreateInstance(type);
-                    servicePlugin.ConfigureService(services);
+                    var servicePlugin =  (T)Activator.CreateInstance(type);
+                    configure(servicePlugin, services);
                 }
             }
             return services;

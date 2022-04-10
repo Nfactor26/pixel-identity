@@ -1,5 +1,4 @@
 ﻿using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Text;
@@ -9,12 +8,12 @@ namespace Pixel.Identity.Messenger.Email
 {
     public class EmailSender : IEmailSender
     {
-        private readonly IConfiguration configuration;
         private readonly ILogger<EmailSender> logger;
+        private readonly SmtpOptions smtpOptions;
      
-        public EmailSender(IConfiguration configuration, ILogger<EmailSender> logger)
+        public EmailSender(SmtpOptions smtpOptions, ILogger<EmailSender> logger)
         {
-            this.configuration = configuration;
+            this.smtpOptions = smtpOptions;
             this.logger = logger;
         }
 
@@ -25,13 +24,13 @@ namespace Pixel.Identity.Messenger.Email
                 using (var smtp = new SmtpClient())
                 {
                     var email = new MimeMessage();
-                    email.From.Add(MailboxAddress.Parse(configuration["SMTP_USERNAME"]));
+                    email.From.Add(MailboxAddress.Parse(smtpOptions.From));
                     email.To.Add(MailboxAddress.Parse(sendTo));
                     email.Subject = subject;
                     email.Body = new TextPart(TextFormat.Html) { Text = htmlMessage };
 
-                    await smtp.ConnectAsync(configuration["SMTP_HOST"], int.Parse(configuration["SMTP_PORT"]));
-                    await smtp.AuthenticateAsync(configuration["SMTP_USERNAME"], configuration["SMTP_PASSWORD"]);
+                    await smtp.ConnectAsync(smtpOptions.Host, int.Parse(smtpOptions.Port));
+                    await smtp.AuthenticateAsync(smtpOptions.UserName, smtpOptions.Password);
                     await smtp.SendAsync(email);
                     await smtp.DisconnectAsync(true);
                 }

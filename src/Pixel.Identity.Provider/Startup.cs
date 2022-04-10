@@ -1,5 +1,3 @@
-using McMaster.NETCore.Plugins;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -10,11 +8,10 @@ using Microsoft.Extensions.Hosting;
 using MudBlazor;
 using MudBlazor.Services;
 using Pixel.Identity.Core;
+using Pixel.Identity.Core.Plugins;
 using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared;
 using Quartz;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -39,8 +36,8 @@ namespace Pixel.Identity.Provider
         {
             //services.ConfigureHttpLogging(Configuration);
 
-            var dbStorePlugin = LoadDbStorePlugin();
-            dbStorePlugin.ConfigureAutoMap(services);
+            var pluginsOptions = new PluginOptions();
+            Configuration.GetSection(PluginOptions.Plugins).Bind(pluginsOptions);
 
             //To forward the scheme from the proxy in non - IIS scenarios
             services.Configure<ForwardedHeadersOptions>(options =>
@@ -72,24 +69,29 @@ namespace Pixel.Identity.Provider
 
             ConfigureCors(services);
 
-            var authenticationBuilder = services.AddAuthentication();
-            foreach (var externalProvider in LoadExternalProviderPlugins())
+            services.AddPlugin<IServicePlugin>(pluginsOptions["EmailSender"].Single(), (p, s) => 
             {
-                externalProvider.AddProvider(this.Configuration, authenticationBuilder);
-            }
-
-            ConfigureOpenIddict(services, dbStorePlugin);
-
-            ConfigureAuthorizationPolicy(services);
-
-            ConfigureQuartz(services);
-
-            services.AddPlugin("Messenger", Configuration["EmailSenderPlugin"], new[] 
-            { 
-                typeof(IConfiguration), typeof(IEmailSender) 
+                p.ConfigureService(s, this.Configuration);
             });
 
-            dbStorePlugin.AddServices(services);
+            var authenticationBuilder = services.AddAuthentication();
+            foreach (var externalProvider in pluginsOptions["OAuthProvider"])
+            {
+                services.AddPlugin<IExternalAuthProvider>(externalProvider, (p, s) =>
+                { 
+                    p.AddProvider(this.Configuration, authenticationBuilder); 
+                });              
+            }        
+       
+            services.AddPlugin<IDataStoreConfigurator>(pluginsOptions["DbStore"].Single(), (p, s) =>
+            {
+                p.ConfigureAutoMap(s);
+                ConfigureOpenIddict(s, p);
+                p.AddServices(services);
+            });
+
+            ConfigureAuthorizationPolicy(services);
+            ConfigureQuartz(services);
         }
 
         /// <summary>
@@ -137,81 +139,7 @@ namespace Pixel.Identity.Provider
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
-        }
-
-        /// <summary>
-        /// It is possible to customize the database used by asp.net identity and OpenIddict.
-        /// Based on the value configured for 'UsePlugin' setting, load the appropriate plugin from Plugins\DbStore directory
-        /// and use it to configure asp.net identity and OpenIddict for what database backend to use.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">Throw when UsePlugin value is not configured</exception>
-        /// <exception cref="Exception"></exception>
-        private IConfigurator LoadDbStorePlugin()
-        {
-            string pluginToUse = Configuration["DbPlugin"] ?? throw new InvalidOperationException("DbPlugin to use is not configured");
-            var availablePlugins = Directory.GetDirectories(Path.Combine(AppContext.BaseDirectory, "Plugins", "DbStore"));
-            if(availablePlugins.Any())
-            {
-                foreach (var pluginDir in availablePlugins)
-                {
-                    var directoryInfo = new DirectoryInfo(pluginDir);
-                    if (directoryInfo.Name.Equals(pluginToUse))
-                    {
-                        foreach (var pluginFile in Directory.GetFiles(pluginDir, $"{pluginToUse}.dll"))
-                        {
-                            var loader = PluginLoader.CreateFromAssemblyFile(pluginFile,
-                            // this ensures that the plugin resolves to the same version of DependencyInjection
-                            // and ASP.NET Core that the current app uses
-                            sharedTypes: new[]
-                            {
-                                typeof(IConfigurator),
-                                typeof(OpenIddictQuartzBuilder),
-                                typeof(UI.Client.Program)
-                            });
-                            foreach (var type in loader.LoadDefaultAssembly().GetTypes()
-                                .Where(t => typeof(IConfigurator).IsAssignableFrom(t) && !t.IsAbstract))
-                            {                               
-                                return (IConfigurator)Activator.CreateInstance(type);
-                            }
-                        }
-                    }
-                }
-            }           
-            throw new Exception($"No DbStore plugin exists in Plugins\\DbStore directory");
-        }   
-
-        /// <summary>
-        /// Load the external OAuth based authentication provider plugins to allow login with these external OAuth based providers
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<IExternalAuthProvider> LoadExternalProviderPlugins()
-        {
-            string pluginsDirectory = Path.Combine(AppContext.BaseDirectory, "Plugins", "OAuthProviders");
-            if (Directory.Exists(pluginsDirectory))
-            {
-                var availablePlugins = Directory.GetDirectories(pluginsDirectory);
-                if (availablePlugins.Any())
-                {
-                    foreach (var pluginDir in availablePlugins)
-                    {
-                        //The dll file containing pluginDir name in it's name will be picked as the plugin file
-                        var pluginFile = Directory.GetFiles(pluginDir, "*.dll").Where(f => f.Contains(pluginDir)).Single();
-                        var loader = PluginLoader.CreateFromAssemblyFile(pluginFile, sharedTypes: new[]
-                            {
-                                typeof(IExternalAuthProvider),
-                                typeof(AuthenticationBuilder)
-                        });
-                        foreach (var type in loader.LoadDefaultAssembly().GetTypes()
-                            .Where(t => typeof(IExternalAuthProvider).IsAssignableFrom(t) && !t.IsAbstract))
-                        {
-                            yield return (IExternalAuthProvider)Activator.CreateInstance(type);
-                        }
-                    }
-                }
-            }
-           
-        }
+        }      
 
         /// <summary>
         /// Configure the Cors so that different clients can consume api
@@ -224,7 +152,7 @@ namespace Pixel.Identity.Provider
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        var allowedOrigins = Configuration["ALLOWED_ORIGINS"];
+                        var allowedOrigins = Configuration["AllowedOrigins"];
                         foreach (var item in allowedOrigins?.Split(';') ?? Enumerable.Empty<string>())
                         {
                             builder.WithOrigins(item);
@@ -273,7 +201,7 @@ namespace Pixel.Identity.Provider
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configurator"></param>
-        private void ConfigureOpenIddict(IServiceCollection services, IConfigurator configurator)
+        private void ConfigureOpenIddict(IServiceCollection services, IDataStoreConfigurator configurator)
         {
             //Configure Identity will call services.AddIdentity which will AddAuthentication  
             configurator.ConfigureIdentity(this.Configuration, services) 
