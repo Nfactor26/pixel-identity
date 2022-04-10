@@ -77,6 +77,7 @@ namespace Pixel.Identity.Store.Mongo.Controllers
                     {
                         return BadRequest(new BadRequestResponse(new[] { $"Scope is in use by {count} applications." }));
                     }
+                    await this.scopeManager.DeleteAsync(result, CancellationToken.None);
                     return Ok();
                 }
                 return NotFound(new NotFoundResponse($"Scope with id : {scopeId}  doesn't exist"));

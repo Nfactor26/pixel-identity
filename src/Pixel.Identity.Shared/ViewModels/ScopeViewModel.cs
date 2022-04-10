@@ -8,8 +8,8 @@ namespace Pixel.Identity.Shared.ViewModels
         /// <summary>
         /// Identifier of the scope
         /// </summary> 
-        [Required]
-        public string Id { get; set; }
+        [Required(AllowEmptyStrings = true)]
+        public string Id { get; set; } = string.Empty;
 
         private string name = string.Empty;
         /// <summary>
