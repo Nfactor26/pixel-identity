@@ -7,7 +7,7 @@ namespace Pixel.Identity.Shared.ViewModels
         AuthorizationCodeFlow,
         ClientCredentialsFlow,
         DeviceAuthorizationFlow,
-        ResourceOwnerPasswordCredentialsFlow,
+        Introspection,
         None
     }
 
@@ -26,8 +26,13 @@ namespace Pixel.Identity.Shared.ViewModels
                     applicationViewModel.Requirements.Add(OpenIddictConstants.Requirements.Features.ProofKeyForCodeExchange);
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Authorization);
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Token);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Logout);
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.RefreshToken);
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.ResponseTypes.Code);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Email);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Profile);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Roles);
                     break;
                 case ApplicationPreset.ClientCredentialsFlow:
                     applicationViewModel.Type = OpenIddictConstants.ClientTypes.Confidential;
@@ -38,13 +43,16 @@ namespace Pixel.Identity.Shared.ViewModels
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Device);
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Token);
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.DeviceCode);
-                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.RefreshToken);                   
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.RefreshToken);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Email);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Profile);
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Roles);
                     break;
-            }
-
-            applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Email);
-            applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Profile);
-            applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Roles);
+                case ApplicationPreset.Introspection:
+                    applicationViewModel.Type = OpenIddictConstants.ClientTypes.Confidential;
+                    applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Introspection);
+                    break;
+            }           
         }
 
         public static string ToDisplayString(this ApplicationPreset preset)
@@ -54,7 +62,7 @@ namespace Pixel.Identity.Shared.ViewModels
                 ApplicationPreset.AuthorizationCodeFlow => "Authorization Code Flow",
                 ApplicationPreset.ClientCredentialsFlow => "Client Credentials Flow",
                 ApplicationPreset.DeviceAuthorizationFlow => "Device Authorization Flow",
-                ApplicationPreset.ResourceOwnerPasswordCredentialsFlow => "Resource Owner Password Credentials Flow",
+                ApplicationPreset.Introspection => "Introspection",
                 ApplicationPreset.None => "None",
                 _ => preset.ToString()
             };

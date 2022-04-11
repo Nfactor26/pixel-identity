@@ -1,6 +1,6 @@
 ﻿<MudTextField Label="Client ID"
               @bind-Value="Application.ClientId" For="@(() => Application.ClientId)" />
-<MudTextField Label="Client Name" Class="mt-3"
+<MudTextField Label="Display Name" Class="mt-3"
               @bind-Value="Application.DisplayName" For="@(() => Application.DisplayName)" />
 <MudSelect T="string" Label="Client Type" @bind-Value="Application.Type">
     <MudSelectItem Value="@("public")" />
