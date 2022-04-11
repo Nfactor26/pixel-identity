@@ -4,6 +4,7 @@ using OpenIddict.Abstractions;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Components
@@ -65,12 +66,27 @@ namespace Pixel.Identity.UI.Client.Components
         {
             if(Application != null)
             {               
+                AddCustomScopes();
                 InitializePermissionState(endPointPermissions);
                 InitializePermissionState(grantTypePermissions);
                 InitializePermissionState(responseTypePermissions);
                 InitializePermissionState(scopePermissions);
                 InitializeRequirementState(requirements);
-            }          
+            }
+
+            //While editing an application back, we need to add any custom scope to the scopePermissions that was previously added 
+            void AddCustomScopes()
+            {
+                var scopes = Application.Permissions.Where(p => p.StartsWith("scp:"));
+                foreach (var scope in scopes)
+                {
+                    if (this.scopePermissions.Any(sp => sp.ItemValue.Equals(scope)))
+                    {
+                        continue;
+                    }
+                    this.scopePermissions.Add(new SwitchItemViewModel(scope, true));
+                }
+            }
         }
 
         void InitializePermissionState(List<SwitchItemViewModel> permissions)
