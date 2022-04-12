@@ -24,6 +24,7 @@
 		<PackageReference Include="OpenIddict.Quartz" Version="3.1.1" />
 		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.3.3" />
 		<PackageReference Include="MudBlazor" Version="6.0.7" />
+		<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />		
 	</ItemGroup>
