@@ -69,21 +69,21 @@
     <br />
 
     <MudCard Elevation="4">
-        <MudCardHeader>
+        <MudCardHeader Class="pb-0">
             <CardHeaderContent>
-                <MudText Typo="Typo.h6">Manage Roles</MudText>
-            </CardHeaderContent>
-            <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
-                           @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
-            </CardHeaderActions>
+                <div class="d-flex flex-wrap">
+                    <MudText Typo="Typo.h6" Class="mt-2">Resources</MudText>
+                    <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                        @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
+                </div>
+            </CardHeaderContent>            
         </MudCardHeader>
-        <MudCardContent>
+        <MudCardContent Class="pt-1">
             <EditableCollection TItem="UserRoleViewModel" TValue="string" ItemSize="2"
                             OnDeleteItem="@DeleteRoleAsync" OnAddNewItem="AddRoleAsync"
                             Items="(user.UserRoles ?? Enumerable.Empty<UserRoleViewModel>())" NewItem="@string.Empty">
                 <ItemTemplate Context="item">
-                    <MudText Typo="Typo.h6">@item.RoleName</MudText>
+                    <MudText Color="Color.Info" Typo="Typo.subtitle1" Class="ml-1">@item.RoleName</MudText>
                 </ItemTemplate>
             </EditableCollection>
         </MudCardContent>

@@ -5,14 +5,24 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Components
 {
+    /// <summary>
+    /// Component use to create and update <see cref="OpenIddict.Abstractions.OpenIddictScopeDescriptor"/>
+    /// </summary>
     public partial class ScopeForm : ComponentBase
     {
+        /// <summary>
+        /// ViewModel
+        /// </summary>
         [CascadingParameter]
         public ScopeViewModel Scope { get; set; }
 
         [Parameter]
         public IDialogService Dialog { get; set; }
 
+        /// <summary>
+        /// Shows a dialog to allow user to add a new resource to the scope.
+        /// </summary>
+        /// <returns></returns>
         async Task AddScopeResource()
         {
             var parameters = new DialogParameters();
@@ -25,6 +35,10 @@ namespace Pixel.Identity.UI.Client.Components
             }
         }
        
+        /// <summary>
+        /// Remove resource from the scope.
+        /// </summary>
+        /// <param name="scope"></param>
         void RemoveScopeResource(string scope)
         {
             if(Scope.Resources.Contains(scope))

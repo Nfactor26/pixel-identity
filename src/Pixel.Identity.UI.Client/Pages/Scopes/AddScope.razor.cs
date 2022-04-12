@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Pixel.Identity.UI.Client.Pages.Scopes
 {
     /// <summary>
-    /// component to add scope
+    /// Add Scope view allows user to  create a new <see cref="OpenIddict.Abstractions.OpenIddictScopeDescriptor"/>
     /// </summary>
     public partial class AddScope : ComponentBase
     {
@@ -23,7 +23,7 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
         ScopeViewModel scope = new ScopeViewModel();
 
         /// <summary>
-        /// Create a new scope
+        /// Make a post request to service endpoint to add a new scope 
         /// </summary>
         /// <returns></returns>
         async Task AddScopeAsync()
