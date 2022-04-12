@@ -4,7 +4,7 @@
               @bind-Value="Scope.DisplayName" For="@(() => Scope.DisplayName)" />
 <MudTextField Label="Description" Class="mt-3"
               @bind-Value="Scope.Description" For="@(() => Scope.Description)" />
-<div class="d-flex flex-wrap">
+<div class="d-flex flex-wrap mt-2">
     <MudText Typo="Typo.h6" Class="mt-2">Resources</MudText>
     <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                    @onclick="AddScopeResource" Color="Color.Primary"></MudIconButton>
@@ -13,6 +13,6 @@
 <EditableCollection TItem="string" TValue="string" ItemSize="3" OnDeleteItem="@RemoveScopeResource"
                     Items="(Scope.Resources ?? Enumerable.Empty<string>())">
     <ItemTemplate Context="item">
-        <MudText Color="Color.Info" Typo="Typo.subtitle1">@item.ToString()</MudText>
+        <MudText Color="Color.Info" Typo="Typo.subtitle1" Class="ml-1">@item.ToString()</MudText>
     </ItemTemplate>  
 </EditableCollection>

@@ -5,14 +5,14 @@
     {
         foreach (var item in Items)
         {
-            <MudItem xs="@itemSize" Class="py-2 px-0 ml-1 mr-2">
+            <MudItem xs="@itemSize" Class="py-0 px-0 ml-1 mr-2">
                 <MudCard>
-                    <MudCardHeader Class="pa-2">
+                    <MudCardHeader Class="pa-1">
                         <CardHeaderContent>
                             @ItemTemplate(item)
                         </CardHeaderContent>
                         <CardHeaderActions>
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"  Class="mt-2 mr-1"
                                            OnClick="@(() => OnDeleteItem.InvokeAsync(item))" Color="Color.Error" />
                         </CardHeaderActions>
                     </MudCardHeader>

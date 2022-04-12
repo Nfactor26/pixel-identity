@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Pixel.Identity.UI.Client.Pages.Scopes
 {
     /// <summary>
-    /// Component to list scopes
+    /// List scope view allows user to see all the existing <see cref="OpenIddict.Abstractions.OpenIddictScopeDescriptor"/>
     /// </summary>
     public partial class ScopeList : ComponentBase
     {
@@ -32,7 +32,7 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
         private bool resetCurrentPage = false;
 
         /// <summary>
-        /// Get scopes from api endpoint for the current page of the data table
+        /// Get scopes from api service endpoint for the current page of the data table
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
