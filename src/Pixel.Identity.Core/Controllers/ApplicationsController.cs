@@ -72,6 +72,13 @@ namespace Pixel.Identity.Core.Controllers
                     if (existing != null)
                     {
                         var openIdApplicationDescriptor = mapper.Map<OpenIddictApplicationDescriptor>(applicationDescriptor);
+                        //No new secret to update. Populate existing on descriptor before updating
+                        if(applicationDescriptor.IsConfidentialClient && string.IsNullOrEmpty(applicationDescriptor.ClientSecret))
+                        {
+                            var descriptorFromExisting = new OpenIddictApplicationDescriptor();
+                            await applicationManager.PopulateAsync(descriptorFromExisting, existing);
+                            openIdApplicationDescriptor.ClientSecret = descriptorFromExisting.ClientSecret;                          
+                        }                     
                         await applicationManager.UpdateAsync(existing, openIdApplicationDescriptor, CancellationToken.None);
                         return Ok();
                     }
