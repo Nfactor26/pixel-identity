@@ -12,6 +12,7 @@ using Pixel.Identity.Core.Plugins;
 using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared;
 using Quartz;
+using Serilog;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -114,8 +115,10 @@ namespace Pixel.Identity.Provider
                 //app.UseHsts();
             }
 
-            app.UsePathBase("/pauth");          
-
+            app.UsePathBase("/pauth");
+           
+            app.UseSerilogRequestLogging();
+           
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -125,8 +128,7 @@ namespace Pixel.Identity.Provider
             //app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
-            app.UseHttpLogging();
+         
             app.UseRouting();
             app.UseCors();
 
