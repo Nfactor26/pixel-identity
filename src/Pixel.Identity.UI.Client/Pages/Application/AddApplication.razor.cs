@@ -22,6 +22,9 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         public ISnackbar SnackBar { get; set; }
 
         [Inject]
+        public IDialogService DialogService { get; set; }
+
+        [Inject]
         public NavigationManager Navigator { get; set; }
 
         ApplicationViewModel application = new ();
@@ -45,15 +48,16 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         /// <returns></returns>
         async Task AddApplicationDetailsAsync()
         {
+            if(application.IsConfidentialClient)
+            {
+                await DialogService.ShowMessageBox("Information", "Store client secret safely as it can't be viewed later.",
+                 "Ok", options: new DialogOptions() { FullWidth = true });
+            }
             var result = await Service.AddApplicationDescriptorAsync(application);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Added successfully.", Severity.Success);
-                if(application.IsConfidentialClient)
-                {
-                    SnackBar.Add("Store client secret safely as it can't be viewed later.", Severity.Info);
-                }              
-                application = new ApplicationViewModel();
+                Navigator.NavigateTo($"applications/list");
+                SnackBar.Add("Added successfully.", Severity.Success);               
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>

@@ -1,6 +1,5 @@
 ﻿using Pixel.Identity.Shared.Responses;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -54,7 +53,7 @@ namespace Pixel.Identity.Shared.Models
             catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.InternalServerError)
             {
                 var problemResponse = await result?.Content.ReadFromJsonAsync<ProblemResponse>();
-                return Failed(result.StatusCode, problemResponse.Message);
+                return Failed(result.StatusCode, problemResponse.Title);
             }           
         }
 
