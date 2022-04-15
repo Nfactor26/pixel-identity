@@ -9,7 +9,7 @@
                       Variant="Variant.Text" Immediate="true"></MudTextField>
         <MudTextField @bind-Value="@model.Value" Label="Value" @onfocus="(() => error = string.Empty)"
                       Variant="Variant.Text" Immediate="true"></MudTextField>
-
+        <br/>
         <MudSwitch @bind-Checked="model.IncludeInAccessToken" Label="Include in access token" Color="Color.Primary" />
 
         <MudSwitch @bind-Checked="model.IncludeInIdentityToken" Label="Include in identity token" Color="Color.Primary" />
