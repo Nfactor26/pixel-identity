@@ -12,25 +12,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="10.1.1" />
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-		<PackageReference Include="MailKit" Version="3.0.0" />
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="MailKit" Version="3.2.0" />
 		<PackageReference Include="McMaster.NETCore.Plugins.Mvc" Version="1.4.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.1" />	
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.4" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />	
 		<PackageReference Include="OpenIddict.AspNetCore" Version="3.1.1" />
 		<PackageReference Include="OpenIddict.Quartz" Version="3.1.1" />
-		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.3.3" />
-		<PackageReference Include="MudBlazor" Version="6.0.7" />
+		<PackageReference Include="Quartz.Extensions.Hosting" Version="3.4.0" />
+		<PackageReference Include="MudBlazor" Version="6.0.9" />
 		<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.1.4" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />		
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.0" />		
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj" />
+		<ProjectReference Include="..\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj" />
 		<ProjectReference Include="..\Pixel.Identity.Shared\Pixel.Identity.Shared.csproj" />
 		<ProjectReference Include="..\Pixel.Identity.UI.Client\Pixel.Identity.UI.Client.csproj" />
 	</ItemGroup>	

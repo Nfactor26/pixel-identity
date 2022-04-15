@@ -67,12 +67,6 @@ namespace Pixel.Identity.Shared.ViewModels
         /// </summary>
         [Required]
         public List<string> Requirements { get; set; } = new();
-
-        /// <summary>
-        /// Gets the additional properties associated with the application.
-        /// </summary>
-        [Required]
-        public Dictionary<string, JsonElement> Properties { get; set; } = new(StringComparer.Ordinal);      
        
     }
 }
