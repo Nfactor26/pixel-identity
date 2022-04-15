@@ -28,7 +28,7 @@ namespace Pixel.Identity.Store.Mongo
                 await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
                     ClientId = "pixel-identity-ui",
-                    ConsentType = ConsentTypes.Explicit,
+                    ConsentType = ConsentTypes.Implicit,
                     DisplayName = "Pixel Identity",
                     Type = ClientTypes.Public,
                     PostLogoutRedirectUris =

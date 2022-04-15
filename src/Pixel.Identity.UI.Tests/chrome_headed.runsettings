@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<RunConfiguration>
+		<EnvironmentVariables>
+			<HEADED>1</HEADED>
+			<BROWSER>Chromium</BROWSER>
+			<!--<DEBUG>pw:api</DEBUG>-->
+		</EnvironmentVariables>
+	</RunConfiguration>
+</RunSettings>
