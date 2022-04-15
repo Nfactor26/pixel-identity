@@ -1,9 +1,10 @@
 ﻿@page "/applications/edit/{clientId?}"
 @attribute [Authorize(Policy = Policies.CanManageApplications)]
+
+<MudText Typo="Typo.h4">Edit Details</MudText>
+<br />
 @if (application != null)
 {
-    <MudText Typo="Typo.h4">Edit Details</MudText>
-    <br />
     <MudPaper Elevation="4">
         <EditForm Model="@application" OnValidSubmit="UpdateApplicationDetailsAsync">
             <FluentValidator />
@@ -19,5 +20,10 @@
             </MudCard>
         </EditForm>
     </MudPaper>
-
 }
+
+@if (hasErrors)
+{
+    <MudAlert Severity="Severity.Error">Application details could not be retrieved for clientId : @(clientId ?? string.Empty).</MudAlert>
+}
+

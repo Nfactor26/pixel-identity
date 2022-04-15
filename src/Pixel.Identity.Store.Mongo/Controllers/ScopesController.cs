@@ -62,30 +62,23 @@ namespace Pixel.Identity.Store.Mongo.Controllers
         [HttpDelete("{scopeId}")]
         public override async Task<IActionResult> Delete(string scopeId)
         {
-            try
+            var result = await this.scopeManager.FindByIdAsync(scopeId);
+            var scope = mapper.Map<ScopeViewModel>(result);
+            if (scope != null)
             {
-                var result = await this.scopeManager.FindByIdAsync(scopeId);
-                var scope = mapper.Map<ScopeViewModel>(result);
-                if (scope != null)
+                Func<IQueryable<object>, IQueryable<OpenIddictMongoDbApplication>> query
+                   = (apps) => apps.Where(app => (app as OpenIddictMongoDbApplication)
+                     .Permissions.Any(p => p.Contains(scope.Name)))
+                     .Select(s => s as OpenIddictMongoDbApplication);
+                long count = await this.applicationManager.CountAsync(query, CancellationToken.None);
+                if (count > 0)
                 {
-                    Func<IQueryable<object>, IQueryable<OpenIddictMongoDbApplication>> query
-                       = (apps) => apps.Where(app => (app as OpenIddictMongoDbApplication)
-                         .Permissions.Any(p => p.Contains(scope.Name)))
-                         .Select(s => s as OpenIddictMongoDbApplication);                  
-                    long count = await this.applicationManager.CountAsync(query, CancellationToken.None);
-                    if (count > 0)
-                    {
-                        return BadRequest(new BadRequestResponse(new[] { $"Scope is in use by {count} applications." }));
-                    }
-                    await this.scopeManager.DeleteAsync(result, CancellationToken.None);
-                    return Ok();
+                    return BadRequest(new BadRequestResponse(new[] { $"Scope is in use by {count} applications." }));
                 }
-                return NotFound(new NotFoundResponse($"Scope with id : {scopeId}  doesn't exist"));
+                await this.scopeManager.DeleteAsync(result, CancellationToken.None);
+                return Ok();
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new BadRequestResponse(new[] { ex.Message }));
-            }
+            return NotFound(new NotFoundResponse($"Scope with id : {scopeId}  doesn't exist"));
         }
     }
 }

@@ -27,7 +27,9 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         [Parameter]
         public string clientId { get; set; }
 
-        ApplicationViewModel application;               
+        ApplicationViewModel application;
+
+        bool hasErrors = false;
        
         /// <summary>
         /// Fetch application details when clientId is set
@@ -35,21 +37,7 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
-            if (!string.IsNullOrEmpty(clientId))
-            {
-                try
-                {
-                    application = await Service.GetByClientIdAsync(clientId);
-                }
-                catch (Exception ex)
-                {
-                    SnackBar.Add($"Failed to retrieve application data. {ex.Message}", Severity.Error);
-                }
-            }
-            else
-            {
-                SnackBar.Add("No clientId specified.", Severity.Error);
-            }
+            this.application = await GetApplicationDetailsAsync(this.clientId);
         }   
         
         /// <summary>
@@ -62,6 +50,7 @@ namespace Pixel.Identity.UI.Client.Pages.Application
             if (result.IsSuccess)
             {
                 SnackBar.Add("Updated successfully.", Severity.Success);
+                this.application = await GetApplicationDetailsAsync(this.clientId);             
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>
@@ -69,6 +58,33 @@ namespace Pixel.Identity.UI.Client.Pages.Application
                 config.ShowCloseIcon = true;
                 config.RequireInteraction = true;
             });
+        }
+
+        /// <summary>
+        /// Retrieve application details given it's client id
+        /// </summary>
+        /// <param name="applicationClientId"></param>
+        /// <returns></returns>
+        private async Task<ApplicationViewModel> GetApplicationDetailsAsync(string applicationClientId)
+        {
+            if (!string.IsNullOrEmpty(applicationClientId))
+            {
+                try
+                {
+                    return await Service.GetByClientIdAsync(applicationClientId);                  
+                }
+                catch (Exception ex)
+                {
+                    hasErrors = true;
+                    SnackBar.Add($"Failed to retrieve application data. {ex.Message}", Severity.Error);
+                }
+            }
+            else
+            {
+                hasErrors = true;
+                SnackBar.Add("No clientId specified.", Severity.Error);
+            }
+            return null;
         }
     }
 }

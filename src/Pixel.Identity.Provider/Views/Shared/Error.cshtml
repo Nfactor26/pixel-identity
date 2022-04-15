@@ -1,0 +1,25 @@
+﻿@using Microsoft.Extensions.Primitives
+@model Pixel.Identity.Core.ViewModels.ErrorViewModel
+
+<div class="main">
+    <div class="content px-4">
+        <h2 class="text-danger">An error occurred while processing your request.</h2>
+        @if (Model.ShowRequestId)
+        {
+            <p>
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </p>
+        }
+        
+        <p>
+            <strong>Error Message:</strong> <code>@Model.Message</code>
+        </p>
+
+        @if (Model.ShowStackTrace)
+        {
+            <p>
+                <strong>Stack Trace:</strong> <code>@Model.StackTrace</code>
+            </p>
+        }
+    </div>
+</div>

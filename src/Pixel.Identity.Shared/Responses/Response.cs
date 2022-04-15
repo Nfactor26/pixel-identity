@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Pixel.Identity.Shared.Responses
 {
     public class ResponseBase
-    {
-        [Required]
-        public int StatusCode { get; set; }
+    {       
+        public int Status { get; set; }
 
         public string Message { get; set; }
       
@@ -14,15 +14,15 @@ namespace Pixel.Identity.Shared.Responses
         {
         }
 
-        public ResponseBase(int statusCode, string message)
+        public ResponseBase(int status, string message)
         {
-            StatusCode = statusCode;
-            Message = message ?? GetDefaultMessageForStatusCode(statusCode);
+            Status = status;
+            Message = message ?? GetDefaultMessageForStatusCode(status);
         }
 
-        private static string GetDefaultMessageForStatusCode(int statusCode)
+        private static string GetDefaultMessageForStatusCode(int status)
         {
-            switch (statusCode)
+            switch (status)
             {
                 case 400:
                     return "Bad Request";
@@ -31,7 +31,7 @@ namespace Pixel.Identity.Shared.Responses
                 case 500:
                     return "An unhandled error occurred";
                 default:
-                    return statusCode.ToString();
+                    return status.ToString();
             }
         }
     }
@@ -76,7 +76,18 @@ namespace Pixel.Identity.Shared.Responses
     }
 
     public class ProblemResponse : ResponseBase
-    {
+    {                
+        public string? Type { get; set; }      
+        
+        public string? Title { get; set; }        
+     
+        public string? Detail { get; set; }     
+     
+        public string? Instance { get; set; }
+     
+        [JsonExtensionData]
+        public IDictionary<string, object?> Extensions { get; } = new Dictionary<string, object?>(StringComparer.Ordinal);
+
         public ProblemResponse() : base()
         {
         }
