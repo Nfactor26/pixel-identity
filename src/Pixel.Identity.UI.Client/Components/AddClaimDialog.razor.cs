@@ -35,10 +35,16 @@ namespace Pixel.Identity.UI.Client.Components
                 //Don't try to add claim to role if role is not yet created.
                 if (!string.IsNullOrEmpty(Owner))
                 {
-                    await Service.AddClaimAsync(Owner, model);
+                    var result = await Service.AddClaimAsync(Owner, model);
+                    if (result.IsSuccess)
+                    {
+                        MudDialog.Close(DialogResult.Ok<ClaimViewModel>(model));
+                        return;
+                    }
+                    error = result.ToString();
+                    return;
                 }
-                MudDialog.Close(DialogResult.Ok<ClaimViewModel>(model));
-                return;
+             
             }
             error = $"Claim with type {model.Type} already exists for role.";
         }

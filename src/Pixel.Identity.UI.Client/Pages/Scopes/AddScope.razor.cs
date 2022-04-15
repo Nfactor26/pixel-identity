@@ -19,7 +19,11 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
 
         [Inject]
         public ISnackbar SnackBar { get; set; }
-      
+
+        [Inject]
+        public NavigationManager Navigator { get; set; }
+
+
         ScopeViewModel scope = new ScopeViewModel();
 
         /// <summary>
@@ -31,8 +35,8 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
             var result = await Service.AddScopeAsync(scope);
             if (result.IsSuccess)
             {
-                SnackBar.Add("Added successfully.", Severity.Success);
-                scope = new ScopeViewModel();
+                Navigator.NavigateTo($"scopes/list");
+                SnackBar.Add("Added successfully.", Severity.Success);              
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>

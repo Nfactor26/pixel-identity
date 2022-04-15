@@ -56,10 +56,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         async Task AddClaimAsync()
         {
             var parameters = new DialogParameters();
-            if (model.Exists)
-            {
-                parameters.Add("Owner", model.RoleName);
-            }
+            parameters.Add("Owner", model.RoleName);
             parameters.Add("ExistingClaims", model.Claims);
             parameters.Add("Service", RoleClaimsService);
             var dialog = Dialog.Show<AddClaimDialog>("Add Claim", parameters, new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, CloseButton = true });
@@ -67,10 +64,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
             if (!result.Cancelled && result.Data is ClaimViewModel claim)
             {
                 model.Claims.Add(claim);
-                if (model.Exists)
-                {
-                    SnackBar.Add($"Claim was added.", Severity.Success);
-                }
+                SnackBar.Add($"Claim was added.", Severity.Success);
             }
         }
 
@@ -82,20 +76,19 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         async Task RemoveClaimAsync(ClaimViewModel claim)
         {
             if (model.Claims.Contains(claim))
-            {
-                model.Claims.Remove(claim);
-                if (model.Exists)
+            {               
+                var result = await RoleClaimsService.RemoveClaimAsync(model.RoleName, claim);
+                if (result.IsSuccess)
                 {
-                    var result = await RoleClaimsService.RemoveClaimAsync(model.RoleName, claim);
-                    if (result.IsSuccess)
-                    {
-                        SnackBar.Add($"Claim {claim.Type}:{claim.Value} was removed.", Severity.Success);
-                    }
-                    else
-                    {
-                        SnackBar.Add($"Failed to delete claim {claim.Type}:{claim.Value}. {result}", Severity.Error);
-                    }
+                    model.Claims.Remove(claim);
+                    SnackBar.Add($"Claim {claim.Type}:{claim.Value} was removed.", Severity.Success);
+                    return;
                 }
+                SnackBar.Add(result.ToString(), Severity.Error, config =>
+                {
+                    config.ShowCloseIcon = true;
+                    config.RequireInteraction = true;
+                });              
             }
         }
 
@@ -107,22 +100,18 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         /// <returns></returns>
         async Task<bool> UpdateClaimAsync(ClaimViewModel original, ClaimViewModel modified)
         {
-            try
+            var result = await RoleClaimsService.UpdateClaimAsync(model.RoleName, original, modified);
+            if (result.IsSuccess)
             {
-                var result = await RoleClaimsService.UpdateClaimAsync(model.RoleName, original, modified);
-                if(result.IsSuccess)
-                {
-                    SnackBar.Add($"Claim was updated.", Severity.Success);
-                    return true;
-                }
-                SnackBar.Add(result.ToString(), Severity.Error);
-                return false;
+                SnackBar.Add($"Claim was updated.", Severity.Success);
+                return true;
             }
-            catch (Exception ex)
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
             {
-                SnackBar.Add($"Failed to update claim : {original.Type}. {ex.Message}", Severity.Error);
-                return false;
-            }           
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
+            return false;
         }
     }
 }

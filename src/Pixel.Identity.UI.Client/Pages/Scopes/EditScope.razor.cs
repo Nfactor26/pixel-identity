@@ -26,26 +26,15 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
 
         ScopeViewModel scope;
 
+        bool hasErrors = false;
+
         /// <summary>
         /// Retrieve the Scope details when Id parameter is set
         /// </summary>
         /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
-            try
-            {
-                if (!string.IsNullOrEmpty(Id))
-                {
-                    this.scope = await Service.GetByIdAsync(Id);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                SnackBar.Add($"Failed to retrieve scope. {ex.Message}", Severity.Error);
-            }
-
-            SnackBar.Add("No role specified to edit.", Severity.Error);
+            this.scope = await GetScopeDetailsAsync(Id);
         }
 
         /// <summary>
@@ -57,8 +46,8 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
             var result = await Service.UpdateScopeAsync(scope);
             if (result.IsSuccess)
             {
-                this.scope = await Service.GetByIdAsync(Id);
-                SnackBar.Add("Updated successfully.", Severity.Success);              
+                SnackBar.Add("Updated successfully.", Severity.Success);
+                this.scope = await GetScopeDetailsAsync(Id);
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>
@@ -66,6 +55,33 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
                 config.ShowCloseIcon = true;
                 config.RequireInteraction = true;
             });
+        }
+
+        /// <summary>
+        /// Retrieve scope details given scope id
+        /// </summary>
+        /// <param name="scopeId"></param>
+        /// <returns></returns>
+        private async Task<ScopeViewModel> GetScopeDetailsAsync(string scopeId)
+        {
+            if (!string.IsNullOrEmpty(scopeId))
+            {
+                try
+                {
+                    return await Service.GetByIdAsync(scopeId);
+                }
+                catch (Exception ex)
+                {
+                    hasErrors = true;
+                    SnackBar.Add($"Failed to retrieve scope data. {ex.Message}", Severity.Error);
+                }
+            }
+            else
+            {
+                hasErrors = true;
+                SnackBar.Add("No scopeId specified.", Severity.Error);
+            }
+            return null;
         }
     }
 }

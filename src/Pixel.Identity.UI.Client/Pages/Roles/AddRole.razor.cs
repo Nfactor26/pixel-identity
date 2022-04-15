@@ -2,13 +2,12 @@
 using MudBlazor;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
-using System;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Roles
 {
     /// <summary>
-    /// Component to add new roles
+    /// Add role view allows user to create a new Asp.Net Identity Role/>
     /// </summary>
     public partial class AddRole : ComponentBase
     {
@@ -20,7 +19,10 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
 
         [Inject]
         public ISnackbar SnackBar { get; set; }
-      
+
+        [Inject]
+        public NavigationManager Navigator { get; set; }
+
         UserRoleViewModel model = new UserRoleViewModel(string.Empty);
 
         /// <summary>
@@ -29,24 +31,18 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         /// <returns></returns>
         async Task AddRoleAsync()
         {
-            if (!string.IsNullOrEmpty(model.RoleName))
+            var result = await UserRolesService.CreateRoleAsync(model);
+            if (result.IsSuccess)
             {
-                try
-                {
-                    var result = await UserRolesService.CreateRoleAsync(model);
-                    if(result.IsSuccess)
-                    {
-                        SnackBar.Add("Added successfully.", Severity.Success);
-                        model = new UserRoleViewModel(string.Empty);
-                        return;
-                    }
-                    SnackBar.Add(result.ToString(), Severity.Error);
-                }
-                catch (Exception ex)
-                {
-                    SnackBar.Add(ex.Message, Severity.Error);
-                }                  
+                SnackBar.Add("Added successfully.", Severity.Success);
+                Navigator.NavigateTo($"roles/list");
+                return;
             }
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
+            {
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
         }
     }
 }
