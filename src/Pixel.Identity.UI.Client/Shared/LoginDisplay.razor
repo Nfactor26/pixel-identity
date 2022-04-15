@@ -6,24 +6,24 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudMenu Direction="Direction.Left" OffsetX="true">
+        <MudMenu id="signedInMenu" Direction="Direction.Left" OffsetX="true">
             <ActivatorContent>
                 <MudAvatar>@context.User.Identity.Name.First()</MudAvatar>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem Link="/authentication/profile">Profile</MudMenuItem>
-                <MudMenuItem @onclick="BeginSignOut">Sign Out</MudMenuItem>
+                <MudMenuItem id="profileMenuItem" Link="/authentication/profile">Profile</MudMenuItem>
+                <MudMenuItem id="signOutMenuItem" @onclick="BeginSignOut">Sign Out</MudMenuItem>
             </ChildContent>
         </MudMenu>
     </Authorized>
     <NotAuthorized>
         <MudToolBar Spacing="5">
-            <MudButton Link="authentication/register"                      
+            <MudButton id="registerPageLink" Link="authentication/register"                      
                        Variant="Variant.Outlined"
                        Color="Color.Tertiary" Class="mr-5">
                 Register
             </MudButton>
-            <MudButton Link="authentication/login"                   
+            <MudButton id="loginPageLink" Link="authentication/login"                   
                        Variant="Variant.Outlined"
                        Color="Color.Tertiary" Class="mr-5">
                 Login
