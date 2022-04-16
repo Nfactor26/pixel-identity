@@ -113,6 +113,31 @@ namespace Pixel.Identity.Core.Controllers
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }
 
+        /// <summary>
+        /// Update role name to a new value
+        /// </summary>
+        /// <param name="userRole"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<IActionResult> UpdateRoleNameAsync(UpdateRoleNameRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                var role = await roleManager.FindByIdAsync(request.RoleId);
+                if (role == null)
+                {
+                    return NotFound(new NotFoundResponse($"Failed to find role with Id : {request.RoleId}"));
+                }
+                if ((!role.Name?.Equals(request.NewName)) ?? false)
+                {
+                    await roleManager.SetRoleNameAsync(role, request.NewName);
+                    await roleManager.UpdateAsync(role);                    
+                }
+                return Ok();
+            }
+            return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
+        }
+
 
         [HttpDelete("{roleName}")]
         public async Task<IActionResult> Delete(string roleName)

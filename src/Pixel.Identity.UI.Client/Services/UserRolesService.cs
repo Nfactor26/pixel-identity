@@ -37,6 +37,13 @@ namespace Pixel.Identity.UI.Client.Services
         Task<OperationResult> CreateRoleAsync(UserRoleViewModel userRoleViewModel);
 
         /// <summary>
+        /// Update role name to a new value
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        Task<OperationResult> UpdateRoleNameAsync(UpdateRoleNameRequest request);
+
+        /// <summary>
         /// Delete an existing role with specified name
         /// </summary>
         /// <param name="roleName">Name of the role to delete</param>
@@ -102,6 +109,13 @@ namespace Pixel.Identity.UI.Client.Services
         public async Task<OperationResult> CreateRoleAsync(UserRoleViewModel userRoleViewModel)
         {
             var response = await httpClient.PostAsJsonAsync<UserRoleViewModel>("api/roles", userRoleViewModel);
+            return await OperationResult.FromResponseAsync(response);
+        }
+
+        /// <inheritdoc/>
+        public async Task<OperationResult> UpdateRoleNameAsync(UpdateRoleNameRequest request)
+        {
+            var response = await httpClient.PutAsJsonAsync<UpdateRoleNameRequest>("api/roles", request);
             return await OperationResult.FromResponseAsync(response);
         }
 
