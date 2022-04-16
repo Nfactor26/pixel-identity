@@ -31,7 +31,9 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         [Inject]
         public IUserClaimsService ClaimsService { get; set; }
 
-        UserDetailsViewModel user;               
+        UserDetailsViewModel user;
+
+        bool hasErrors = false;
       
         /// <summary>
         /// Retrieve user deatails when userName parameter is set
@@ -41,7 +43,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         {
             if(!string.IsNullOrEmpty(userId))
             {
-                user = await GetUserDetailsAsync(userId);
+                this.user = await GetUserDetailsAsync(userId);
             }           
         }
 
@@ -58,6 +60,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             }
             catch (Exception ex)
             {
+                hasErrors = true;
                 SnackBar.Add(ex.Message, Severity.Error, config =>
                 {
                     config.ShowCloseIcon = true;
@@ -77,6 +80,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             if (result.IsSuccess)
             {
                 SnackBar.Add("User details updated successfully.", Severity.Success);
+                this.user = await GetUserDetailsAsync(userId);
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>
@@ -95,8 +99,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             var result = await UsersService.LockUserAccountAsync(user);
             if (result.IsSuccess)
             {
-                SnackBar.Add("User account locked successfully.", Severity.Success);
-                user = await GetUserDetailsAsync(user.Id);
+                SnackBar.Add("User account locked successfully.", Severity.Success);               
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>
@@ -137,7 +140,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             if(result.IsSuccess)
             {
                 user.UserRoles.Remove(roleToDelete);
-                SnackBar.Add($"Role was successfully removed.", Severity.Success);
+                SnackBar.Add("Role was successfully removed.", Severity.Success);
                 return;
             }
             SnackBar.Add($"Error while removing role.{result}", Severity.Error);
@@ -158,7 +161,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
                 if (assignRoleResult.IsSuccess)
                 {
                     user.UserRoles.Add(userRole);
-                    SnackBar.Add($"Role successfully assigned.", Severity.Success);
+                    SnackBar.Add("Role successfully assigned.", Severity.Success);
                     return;
                 }
                 SnackBar.Add($"Error while assigning role.{result}", Severity.Error);
@@ -180,7 +183,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             if (!result.Cancelled && result.Data is ClaimViewModel claim)
             {
                 user.UserClaims.Add(claim);
-                SnackBar.Add($"Claim was added.", Severity.Success);
+                SnackBar.Add("Claim was added.", Severity.Success);
             }
         }
 
@@ -214,22 +217,14 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         /// <returns></returns>
         async Task<bool> UpdateClaimAsync(ClaimViewModel original, ClaimViewModel modified)
         {
-            try
+            var result = await ClaimsService.UpdateClaimAsync(user.UserName, original, modified);
+            if (result.IsSuccess)
             {
-                var result = await ClaimsService.UpdateClaimAsync(user.UserName, original, modified);
-                if (result.IsSuccess)
-                {
-                    SnackBar.Add($"Claim was updated.", Severity.Success);
-                    return true;
-                }
-                SnackBar.Add(result.ToString(), Severity.Error);
-                return false;
+                SnackBar.Add("Claim was updated.", Severity.Success);
+                return true;
             }
-            catch (Exception ex)
-            {
-                SnackBar.Add($"Failed to update claim : {original.Type}. {ex.Message}", Severity.Error);
-                return false;
-            }
+            SnackBar.Add(result.ToString(), Severity.Error);
+            return false;
         }
     }
 }

@@ -1,8 +1,14 @@
 ﻿@page "/applications/edit/{clientId?}"
 @attribute [Authorize(Policy = Policies.CanManageApplications)]
 
-<MudText Typo="Typo.h4">Edit Details</MudText>
+<MudText Typo="Typo.h4">Edit Application</MudText>
 <br />
+
+@if (hasErrors)
+{
+    <MudAlert Severity="Severity.Error">Application details could not be retrieved for clientId : @(clientId ?? string.Empty).</MudAlert>
+}
+
 @if (application != null)
 {
     <MudPaper Elevation="4">
@@ -22,8 +28,4 @@
     </MudPaper>
 }
 
-@if (hasErrors)
-{
-    <MudAlert Severity="Severity.Error">Application details could not be retrieved for clientId : @(clientId ?? string.Empty).</MudAlert>
-}
 

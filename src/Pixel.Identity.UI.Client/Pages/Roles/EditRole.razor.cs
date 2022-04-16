@@ -28,9 +28,11 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         [Parameter]
         public string Name { get; set; }
 
-        UserRoleViewModel model = new UserRoleViewModel() { RoleName = String.Empty };
+        UserRoleViewModel model;
 
         bool canEditRoleName = false;
+
+        bool hasErrors = false;
        
         /// <summary>
         /// Retrieve role details when role name parameter is set
@@ -42,15 +44,17 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
             {
                 try
                 {
-                    this.model = await UserRoleService.GetRoleByNameAsync(Name);
+                    this.model = await UserRoleService.GetRoleByNameAsync(Name);                 
                 }
                 catch (Exception ex)
                 {
+                    hasErrors = true;
                     SnackBar.Add($"Failed to retrieve role data for role : {Name}. {ex.Message}", Severity.Error);
                 }                
             }
             else
             {
+                hasErrors = true;
                 SnackBar.Add("No role specified to edit.", Severity.Error);
             }
         }

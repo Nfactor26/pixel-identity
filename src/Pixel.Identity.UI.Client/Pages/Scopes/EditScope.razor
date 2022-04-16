@@ -4,6 +4,11 @@
 <MudText Typo="Typo.h4">Edit Scope</MudText>
 <br />
 
+@if (hasErrors)
+{
+    <MudAlert Severity="Severity.Error">Scope details could not be retrieved for scopeId : @(Id ?? string.Empty).</MudAlert>
+}
+
 @if (scope != null)
 {
     <MudPaper Elevation="4">
@@ -23,7 +28,3 @@
     </MudPaper>
 }
 
-@if (hasErrors)
-{
-    <MudAlert Severity="Severity.Error">Scope details could not be retrieved for scopeId : @(Id ?? string.Empty).</MudAlert>
-}
