@@ -1,28 +1,33 @@
 ﻿@page "/roles/edit/{name?}"
 @attribute [Authorize(Policy = Policies.CanManageRoles)]
 
+<MudText Typo="Typo.h4">Edit Role</MudText>
+<br />
+
+@if (hasErrors)
+{
+    <MudAlert Severity="Severity.Error">Role details could not be retrieved for role : @(Name ?? string.Empty).</MudAlert>
+}
+
 @if (model != null)
 {
-    <MudText Typo="Typo.h4">Edit Role</MudText>
-    <br />
-
     <MudCard Elevation="4">
-         <EditForm Model="@model" OnValidSubmit="UpdateRoleNameAsync">
+        <EditForm Model="@model" OnValidSubmit="UpdateRoleNameAsync">
             <FluentValidator />
             <MudCard>
                 <MudCardContent>
                     <MudStack Spacing="0" Row="true">
-                         <MudTextField Label="Role Name" HelperText="Required" Disabled="@(!canEditRoleName)"
-                            @bind-Value="model.RoleName" For="@(() => model.RoleName)" Immediate="true"/>
-                         <MudIconButton id="toggleRoleNameEdit" Icon="@Icons.Material.Filled.Edit" 
-                            Color="Color.Primary" OnClick="ToggleEditRoleName" Class="ma-3">
-                         </MudIconButton>                      
-                    </MudStack>                  
+                        <MudTextField Label="Role Name" HelperText="Required" Disabled="@(!canEditRoleName)"
+                                  @bind-Value="model.RoleName" For="@(() => model.RoleName)" Immediate="true" />
+                        <MudIconButton id="toggleRoleNameEdit" Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Primary" OnClick="ToggleEditRoleName" Class="ma-3">
+                        </MudIconButton>
+                    </MudStack>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton id="updateRoleName" ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                               hidden="@(!canEditRoleName)" Disabled="@(Name.Equals(model.RoleName))"
-                               Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                           hidden="@(!canEditRoleName)" Disabled="@(Name.Equals(model.RoleName))"
+                           Color="Color.Primary" Class="ml-auto">Update</MudButton>
                 </MudCardActions>
             </MudCard>
         </EditForm>

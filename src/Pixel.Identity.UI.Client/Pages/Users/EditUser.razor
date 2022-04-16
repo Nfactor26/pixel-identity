@@ -1,10 +1,17 @@
 ﻿@page "/users/edit/{userId?}"
 @attribute [Authorize(Policy = Policies.CanManageUsers)]
 
+<MudText Typo="Typo.h4">Edit User</MudText>
+<br />
+
+@if (hasErrors)
+{
+    <MudAlert Severity="Severity.Error">User details could not be retrieved for userId : @(userId ?? string.Empty).</MudAlert>
+}
+
 @if (user != null)
 {
-    <MudText Typo="Typo.h4">Edit Details</MudText>
-    <br />
+
     @if (user.IsLockedOut)
     {
 
@@ -74,9 +81,9 @@
                 <div class="d-flex flex-wrap">
                     <MudText Typo="Typo.h6" Class="mt-2">Resources</MudText>
                     <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
-                        @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
+                               @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
                 </div>
-            </CardHeaderContent>            
+            </CardHeaderContent>
         </MudCardHeader>
         <MudCardContent Class="pt-1">
             <EditableCollection TItem="UserRoleViewModel" TValue="string" ItemSize="2"
