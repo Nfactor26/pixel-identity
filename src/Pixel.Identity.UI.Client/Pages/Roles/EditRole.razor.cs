@@ -29,7 +29,13 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         public string Name { get; set; }
 
         UserRoleViewModel model = new UserRoleViewModel() { RoleName = String.Empty };
+
+        bool canEditRoleName = false;
        
+        /// <summary>
+        /// Retrieve role details when role name parameter is set
+        /// </summary>
+        /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
             if (!string.IsNullOrEmpty(Name))
@@ -47,6 +53,34 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
             {
                 SnackBar.Add("No role specified to edit.", Severity.Error);
             }
+        }
+
+        /// <summary>
+        /// Toggle the state of canEditRoleName to enable or disable editing role name on ui
+        /// </summary>
+        void ToggleEditRoleName()
+        {
+            canEditRoleName = !canEditRoleName;
+        }
+
+        /// <summary>
+        /// Update role name to a new value
+        /// </summary>
+        /// <returns></returns>
+        async Task UpdateRoleNameAsync()
+        {
+            var result = await UserRoleService.UpdateRoleNameAsync(new() { RoleId = model.RoleId, NewName = model.RoleName });
+            if (result.IsSuccess)
+            {
+                ToggleEditRoleName();
+                SnackBar.Add("Updated successfully.", Severity.Success);
+                return;
+            }
+            SnackBar.Add(result.ToString(), Severity.Error, config =>
+            {
+                config.ShowCloseIcon = true;
+                config.RequireInteraction = true;
+            });
         }
 
         /// <summary>

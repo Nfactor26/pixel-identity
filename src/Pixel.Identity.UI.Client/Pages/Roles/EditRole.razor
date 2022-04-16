@@ -7,11 +7,25 @@
     <br />
 
     <MudCard Elevation="4">
-        <MudCardContent>
-            <MudTextField Label="Role Name" Class="mt-3" HelperText="Required" Disabled="model.Exists"
-                      @bind-Value="model.RoleName" For="@(() => model.RoleName)" />
-        </MudCardContent>
-
+         <EditForm Model="@model" OnValidSubmit="UpdateRoleNameAsync">
+            <FluentValidator />
+            <MudCard>
+                <MudCardContent>
+                    <MudStack Spacing="0" Row="true">
+                         <MudTextField Label="Role Name" HelperText="Required" Disabled="@(!canEditRoleName)"
+                            @bind-Value="model.RoleName" For="@(() => model.RoleName)" Immediate="true"/>
+                         <MudIconButton id="toggleRoleNameEdit" Icon="@Icons.Material.Filled.Edit" 
+                            Color="Color.Primary" OnClick="ToggleEditRoleName" Class="ma-3">
+                         </MudIconButton>                      
+                    </MudStack>                  
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton id="updateRoleName" ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                               hidden="@(!canEditRoleName)" Disabled="@(Name.Equals(model.RoleName))"
+                               Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
     </MudCard>
 
     <br />
