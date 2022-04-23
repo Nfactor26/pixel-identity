@@ -10,11 +10,12 @@
             <FluentValidationValidator />           
             <MudCard>
                 <MudCardContent>
-                   <MudTextField Label="Role Name" HelperText="Required"
+                   <MudTextField UserAttributes="@(new (){{"id","inputRoleName"}})" Label="Role Name" HelperText="Required"
                       @bind-Value="model.RoleName" For="@(() => model.RoleName)" />
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                    <MudButton UserAttributes="@(new (){{"id","btnCreate"}})" 
+                               ButtonType="ButtonType.Submit" Variant="Variant.Filled"                            
                                Color="Color.Primary" Class="ml-auto">Create</MudButton>
                 </MudCardActions>
             </MudCard>

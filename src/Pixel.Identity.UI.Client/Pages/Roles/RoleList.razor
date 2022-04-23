@@ -1,15 +1,16 @@
 ﻿@page "/roles/list"
 @attribute [Authorize(Policy = Policies.CanManageRoles)]
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<UserRoleViewModel>>>(GetRolesDataAsync))"
+<MudTable UserAttributes="@(new (){{"id","tblRoles"}})" ServerData="@(new Func<TableState, Task<TableData<UserRoleViewModel>>>(GetRolesDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="rolesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">User Roles</MudText>
-        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+        <MudIconButton UserAttributes="@(new (){{"id","btnNewRole"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"                      
                        @onclick="NavigateToAddRolePage" Color="Color.Primary"></MudIconButton>
         <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Role Name" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Role Name" 
+                      Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" 
+                      IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Role Name</MudTh>
@@ -17,15 +18,15 @@
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="#">
+        <MudTd UserAttributes="@(new (){{"id","tdRoleName"}})" DataLabel="#">
             @context.RoleName
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+            <MudIconButton UserAttributes="@(new (){{"id","btnEdit"}})" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                            @onclick="()=> NavigateToEditRolePage(context)" Size="Size.Medium"></MudIconButton>
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+            <MudIconButton UserAttributes="@(new (){{"id","btnDelete"}})" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
                      @onclick="() => DeleteRoleAsync(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
     </RowTemplate>

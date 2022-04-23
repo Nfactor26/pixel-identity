@@ -17,15 +17,15 @@
             <MudCard>
                 <MudCardContent>
                     <MudStack Spacing="0" Row="true">
-                        <MudTextField Label="Role Name" HelperText="Required" Disabled="@(!canEditRoleName)"
+                        <MudTextField UserAttributes="@(new (){{"id","txtRoleName"}})" Label="Role Name" HelperText="Required" Disabled="@(!canEditRoleName)"
                                   @bind-Value="model.RoleName" For="@(() => model.RoleName)" Immediate="true" />
-                        <MudIconButton id="toggleRoleNameEdit" Icon="@Icons.Material.Filled.Edit"
+                        <MudIconButton UserAttributes="@(new (){{"id","toggleRoleNameEdit"}})" Icon="@Icons.Material.Filled.Edit"
                                    Color="Color.Primary" OnClick="ToggleEditRoleName" Class="ma-3">
                         </MudIconButton>
                     </MudStack>
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton id="updateRoleName" ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                    <MudButton id="btnUpdateRoleName" ButtonType="ButtonType.Submit" Variant="Variant.Filled"
                            hidden="@(!canEditRoleName)" Disabled="@(Name.Equals(model.RoleName))"
                            Color="Color.Primary" Class="ml-auto">Update</MudButton>
                 </MudCardActions>

@@ -1,4 +1,4 @@
-﻿<MudTable Items="@(Claims ?? Enumerable.Empty<ClaimViewModel>())" Dense="false" Hover="true" ReadOnly="false"
+﻿<MudTable UserAttributes="@(new (){{"id","tblClaims"}})" Items="@(Claims ?? Enumerable.Empty<ClaimViewModel>())" Dense="false" Hover="true" ReadOnly="false"
           CanCancelEdit="true" Filter="@(new Func<ClaimViewModel,bool>(FilterFunc))" @ref="table"
           @bind-SelectedItem="selectedClaim" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
           OnCommitEditClick="UpdateItemAsync" 
@@ -6,10 +6,10 @@
           IsEditRowSwitchingBlocked="true" Elevation="4">
            <ToolBarContent>
         <MudText Typo="Typo.h6">Claims</MudText>
-        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+        <MudIconButton UserAttributes="@(new (){{"id","btnNewClaim"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                    @onclick="@(() => OnAddItem.InvokeAsync())" Color="Color.Primary"></MudIconButton>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <ColGroup>     
         <col style="width:28%;" />
@@ -28,31 +28,31 @@
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>        
-        <MudTd DataLabel="Type">@context.Type</MudTd>
-        <MudTd DataLabel="Value">@context.Value</MudTd>    
-        <MudTd DataLabel="Include in access token">@context.IncludeInAccessToken</MudTd>    
-        <MudTd DataLabel="Include in identity token">@context.IncludeInIdentityToken</MudTd>    
+        <MudTd UserAttributes="@(new (){{"id","tdType"}})" DataLabel="Type">@context.Type</MudTd>
+        <MudTd UserAttributes="@(new (){{"id","tdValue"}})" DataLabel="Value">@context.Value</MudTd>    
+        <MudTd UserAttributes="@(new (){{"id","tdAccessToken"}})" DataLabel="Include in access token">@context.IncludeInAccessToken</MudTd>    
+        <MudTd UserAttributes="@(new (){{"id","tdIdentityToken"}})" DataLabel="Include in identity token">@context.IncludeInIdentityToken</MudTd>    
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+            <MudIconButton UserAttributes="@(new (){{"id","btnEdit"}})" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                      @onclick="() => EditItem(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
          <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+            <MudIconButton UserAttributes="@(new (){{"id","btnDelete"}})" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
                      @onclick="() => OnDeleteItem.InvokeAsync(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
     </RowTemplate>
     <RowEditingTemplate>        
         <MudTd DataLabel="Type">
-            <MudTextField @bind-Value="@context.Type" Required />
+            <MudTextField UserAttributes="@(new (){{"id","txtClaimType"}})" @bind-Value="@context.Type" Required />
         </MudTd>
         <MudTd DataLabel="Value">
-            <MudTextField @bind-Value="@context.Value" Required />
+            <MudTextField UserAttributes="@(new (){{"id","txtClaimValue"}})" @bind-Value="@context.Value" Required />
         </MudTd>
          <MudTd DataLabel="Include in access token">
-            <MudSwitch @bind-Checked="@context.IncludeInAccessToken" Color="Color.Primary" />
+            <MudSwitch UserAttributes="@(new (){{"id","cbIncludeInAccessToken"}})" @bind-Checked="@context.IncludeInAccessToken" Color="Color.Primary" />
         </MudTd>
          <MudTd DataLabel="Include in identity token">
-           <MudSwitch @bind-Checked="@context.IncludeInIdentityToken" Color="Color.Primary" />
+           <MudSwitch UserAttributes="@(new (){{"id","cbIncludeInIdentityToken"}})" @bind-Checked="@context.IncludeInIdentityToken" Color="Color.Primary" />
         </MudTd>
         <MudTd DataLabel="">         
         </MudTd>

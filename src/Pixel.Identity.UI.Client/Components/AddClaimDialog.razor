@@ -5,22 +5,22 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@model.Type" Label="Type"  @onfocus="(() => error = string.Empty)"
+        <MudTextField id="txtClaimType" @bind-Value="@model.Type" Label="Type"  @onfocus="(() => error = string.Empty)"
                       Variant="Variant.Text" Immediate="true"></MudTextField>
-        <MudTextField @bind-Value="@model.Value" Label="Value" @onfocus="(() => error = string.Empty)"
+        <MudTextField id="txtClaimValue" @bind-Value="@model.Value" Label="Value" @onfocus="(() => error = string.Empty)"
                       Variant="Variant.Text" Immediate="true"></MudTextField>
         <br/>
-        <MudSwitch @bind-Checked="model.IncludeInAccessToken" Label="Include in access token" Color="Color.Primary" />
+        <MudSwitch id="cbIncludeInAccessToken" @bind-Checked="model.IncludeInAccessToken" Label="Include in access token" Color="Color.Primary" />
 
-        <MudSwitch @bind-Checked="model.IncludeInIdentityToken" Label="Include in identity token" Color="Color.Primary" />
+        <MudSwitch id="cbIncludeInIdentityToken" @bind-Checked="model.IncludeInIdentityToken" Label="Include in identity token" Color="Color.Primary" />
 
         @if (!string.IsNullOrEmpty(error))
         {
-            <MudAlert Severity="Severity.Error">@error</MudAlert>
+            <MudAlert id="errorMessage" Severity="Severity.Error">@error</MudAlert>
         }
     </DialogContent>
     <DialogActions>
-        <MudButton  OnClick="AddNewClaimAsync" 
+        <MudButton id="btnAddNewClaim" OnClick="AddNewClaimAsync" 
                 Disabled="string.IsNullOrEmpty(model.Type) || string.IsNullOrEmpty(model.Value)"
                 Color="Color.Primary" Variant="Variant.Filled">
                 Add
