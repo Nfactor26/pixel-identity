@@ -108,7 +108,7 @@ namespace Pixel.Identity.Core.Controllers
                     }
                     return Ok();
                 }
-                return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.ToString())));
+                return BadRequest(new BadRequestResponse(result.GetErrors()));
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }
@@ -162,7 +162,7 @@ namespace Pixel.Identity.Core.Controllers
                         {
                             return Ok();
                         }
-                        return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.ToString())));
+                        return BadRequest(new BadRequestResponse(result.GetErrors()));
                     }
                     return BadRequest(new BadRequestResponse(new[] { $"There are users with assigned role : {roleName}." }));
                 }

@@ -145,7 +145,7 @@ namespace Pixel.Identity.Core.Controllers
                 {
                     return Ok();
                 }
-                return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.Description)));
+                return BadRequest(new BadRequestResponse(result.GetErrors()));
             }
             return NotFound(new NotFoundResponse($"User with Id : {userId} doesn't exist"));
         }
@@ -177,7 +177,7 @@ namespace Pixel.Identity.Core.Controllers
                     {
                         return Ok();
                     }
-                    return BadRequest(new BadRequestResponse(result.Errors.Select(e => e.Description)));
+                    return BadRequest(new BadRequestResponse(result.GetErrors()));
                 }
                 return NotFound(new NotFoundResponse("User doesn't exist."));
             }
