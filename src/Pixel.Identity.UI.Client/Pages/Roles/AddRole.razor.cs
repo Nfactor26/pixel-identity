@@ -38,11 +38,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
                 Navigator.NavigateTo($"roles/list");
                 return;
             }
-            SnackBar.Add(result.ToString(), Severity.Error, config =>
-            {
-                config.ShowCloseIcon = true;
-                config.RequireInteraction = true;
-            });
+            SnackBar.Add(result.ToString(), Severity.Error);
         }
     }
 }

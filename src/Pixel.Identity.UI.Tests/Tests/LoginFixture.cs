@@ -5,9 +5,11 @@ using Pixel.Identity.UI.Tests.Helpers;
 using Pixel.Identity.UI.Tests.PageModels;
 using System.Threading.Tasks;
 
-namespace Pixel.Identity.UI.Tests.Tests;
+namespace Pixel.Identity.UI.Tests;
 
-public class LoginTests : PageTest
+
+[TestFixture, Order(30)]
+public class LoginFixture : PageTest
 {
     private IConfiguration configuration;
     private string baseUrl;
@@ -15,7 +17,7 @@ public class LoginTests : PageTest
     /// <summary>
     /// constructor
     /// </summary>
-    public LoginTests()
+    public LoginFixture()
     {
         configuration = ConfigurationFactory.Create();
         baseUrl = configuration["BaseUrl"];

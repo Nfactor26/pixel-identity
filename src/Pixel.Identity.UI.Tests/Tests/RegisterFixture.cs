@@ -5,13 +5,14 @@ using Pixel.Identity.UI.Tests.PageModels;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pixel.Identity.UI.Tests.Tests;
+namespace Pixel.Identity.UI.Tests;
 
-internal class RegisterTests : PageTest
+[TestFixture, Order(10)]
+internal class RegisterFixture : PageTest
 {
     private readonly string baseUrl;
 
-    public RegisterTests()
+    public RegisterFixture()
     {
         this.baseUrl = ConfigurationFactory.Create()["BaseUrl"];
     }

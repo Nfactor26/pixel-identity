@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Tests;
 
-internal class LogoutTests : PageTest
+[TestFixture, Order(20)]
+internal class LogoutFixture : PageTest
 {
     private IConfiguration configuration;
     private string baseUrl;
@@ -15,7 +16,7 @@ internal class LogoutTests : PageTest
     /// <summary>
     /// constructor
     /// </summary>
-    public LogoutTests()
+    public LogoutFixture()
     {
         configuration = ConfigurationFactory.Create();
         baseUrl = configuration["BaseUrl"];
