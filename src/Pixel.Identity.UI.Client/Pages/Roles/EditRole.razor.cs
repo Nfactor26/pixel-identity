@@ -26,11 +26,12 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         public ISnackbar SnackBar { get; set; }
 
         [Parameter]
-        public string Name { get; set; }
+        public string Id { get; set; }
 
         UserRoleViewModel model;
 
         bool canEditRoleName = false;
+        string roleName = string.Empty;
 
         bool hasErrors = false;
        
@@ -40,23 +41,35 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         /// <returns></returns>
         protected override async Task OnParametersSetAsync()
         {
-            if (!string.IsNullOrEmpty(Name))
+            this.model = await GetRoleDetailsAsync(Id);
+            this.roleName = this.model.RoleName;
+        }
+
+        /// <summary>
+        /// Retrieve scope details given scope id
+        /// </summary>
+        /// <param name="scopeId"></param>
+        /// <returns></returns>
+        private async Task<UserRoleViewModel> GetRoleDetailsAsync(string roleId)
+        {
+            if (!string.IsNullOrEmpty(roleId))
             {
                 try
                 {
-                    this.model = await UserRoleService.GetRoleByNameAsync(Name);                 
+                    return await UserRoleService.GetRoleByIdAsync(roleId);
                 }
                 catch (Exception ex)
                 {
                     hasErrors = true;
-                    SnackBar.Add($"Failed to retrieve role data for role : {Name}. {ex.Message}", Severity.Error);
-                }                
+                    SnackBar.Add($"Failed to retrieve role data for role : {roleId}. {ex.Message}", Severity.Error);
+                }
             }
             else
             {
                 hasErrors = true;
                 SnackBar.Add("No role specified to edit.", Severity.Error);
             }
+            return null;
         }
 
         /// <summary>
@@ -65,6 +78,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         void ToggleEditRoleName()
         {
             canEditRoleName = !canEditRoleName;
+
         }
 
         /// <summary>
@@ -75,16 +89,14 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         {
             var result = await UserRoleService.UpdateRoleNameAsync(new() { RoleId = model.RoleId, NewName = model.RoleName });
             if (result.IsSuccess)
-            {
+            {                
+                SnackBar.Add("Updated successfully.", Severity.Success);              
+                this.model = await GetRoleDetailsAsync(Id);
+                this.roleName = this.model.RoleName;
                 ToggleEditRoleName();
-                SnackBar.Add("Updated successfully.", Severity.Success);
                 return;
             }
-            SnackBar.Add(result.ToString(), Severity.Error, config =>
-            {
-                config.ShowCloseIcon = true;
-                config.RequireInteraction = true;
-            });
+            SnackBar.Add(result.ToString(), Severity.Error);
         }
 
         /// <summary>
@@ -122,11 +134,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
                     SnackBar.Add($"Claim {claim.Type}:{claim.Value} was removed.", Severity.Success);
                     return;
                 }
-                SnackBar.Add(result.ToString(), Severity.Error, config =>
-                {
-                    config.ShowCloseIcon = true;
-                    config.RequireInteraction = true;
-                });              
+                SnackBar.Add(result.ToString(), Severity.Error);              
             }
         }
 
@@ -144,11 +152,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
                 SnackBar.Add($"Claim was updated.", Severity.Success);
                 return true;
             }
-            SnackBar.Add(result.ToString(), Severity.Error, config =>
-            {
-                config.ShowCloseIcon = true;
-                config.RequireInteraction = true;
-            });
+            SnackBar.Add(result.ToString(), Severity.Error);
             return false;
         }
     }

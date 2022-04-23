@@ -27,7 +27,7 @@ namespace Pixel.Identity.UI.Client.Services
         /// </summary>
         /// <param name="roleName"></param>
         /// <returns></returns>
-        Task<UserRoleViewModel> GetRoleByNameAsync(string roleName);
+        Task<UserRoleViewModel> GetRoleByIdAsync(string roleName);
 
         /// <summary>
         /// Add a new role
@@ -99,10 +99,10 @@ namespace Pixel.Identity.UI.Client.Services
         }
 
         /// <inheritdoc/>
-        public async Task<UserRoleViewModel> GetRoleByNameAsync(string roleName)
+        public async Task<UserRoleViewModel> GetRoleByIdAsync(string roleId)
         {
             return await JsonSerializer.DeserializeAsync<UserRoleViewModel>
-                      (await httpClient.GetStreamAsync($"api/roles/{roleName}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                      (await httpClient.GetStreamAsync($"api/roles/{roleId}"), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
         }
 
         /// <inheritdoc/>
