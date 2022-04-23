@@ -128,6 +128,13 @@ namespace Pixel.Identity.Core.Controllers
                 {
                     return NotFound(new NotFoundResponse($"Failed to find role with Id : {request.RoleId}"));
                 }
+             
+                var exists = await roleManager.FindByNameAsync(request.NewName);
+                if(exists != null)
+                {
+                    return BadRequest(new BadRequestResponse(new[] { $"A role already exists with name {request.NewName}" }));
+                }
+              
                 if ((!role.Name?.Equals(request.NewName)) ?? false)
                 {
                     await roleManager.SetRoleNameAsync(role, request.NewName);
