@@ -90,7 +90,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         /// <param name="role"></param>
         protected void NavigateToEditRolePage(UserRoleViewModel role)
         {
-            Navigator.NavigateTo($"roles/edit/{role.RoleName}");
+            Navigator.NavigateTo($"roles/edit/{role.RoleId}");
         }
 
 

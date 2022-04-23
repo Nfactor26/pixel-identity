@@ -38,14 +38,14 @@ namespace Pixel.Identity.Core.Controllers
         /// <summary>
         /// Get the details of role given role name
         /// </summary>
-        /// <param name="roleName">Name of the role</param>
+        /// <param name="id">Name of the role</param>
         /// <returns></returns>
-        [HttpGet("{roleName}")]
-        public async Task<ActionResult<UserRoleViewModel>> Get(string roleName)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserRoleViewModel>> Get(string id)
         {
-            if (!string.IsNullOrEmpty(roleName))
+            if (!string.IsNullOrEmpty(id))
             {
-                var role = await this.roleManager.FindByNameAsync(roleName);
+                var role = await this.roleManager.FindByIdAsync(id);
                 if (role != null)
                 {
                     var userRoleViewModel = new UserRoleViewModel(role.Id.ToString(), role.Name);
@@ -57,7 +57,7 @@ namespace Pixel.Identity.Core.Controllers
                     return userRoleViewModel;
                 }
             }
-            return NotFound(new NotFoundResponse($"{roleName ?? ""} could not be located"));
+            return NotFound(new NotFoundResponse($"{id ?? ""} could not be located"));
         }
 
         /// <summary>

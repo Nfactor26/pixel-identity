@@ -1,4 +1,4 @@
-﻿@page "/roles/edit/{name?}"
+﻿@page "/roles/edit/{Id?}"
 @attribute [Authorize(Policy = Policies.CanManageRoles)]
 
 <MudText Typo="Typo.h4">Edit Role</MudText>
@@ -6,7 +6,7 @@
 
 @if (hasErrors)
 {
-    <MudAlert Severity="Severity.Error">Role details could not be retrieved for role : @(Name ?? string.Empty).</MudAlert>
+    <MudAlert Severity="Severity.Error">Role details could not be retrieved for roleId : @(Id ?? string.Empty).</MudAlert>
 }
 
 @if (model != null)
@@ -26,7 +26,7 @@
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton id="btnUpdateRoleName" ButtonType="ButtonType.Submit" Variant="Variant.Filled"
-                           hidden="@(!canEditRoleName)" Disabled="@(Name.Equals(model.RoleName))"
+                           hidden="@(!canEditRoleName)" Disabled="@(roleName?.Equals(model.RoleName) ?? true)"
                            Color="Color.Primary" Class="ml-auto">Update</MudButton>
                 </MudCardActions>
             </MudCard>
