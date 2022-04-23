@@ -134,7 +134,7 @@ namespace Pixel.Identity.Core.Controllers
             var disable2faResult = await userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disable2faResult.Succeeded)
             {
-                return Problem(string.Join(Environment.NewLine, disable2faResult.Errors.Select(e => e.Description)));
+                return Problem(string.Join(Environment.NewLine, disable2faResult.GetErrors()));
             }
             return Ok();
         }
