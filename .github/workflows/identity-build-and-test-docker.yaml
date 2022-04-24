@@ -6,7 +6,10 @@ on:
 jobs:
 
   build-docker-image-and-push:
-   runs-on: ubuntu-latest  
+   runs-on: ubuntu-latest
+   permissions:
+      contents: read
+      packages: write
    steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -71,7 +74,7 @@ jobs:
        env:
         BROWSER: Chromium
         HEADED: 1
-        BaseUrl: http:\\localhost:5000\\pauth
+        BaseUrl: http://localhost:5000//pauth
         UserEmail: admin@pixel.com
         UserSecret: Admi9@pixel
        run: dotnet build src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
