@@ -1,0 +1,46 @@
+name: Identity Build Only
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+     - 'src/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+     - 'src/**'
+
+jobs:
+
+  build:
+   runs-on: ubuntu-latest
+   strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+   
+   steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3   
+    - name: Setup dotnet ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - name : Cache nuget packages
+      uses: actions/cache@v2
+      with:
+        path: ${{ github.workspace }}/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    - name: Display dotnet version
+      run: dotnet --version
+    - name: Install dependencies
+      run: dotnet restore Pixel.Identity.sln  
+    - name: Build 
+      run: dotnet build src/Pixel.Identity.Provider/Pixel.Identity.Provider.csproj -c Release --no-restore -o app/build
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Pixel Identity
+        path: app/build       
+
