@@ -35,7 +35,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.Blazor.App.Host", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{90291008-5EF2-4A1F-9B89-19216A3B017F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pixel.Identity.UI.Tests", "src\Pixel.Identity.UI.Tests\Pixel.Identity.UI.Tests.csproj", "{440B2ECE-5DCF-481D-9C18-0EC8F4F18E98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.UI.Tests", "src\Pixel.Identity.UI.Tests\Pixel.Identity.UI.Tests.csproj", "{440B2ECE-5DCF-481D-9C18-0EC8F4F18E98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2454553A-208B-4D0F-A877-66F67C550DB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1872169C-F107-43FD-AE02-6DDF88241644}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\identity-build-and-test.yaml = .github\workflows\identity-build-and-test.yaml
+		.github\workflows\identity-build-docker.yaml = .github\workflows\identity-build-docker.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,6 +244,7 @@ Global
 		{7D75919B-B900-4370-A9AB-913104AEA2F0} = {D1F9C105-5E1A-42B0-A47F-3DD3B223AD8C}
 		{535B958A-7CEF-43EC-9545-3CE999D74889} = {D1F9C105-5E1A-42B0-A47F-3DD3B223AD8C}
 		{440B2ECE-5DCF-481D-9C18-0EC8F4F18E98} = {90291008-5EF2-4A1F-9B89-19216A3B017F}
+		{1872169C-F107-43FD-AE02-6DDF88241644} = {2454553A-208B-4D0F-A877-66F67C550DB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2D4C886-7F44-4E77-9010-D9AB3C1B559C}

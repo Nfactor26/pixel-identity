@@ -1,0 +1,82 @@
+name: Identity build and test with docker image
+
+on:
+  workflow_dispatch
+
+jobs:
+
+  build-docker-image-and-push:
+   runs-on: ubuntu-latest  
+   steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+          context: .
+          file: ./src/Pixel.Identity.Provider/Dockerfile        
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/pixel-identity:latest  
+  
+  test-postgres:
+
+   needs: build-docker-image-and-push
+   runs-on: ubuntu-latest
+   strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+   services:
+
+     postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgresadmin
+          POSTGRES_PASSWORD: postgrespass
+          POSTGRES_DB: pixel_identity_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+     pixel-identity:
+        image: ${{ secrets.DOCKER_HUB_USERNAME }}/pixel-identity:latest
+        env:        
+            AllowedOrigins: http://localhost:5000
+            IdentityHost: http://localhost:5000/pauth
+            ASPNETCORE_URLS: http://+ 
+            Plugins__Collection__0__Type: EmailSender
+            Plugins__Collection__0__Path: Plugins/Messenger
+            Plugins__Collection__0__Name: Pixel.Identity.Messenger.Console
+            Plugins__Collection__1__Type: DbStore
+            Plugins__Collection__1__Path: Plugins/DbStore
+            Plugins__Collection__1__Name: Pixel.Identity.Store.PostgreSQL
+            IdentityOptions_SignIn_RequireConfirmedAccount: false
+            ConnectionStrings__PostgreServerConnection: User ID=postgresadmin;Password=postgrespass;Server=postgres;Port=5432;Database=pixel_identity_db; 
+     
+     - name: Setup dotnet ${{ matrix.dotnet-version }}
+       uses: actions/setup-dotnet@v2
+       with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+     - name: Build test project
+      env:
+        BROWSER: Chromium
+        HEADED: 1
+        BaseUrl: http:\\localhost:5000\\pauth
+        UserEmail: admin@pixel.com
+        UserSecret: Admi9@pixel
+      run: dotnet build src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
+    - name: Install browsers
+      run: pwsh src/Pixel.Identity.UI.Tests/bin/Debug/net6.0/playwright.ps1 install
+    - name:  Execute tests
+      run: dotnet test src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj 
+ 
