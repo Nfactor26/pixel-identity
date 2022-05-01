@@ -14,9 +14,10 @@ on:
 jobs:
 
   build:
-   runs-on: ubuntu-latest
+   runs-on: ${{ matrix.os }}
    strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest]
         dotnet-version: [ '6.0.x' ]
    
    steps:
@@ -36,12 +37,11 @@ jobs:
     - name: Display dotnet version
       run: dotnet --version
     - name: Install dependencies
-      run: dotnet restore Pixel.Identity.sln  
-    - name: Build 
-      run: dotnet build src/Pixel.Identity.Provider/Pixel.Identity.Provider.csproj -c Release --no-restore -o app/build
+      run: dotnet restore Pixel.Identity.sln   
+    - name: Publish 
+      run: dotnet publish src/Pixel.Identity.Provider/Pixel.Identity.Provider.csproj -c Release --no-restore -o app/publish
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Pixel Identity
-        path: app/build       
-
+        name: pixel-identity-${{ matrix.os }}
+        path: app/publish       

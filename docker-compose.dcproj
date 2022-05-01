@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include=".config\identity.env" />
+    <None Include=".config\identity-mongo-with-console-email.env" />
+    <None Include=".config\identity-postgres-with-console-email.env" />
     <None Include=".traefik\config.yml" />
     <None Include=".traefik\traefik.yml" />
     <None Include="docker-compose.override.yml">
