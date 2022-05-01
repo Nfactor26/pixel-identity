@@ -31,7 +31,6 @@ RUN dotnet restore "src/Pixel.Identity.Store.PostgreSQL/Pixel.Identity.Store.Pos
 
 COPY . .
 WORKDIR "/src/src/Pixel.Identity.Provider"
-RUN dotnet build "Pixel.Identity.Provider.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "Pixel.Identity.Provider.csproj" -c Release -o /app/publish
