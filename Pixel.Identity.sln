@@ -43,6 +43,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\identity-build-and-test-docker.yaml = .github\workflows\identity-build-and-test-docker.yaml
 		.github\workflows\identity-build-only.yaml = .github\workflows\identity-build-only.yaml
+		.github\workflows\identity-build-docker-image.yaml = .github\workflows\identity-build-docker-image.yaml
+		.github\workflows\identity-publish-to-docker-hub.yaml = .github\workflows\identity-publish-to-docker-hub.yaml
+		.github\workflows\identity-test-docker-image-with-mongo.yaml = .github\workflows\identity-test-docker-image-with-mongo.yaml
+		.github\workflows\identity-test-docker-image-with-postgres.yaml = .github\workflows\identity-test-docker-image-with-postgres.yaml
 	EndProjectSection
 EndProject
 Global

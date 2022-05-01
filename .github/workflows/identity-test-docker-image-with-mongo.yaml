@@ -1,0 +1,51 @@
+name: Identity build and test with docker image
+
+on: [workflow_call]
+
+jobs:  
+ 
+  test-with-mongo-db: 
+   runs-on: ubuntu-latest
+   strategy:
+      matrix:
+        dotnet-version: [ '6.0.x' ]
+
+   services:
+     mongo:
+        image: mongo:latest
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongoadmin
+          MONGO_INITDB_ROOT_PASSWORD: mongopass      
+          
+   steps:  
+     - name: Checkout Repository
+       uses: actions/checkout@v3   
+     - name: Download and load docker image
+       uses: ishworkh/docker-image-artifact-download@v1
+       with:
+        image: "pixel-identity:local"
+     - name: Launch docker image
+       run: >
+         docker run -d -p 44382:80 --network=${{ job.container.network }}
+         -e AllowedOrigins=http://localhost:44382 -e IdentityHost=http://localhost:44382/pauth
+         --env-file ./.config/identity-mongo-with-console-email.env
+         --name pixel_identity_provider pixel-identity:local     
+     - name: Print container details
+       run: docker container ls     
+     - name: Setup dotnet ${{ matrix.dotnet-version }}
+       uses: actions/setup-dotnet@v2
+       with:
+        dotnet-version: ${{ matrix.dotnet-version }}    
+     - name: Build test project     
+       run: dotnet build src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
+     - name: print container logs
+       run: docker logs pixel_identity_provider
+     - name: Install browsers
+       run: pwsh src/Pixel.Identity.UI.Tests/bin/Debug/net6.0/playwright.ps1 install
+     - name:  Execute tests
+       run: dotnet test  --logger "trx;" src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
+     - name: Upload test results
+       uses: actions/upload-artifact@v3
+       with:
+        name: pixel-identity-mongo-automation-test-results-${{ matrix.os }}
+        path: src/Pixel.Identity.UI.Tests/TestResults  
