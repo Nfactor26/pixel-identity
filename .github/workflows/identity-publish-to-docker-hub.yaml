@@ -1,8 +1,7 @@
 name: Publish image to docker hub on tag push to main
 
 on:
-  push:
-    branches: [ main ]
+  push:    
     tags:        
       - v*
 
@@ -22,6 +21,7 @@ jobs:
   publish-to-docker-hub:
     needs: [test-with-postgres-db, test-with-mongo-db]
     runs-on: ubuntu-latest
+    environment: docker-hub
     steps:     
       - name: Download and load docker image
         uses: ishworkh/docker-image-artifact-download@v1
