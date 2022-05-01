@@ -242,7 +242,7 @@ namespace Pixel.Identity.Provider
                 //https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html
                 //OpenIdDict uses two types of credentials to secure the token it issues.
                 //1.Encryption credentials are used to ensure the content of tokens cannot be read by malicious parties
-                if (string.IsNullOrEmpty(Configuration["Identity:Certificates:EncryptionCertificatePath"]))
+                if (!string.IsNullOrEmpty(Configuration["Identity:Certificates:EncryptionCertificatePath"]))
                 {
                     var encryptionKeyBytes = File.ReadAllBytes(Configuration["Identity:Certificates:EncryptionCertificatePath"]);
                     X509Certificate2 encryptionKey = new X509Certificate2(encryptionKeyBytes, Configuration["Identity:EncryptionCertificateKey"],
@@ -255,7 +255,7 @@ namespace Pixel.Identity.Provider
                 }
 
                 //2.Signing credentials are used to protect against tampering
-                if (string.IsNullOrEmpty(Configuration["Identity:Certificates:SigningCertificatePath"]))
+                if (!string.IsNullOrEmpty(Configuration["Identity:Certificates:SigningCertificatePath"]))
                 {
 
                     var signingKeyBytes = File.ReadAllBytes(Configuration["Identity:Certificates:SigningCertificatePath"]);
