@@ -1,0 +1,29 @@
+name: Build docker image and upload as artificat
+
+on: [workflow_call]
+
+jobs:
+
+  build-docker-image:
+   runs-on: ubuntu-latest  
+   steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3  
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/pixel-identity
+    - name: Build docker image locally
+      uses: docker/build-push-action@v2
+      with:
+          context: ./
+          file: ./src/Pixel.Identity.Provider/Dockerfile        
+          push: false
+          tags: pixel-identity:local
+          labels: ${{ steps.meta.outputs.labels }}
+          load: true
+    - name: Upload docker image as artifcat
+      uses: ishworkh/docker-image-artifact-upload@v1
+      with:
+        image: "pixel-identity:local"
