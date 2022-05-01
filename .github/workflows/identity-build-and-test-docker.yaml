@@ -5,38 +5,32 @@ on:
 
 jobs:
 
-  build-docker-image-and-push:
-   runs-on: ubuntu-latest
-   permissions:
-      contents: read
-      packages: write
+  build-docker-image:
+   runs-on: ubuntu-latest  
    steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build and push
+      uses: actions/checkout@v3   
+    - name: Build docker image locally
       uses: docker/build-push-action@v2
       with:
-          context: .
+          context: ./
           file: ./src/Pixel.Identity.Provider/Dockerfile        
-          push: true
-          tags: pixel-identity:latest  
+          push: false
+          tags: pixel-identity:latest
+          load: true
+    - name: Upload docker image as artifcat
+      uses: ishworkh/docker-image-artifact-upload@v1
+      with:
+        image: "pixel-identity:latest"
   
-  test-postgres:
-
-   needs: build-docker-image-and-push
+  test-with-postgres-db:
+   needs: build-docker-image
    runs-on: ubuntu-latest
    strategy:
       matrix:
         dotnet-version: [ '6.0.x' ]
 
    services:
-
      postgres:
         image: postgres:latest
         env:
@@ -50,36 +44,36 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
-     pixel-identity:
-        image: pixel-identity:latest
-        env:        
-            AllowedOrigins: http://localhost:5000
-            IdentityHost: http://localhost:5000/pauth
-            ASPNETCORE_URLS: http://+ 
-            Plugins__Collection__0__Type: EmailSender
-            Plugins__Collection__0__Path: Plugins/Messenger
-            Plugins__Collection__0__Name: Pixel.Identity.Messenger.Console
-            Plugins__Collection__1__Type: DbStore
-            Plugins__Collection__1__Path: Plugins/DbStore
-            Plugins__Collection__1__Name: Pixel.Identity.Store.PostgreSQL
-            IdentityOptions_SignIn_RequireConfirmedAccount: false
-            ConnectionStrings__PostgreServerConnection: User ID=postgresadmin;Password=postgrespass;Server=postgres;Port=5432;Database=pixel_identity_db; 
+    
    steps:  
+     - name: Checkout Repository
+       uses: actions/checkout@v3   
+     - name: Download docker image
+       uses: ishworkh/docker-image-artifact-download@v1
+       with:
+        image: "pixel-identity:latest"
+     - name: Launch docker image
+       run: >
+         docker run -d -p 44382:80 --network=${{ job.container.network }}
+         -e AllowedOrigins=http://localhost:44382 -e IdentityHost=http://localhost:44382/pauth
+         --env-file ./.config/identity-postgres-with-console-email.env
+         --name pixel_identity_provider pixel-identity:latest     
+     - name: Print container details
+       run: docker container ls     
      - name: Setup dotnet ${{ matrix.dotnet-version }}
        uses: actions/setup-dotnet@v2
        with:
-        dotnet-version: ${{ matrix.dotnet-version }}
-     - name: Build test project
-       env:
-        BROWSER: Chromium
-        HEADED: 1
-        BaseUrl: http://localhost:5000//pauth
-        UserEmail: admin@pixel.com
-        UserSecret: Admi9@pixel
+        dotnet-version: ${{ matrix.dotnet-version }}    
+     - name: Build test project     
        run: dotnet build src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
+     - name: print container logs
+       run: docker logs pixel_identity_provider
      - name: Install browsers
        run: pwsh src/Pixel.Identity.UI.Tests/bin/Debug/net6.0/playwright.ps1 install
      - name:  Execute tests
-       run: dotnet test src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj 
- 
+       run: dotnet test  --logger "trx;" src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
+     - name: Upload test results
+       uses: actions/upload-artifact@v3
+       with:
+        name: pixel-identity-automation-test-results-${{ matrix.os }}
+        path: src/Pixel.Identity.UI.Tests/TestResults  

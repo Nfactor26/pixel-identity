@@ -41,8 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{2454
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1872169C-F107-43FD-AE02-6DDF88241644}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\identity-build-and-test.yaml = .github\workflows\identity-build-and-test.yaml
-		.github\workflows\identity-build-docker.yaml = .github\workflows\identity-build-docker.yaml
+		.github\workflows\identity-build-and-test-docker.yaml = .github\workflows\identity-build-and-test-docker.yaml
+		.github\workflows\identity-build-only.yaml = .github\workflows\identity-build-only.yaml
 	EndProjectSection
 EndProject
 Global
