@@ -51,7 +51,17 @@ internal class AddRolePage
         }, new PageRunAndWaitForNavigationOptions()
         {
             UrlRegex = new System.Text.RegularExpressions.Regex(".*/roles/list")
+        });      
+        //wait for the snackbar to show up
+        await this.page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
+        {
+            Timeout = 5000
         });
-        await this.page.ClickAsync("div.mud-snackbar.mud-alert-filled-success button");
+        await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+        await this.page.WaitForSelectorAsync("div.mud-snackbar.mud-alert-filled-success",new PageWaitForSelectorOptions()
+        {
+             State = WaitForSelectorState.Detached,
+             Timeout = 5000
+        });
     }
 }
