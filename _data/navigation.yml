@@ -1,0 +1,34 @@
+# main links links
+main:
+  - title: "Home"
+    url: /
+
+  - title: "Documentation"
+    url: /docs/installation/
+
+  - title: "About"
+    url: /about/
+
+
+# documentation links
+docs:
+  - title: Getting Started
+    children:
+      - title: "Getting Binaries"
+        url: /docs/installation/
+      - title: "Configuration"
+        url: /docs/configuration/
+      - title: "Certificates"
+        url: /docs/certificates/
+      - title: "Up and Running"
+        url: /docs/setup/    
+  - title: Samples
+    children:
+      - title: "Sample Applications"
+        url: /docs/sample-applications/
+      - title: "Introspection"
+        url: /docs/introspection/  
+      - title: "Authorization Code with pkce"
+        url: /docs/authorization-code-with-pkce/       
+  
+ 
