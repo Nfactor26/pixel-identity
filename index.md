@@ -1,37 +1,59 @@
-## Welcome to GitHub Pages
+---
+layout: splash
+screenshots:
+  - url: /assets/home_gallery/profile.jpg
+    image_path: /assets/home_gallery/profile_tn.jpg
+    alt: "User Profile"
+    title: "User Profile"
+  - url: /assets/home_gallery/authenticator.jpg
+    image_path: /assets/home_gallery/authenticator_tn.jpg
+    alt: "Setup Authenticator"
+    title: "Setup Authenticator"
+  - url: /assets/home_gallery/list_users.jpg
+    image_path: /assets/home_gallery/list_users_tn.jpg
+    alt: "List existing users"
+    title: "List existing users"
+  - url: /assets/home_gallery/list_roles.jpg
+    image_path: /assets/home_gallery/list_roles_tn.jpg
+    alt: "List existing roles"
+    title: "List existing roles"
+  - url: /assets/home_gallery/list_scopes.jpg
+    image_path: /assets/home_gallery/list_scopes_tn.jpg
+    alt: "List existing scopes"
+  - url: /assets/home_gallery/list_applications.jpg
+    image_path: /assets/home_gallery/list_applications_tn.jpg
+    alt: "List existing applications"
+    title: "List existing applications"
+  - url: /assets/home_gallery/add_application.jpg
+    image_path: /assets/home_gallery/add_application_tn.jpg
+    alt: "Add new application"
+    title: "Add new application"
+  - url: /assets/home_gallery/add_scope.jpg
+    image_path: /assets/home_gallery/add_scope_tn.jpg
+    alt: "Add new scope"
+    title: "Add new scope"  
+  - url: /assets/home_gallery/edit_users.jpg
+    image_path: /assets/home_gallery/edit_user_tn.jpg
+    alt: "Edit user"
+    title: "Edit user"
+  - url: /assets/home_gallery/edit_role.jpg
+    image_path: /assets/home_gallery/edit_role_tn.jpg
+    alt: "Edit role"
+    title: "Edit role"  
+---
+\
+[Pixel Identity](https://github.com/nfactor26/pixel-identity) is a ready to use OpenID Connect provider as a service. It is built on top of [OpenIddict](https://github.com/openiddict/openiddict-core) and [Asp.net Identity](https://github.com/dotnet/AspNetCore/tree/main/src/Identity) and can be easily hosted inside docker or standalone application behind a reverse proxy with minimial configuration.
 
-You can use the [editor on GitHub](https://github.com/Nfactor26/Pixel.Identity/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Features
 
-### Markdown
+- Support for multiple databases such as MongoDB, Postgres SQL and Microsoft SQL Server.
+- Blazor based UI to easily manage users, roles, applications and scopes.
+- Extensible design using plugins.
+- Host inside docker or standalone on windows/linux
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Gallery
 
-```markdown
-Syntax highlighted code block
+{% include gallery id = "screenshots" %}
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Nfactor26/Pixel.Identity/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.

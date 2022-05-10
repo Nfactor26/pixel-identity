@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  
+  jekyll-dev-server:
+    image: jekyll/jekyll:4.2.0
+    container_name: jekyll-dev-server   
+    command: jekyll serve
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/srv/jekyll
+      - ./.gem:/usr/gem
+      - ./.bundle:/usr/local/bundle      
+    expose:
+      - "4000"
