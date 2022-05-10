@@ -1,11 +1,16 @@
 # Pixel Identity
+
 Pixel Identity is a blazor based UI on top of https://github.com/openiddict/openiddict-core and Asp.Net Core Identity with an aim to **quickly setup an OpenID Connect 
 service** for your applications. Pixel Identity provides a web based UI to manage Users and Roles associated with Asp.Net Core Identity as well as entities like
 OpenIddictApplicationDescriptor and OpenIddictScopeDescriptor required by https://github.com/openiddict/openiddict-core. 
-It also provides support for working with **multiple databases e.g. MongoDb, Postgres, SQL Server** using plugins.
+
+## Features
+
+- Support for multiple databases such as MongoDB, Postgres SQL and Microsoft SQL Server.
+- Blazor based UI to easily manage users, roles, applications and scopes.
+- Extensible design using plugins.
+- Host inside docker or standalone on windows/linux
 
 ## Getting started
 
-You can run Pixely Identity behind a Reverse proxy with SSL termination with any supported database
-- Use with docker. 
-- Standalone executable on any OS supported by .net core
+Please see documentation https://nfactor26.github.io/pixel-identity/ to get started.
