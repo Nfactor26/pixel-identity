@@ -1,17 +1,23 @@
 ﻿using OpenIddict.Abstractions;
+using System.Configuration;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Pixel.Identity.Store.PostgreSQL;
 
+/// <summary>
+/// Worker is reponsible for setting up the initial values in database
+/// </summary>
 public class Worker : IHostedService
 {
     private readonly IServiceProvider serviceProvider;
     private readonly IConfiguration configuration;
+    private readonly ILogger<Worker> logger;
 
-    public Worker(IServiceProvider serviceProvider, IConfiguration configuration)
+    public Worker(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<Worker> logger)
     {
         this.serviceProvider = serviceProvider;
         this.configuration = configuration;
+        this.logger = logger;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -25,21 +31,23 @@ public class Worker : IHostedService
 
         if (await applicationManager.FindByClientIdAsync("pixel-identity-ui") is null)
         {
-            await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
+            if (!string.IsNullOrEmpty(configuration["IdentityHost"]))
             {
-                ClientId = "pixel-identity-ui",
-                ConsentType = ConsentTypes.Implicit,
-                DisplayName = "Pixel Identity",
-                Type = ClientTypes.Public,
-                PostLogoutRedirectUris =
+                await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "pixel-identity-ui",
+                    ConsentType = ConsentTypes.Implicit,
+                    DisplayName = "Pixel Identity",
+                    Type = ClientTypes.Public,
+                    PostLogoutRedirectUris =
                 {
                     new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")
                 },
-                RedirectUris =
+                    RedirectUris =
                 {
-                    new Uri($"{configuration["IdentityHost"]}/authentication/login-callback")                       
+                    new Uri($"{configuration["IdentityHost"]}/authentication/login-callback")
                 },
-                Permissions =
+                    Permissions =
                 {
                     Permissions.Endpoints.Authorization,
                     Permissions.Endpoints.Logout,
@@ -52,11 +60,17 @@ public class Worker : IHostedService
                     Permissions.Scopes.Profile,
                     Permissions.Scopes.Roles
                 },
-                Requirements =
+                    Requirements =
                 {
                     Requirements.Features.ProofKeyForCodeExchange
                 }
-            });               
+                });
+                logger.LogInformation("Added application descriptor for pixel-identity-ui");
+            }
+            else
+            {
+                throw new ConfigurationErrorsException("A non-empty value is required for 'IdentityHost'");
+            }
         }
 
         var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
@@ -73,6 +87,7 @@ public class Worker : IHostedService
                 Name = "offline_access",
                 DisplayName = "Offline Access"
             });
+            logger.LogInformation("Added persistence-api and offline_access scopes");
         }
 
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
@@ -93,19 +108,27 @@ public class Worker : IHostedService
                 claim.Properties.Add("IncludeInIdentityToken", "true");
                 await roleManager.AddClaimAsync(role, claim);
             }
+            logger.LogInformation("Added role IdentityAdmin and required claims");
         }
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         if(userManager.Users.Count() == 0)
         {
-            var adminUser = new ApplicationUser();
-            await userManager.SetUserNameAsync(adminUser, "admin@pixel.com");
-            await userManager.SetEmailAsync(adminUser, "admin@pixel.com");
-            await userManager.CreateAsync(adminUser, "Admi9@pixel");
-            await userManager.ConfirmEmailAsync(adminUser, await userManager.GenerateEmailConfirmationTokenAsync(adminUser));
-
-            //assign IdentityAdmin role to user
-            await userManager.AddToRoleAsync(adminUser, "IdentityAdmin");
+            if (!string.IsNullOrEmpty(configuration["InitAdminUser"]) && !string.IsNullOrEmpty(configuration["InitAdminUserPass"]))
+            {
+                var adminUser = new ApplicationUser();
+                await userManager.SetUserNameAsync(adminUser, configuration["InitAdminUser"]);
+                await userManager.SetEmailAsync(adminUser, configuration["InitAdminUser"]);
+                await userManager.CreateAsync(adminUser, configuration["InitAdminUserPass"]);
+                await userManager.ConfirmEmailAsync(adminUser, await userManager.GenerateEmailConfirmationTokenAsync(adminUser));
+                //assign IdentityAdmin role to user
+                await userManager.AddToRoleAsync(adminUser, "IdentityAdmin");
+                logger.LogInformation("Added InitAdminUser and assigned IdentityAdmin role to it.");
+            }
+            else
+            {
+                throw new ConfigurationErrorsException("A non-empty value is required for 'InitAdminUser' and 'InitAdminUserPass'");
+            }
         }           
     }
 
