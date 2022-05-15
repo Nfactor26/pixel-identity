@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
+using OpenIddict.MongoDb.Models;
 using Pixel.Identity.Store.Mongo.Models;
 using System.Configuration;
 using System.Security.Claims;
@@ -14,12 +17,14 @@ public class Worker : IHostedService
 {
     private readonly IServiceProvider serviceProvider;
     private readonly IConfiguration configuration;
-     private readonly ILogger<Worker> logger;
+    private readonly IOptions<CorsOptions> corsOptions;
+    private readonly ILogger<Worker> logger;
 
-    public Worker(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<Worker> logger)
+    public Worker(IServiceProvider serviceProvider, IConfiguration configuration, IOptions<CorsOptions> corsOptions, ILogger<Worker> logger)
     {
         this.serviceProvider = serviceProvider;
         this.configuration = configuration;
+        this.corsOptions = corsOptions;
         this.logger = logger;
     }
 
@@ -127,6 +132,25 @@ public class Worker : IHostedService
                 else
                 {
                     throw new ConfigurationErrorsException("A non - empty value is required for 'InitAdminUser' and 'InitAdminUserPass'") ;
+                }
+            }
+        }
+
+        //For each application, add redirect uri to allowed origin list on default cors policy
+        var defaultCorsPolicy = corsOptions.Value.GetPolicy(corsOptions.Value.DefaultPolicyName);
+        Func<IQueryable<object>, IQueryable<OpenIddictMongoDbApplication>> query = (apps) =>
+        {
+            return apps.Where(app => true).Select(s => s as OpenIddictMongoDbApplication);
+        };      
+        await foreach (var app in applicationManager.ListAsync(query, CancellationToken.None))
+        {
+            var redirectUris = await applicationManager.GetRedirectUrisAsync(app);
+            foreach (var uri in redirectUris.Select(s => new Uri(s)))
+            {
+                string origin = $"{uri.Scheme}://{uri.Authority}";
+                if (!defaultCorsPolicy.Origins.Contains(origin))
+                {
+                    defaultCorsPolicy.Origins.Add(origin);
                 }
             }
         }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
@@ -16,8 +17,8 @@ public class ApplicationsController : Core.Controllers.ApplicationsController
     /// </summary>
     /// <param name="mapper"></param>
     /// <param name="applicationManager"></param>
-    public ApplicationsController(IMapper mapper, IOpenIddictApplicationManager applicationManager) 
-        : base(mapper, applicationManager)
+    public ApplicationsController(IMapper mapper, IOpenIddictApplicationManager applicationManager, ICorsPolicyProvider corsPolicyProvider) 
+        : base(mapper, applicationManager, corsPolicyProvider)
     {
     }
 

@@ -1,8 +1,12 @@
-﻿using OpenIddict.Abstractions;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Options;
+using OpenIddict.Abstractions;
+using OpenIddict.EntityFrameworkCore.Models;
+using Pixel.Identity.Store.Sql.Shared.Stores;
 using System.Configuration;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Pixel.Identity.Store.PostgreSQL;
+namespace Pixel.Identity.Store.Sql.Shared;
 
 /// <summary>
 /// Worker is reponsible for setting up the initial values in database
@@ -11,12 +15,14 @@ public class Worker : IHostedService
 {
     private readonly IServiceProvider serviceProvider;
     private readonly IConfiguration configuration;
+    private readonly IOptions<CorsOptions> corsOptions;
     private readonly ILogger<Worker> logger;
 
-    public Worker(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<Worker> logger)
+    public Worker(IServiceProvider serviceProvider, IConfiguration configuration, IOptions<CorsOptions> corsOptions, ILogger<Worker> logger)
     {
         this.serviceProvider = serviceProvider;
         this.configuration = configuration;
+        this.corsOptions = corsOptions;
         this.logger = logger;
     }
 
@@ -129,7 +135,26 @@ public class Worker : IHostedService
             {
                 throw new ConfigurationErrorsException("A non-empty value is required for 'InitAdminUser' and 'InitAdminUserPass'");
             }
-        }           
+        }
+
+        //For each application, add redirect uri to allowed origin list on default cors policy
+        var defaultCorsPolicy = corsOptions.Value.GetPolicy(corsOptions.Value.DefaultPolicyName);
+        Func<IQueryable<object>, IQueryable<OpenIddictEntityFrameworkCoreApplication>> query = (apps) =>
+        {
+            return apps.Where(app => true).Select(s => s as OpenIddictEntityFrameworkCoreApplication);
+        };
+        await foreach (var app in applicationManager.ListAsync(query, CancellationToken.None))
+        {
+            var redirectUris = await applicationManager.GetRedirectUrisAsync(app);
+            foreach (var uri in redirectUris.Select(s => new Uri(s)))
+            {
+                string origin = $"{uri.Scheme}://{uri.Authority}";
+                if (!defaultCorsPolicy.Origins.Contains(origin))
+                {
+                    defaultCorsPolicy.Origins.Add(origin);
+                }
+            }
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

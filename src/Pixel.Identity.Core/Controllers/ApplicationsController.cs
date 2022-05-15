@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using Pixel.Identity.Shared;
@@ -19,16 +20,18 @@ namespace Pixel.Identity.Core.Controllers
     {
         protected readonly IMapper mapper;
         protected readonly IOpenIddictApplicationManager applicationManager;
+        protected readonly ICorsPolicyProvider corsPolicyProvider;
 
         /// <summary>
         /// constructor
         /// </summary>
         /// <param name="mapper"></param>
         /// <param name="applicationManager"></param>
-        public ApplicationsController(IMapper mapper, IOpenIddictApplicationManager applicationManager)
+        public ApplicationsController(IMapper mapper, IOpenIddictApplicationManager applicationManager, ICorsPolicyProvider corsPolicyProvider)
         {
             this.mapper = mapper;
             this.applicationManager = applicationManager;
+            this.corsPolicyProvider = corsPolicyProvider;
         }
      
         /// <summary>
@@ -65,6 +68,10 @@ namespace Pixel.Identity.Core.Controllers
             {
                 var openIdApplicationDescriptor = mapper.Map<OpenIddictApplicationDescriptor>(applicationDescriptor);
                 var result = await applicationManager.CreateAsync(openIdApplicationDescriptor, CancellationToken.None);
+                if(applicationDescriptor.RedirectUris.Any())
+                {
+                    await AllowOriginsAsync(applicationDescriptor.RedirectUris);
+                }
                 return CreatedAtAction(nameof(Get), new { clientId = applicationDescriptor.ClientId }, result);
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
@@ -88,12 +95,17 @@ namespace Pixel.Identity.Core.Controllers
                 if (existing != null)
                 {
                     var openIdApplicationDescriptor = mapper.Map<OpenIddictApplicationDescriptor>(applicationDescriptor);
+                    var descriptorFromExisting = new OpenIddictApplicationDescriptor();
+                    await applicationManager.PopulateAsync(descriptorFromExisting, existing);
                     //No new secret to update. Populate existing on descriptor before updating
                     if (applicationDescriptor.IsConfidentialClient && string.IsNullOrEmpty(applicationDescriptor.ClientSecret))
-                    {
-                        var descriptorFromExisting = new OpenIddictApplicationDescriptor();
-                        await applicationManager.PopulateAsync(descriptorFromExisting, existing);
+                    {                       
                         openIdApplicationDescriptor.ClientSecret = descriptorFromExisting.ClientSecret;
+                    }
+                    if(!openIdApplicationDescriptor.RedirectUris.SequenceEqual(descriptorFromExisting.RedirectUris))
+                    {
+                        await RemoveOriginsAsync(descriptorFromExisting.RedirectUris);
+                        await AllowOriginsAsync(applicationDescriptor.RedirectUris);
                     }
                     await applicationManager.UpdateAsync(existing, openIdApplicationDescriptor, CancellationToken.None);
                     return Ok();
@@ -115,9 +127,50 @@ namespace Pixel.Identity.Core.Controllers
             if (existing != null)
             {
                 await applicationManager.DeleteAsync(existing);
+                var descriptor = mapper.Map<ApplicationViewModel>(existing);
+                if (descriptor.RedirectUris.Any())
+                {
+                    await RemoveOriginsAsync(descriptor.RedirectUris);
+                }
                 return Ok();
             }
             return NotFound(new NotFoundResponse($"Failed to find application with Id : {clientId}"));
+        }
+
+        /// <summary>
+        /// Add a uri to list of allowed origins on default cors policy
+        /// </summary>
+        /// <param name="origins"></param>
+        /// <returns></returns>
+        protected virtual async Task AllowOriginsAsync(IEnumerable<Uri> origins)
+        {
+            var defaultCorsPolicy = await corsPolicyProvider.GetPolicyAsync(this.HttpContext, null);         
+            foreach (var uri in origins)
+            {
+                string origin = $"{uri.Scheme}://{uri.Authority}";
+                if (!defaultCorsPolicy.Origins.Contains(origin))
+                {
+                    defaultCorsPolicy.Origins.Add(origin);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remmove a uri from list of allowed origins on default cors policy
+        /// </summary>
+        /// <param name="origins"></param>
+        /// <returns></returns>
+        protected virtual async Task RemoveOriginsAsync(IEnumerable<Uri> origins)
+        {
+            var defaultCorsPolicy = await corsPolicyProvider.GetPolicyAsync(this.HttpContext, null);
+            foreach (var uri in origins)
+            {
+                string origin = $"{uri.Scheme}://{uri.Authority}";
+                if (defaultCorsPolicy.Origins.Contains(origin))
+                {
+                    defaultCorsPolicy.Origins.Remove(origin);
+                }
+            }
         }
     }
 }
