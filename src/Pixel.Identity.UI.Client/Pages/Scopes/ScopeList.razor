@@ -1,14 +1,14 @@
 ﻿@page "/scopes/list"
 @attribute [Authorize(Policy = Policies.CanManageScopes)]
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<ScopeViewModel>>>(GetScopesDataAsync))"
+<MudTable UserAttributes="@(new (){{"id","tblScopes"}})" ServerData="@(new Func<TableState, Task<TableData<ScopeViewModel>>>(GetScopesDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="scopesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Scopes</MudText>
-        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+        <MudIconButton UserAttributes="@(new (){{"id","btnNew"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                        @onclick="NavigateToAddScopePage" Color="Color.Primary"></MudIconButton>
         <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Name or Display Name" Adornment="Adornment.Start"
+        <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Name or Display Name" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
@@ -23,7 +23,7 @@
         @*<MudTd DataLabel="Name">
             @context.Id
         </MudTd>*@
-        <MudTd DataLabel="Name">
+        <MudTd DataLabel="#">
             @context.Name
         </MudTd>
         <MudTd DataLabel="Display Name">
@@ -33,11 +33,11 @@
             @context.Description
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+            <MudIconButton UserAttributes="@(new (){{"id","btnEdit"}})" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                            @onclick="()=> NavigateToEditScopePage(context)" Size="Size.Medium"></MudIconButton>
         </MudTd>
          <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+            <MudIconButton UserAttributes="@(new (){{"id","btnDelete"}})" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
                      @onclick="() => DeleteScopeAsync(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
     </RowTemplate>

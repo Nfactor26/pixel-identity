@@ -34,7 +34,8 @@ namespace Pixel.Identity.Store.Sql.Shared.Controllers
                 || (s as OpenIddictEntityFrameworkCoreScope).Name.Contains(request.ScopesFilter))
                 .Skip(request.Skip).Take(request.Take);
 
-            long count = await this.scopeManager.CountAsync<object>(query, CancellationToken.None);
+            long count = string.IsNullOrEmpty(request.ScopesFilter)? await this.scopeManager.CountAsync() :
+                await this.scopeManager.CountAsync<object>(query, CancellationToken.None);
             await foreach (var scope in this.scopeManager.ListAsync<object>(query, CancellationToken.None))
             {
                 var scopeDescriptor = mapper.Map<ScopeViewModel>(scope);

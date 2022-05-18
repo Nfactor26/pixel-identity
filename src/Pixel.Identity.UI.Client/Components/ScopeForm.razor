@@ -1,12 +1,12 @@
-﻿<MudTextField Label="Name"
+﻿<MudTextField UserAttributes="@(new (){{"id","inputScopeName"}})" Label="Name"
               @bind-Value="Scope.Name" For="@(() => Scope.Name)" Disabled="!string.IsNullOrEmpty(Scope.Id)"/>
-<MudTextField Label="Display Name" Class="mt-3"
+<MudTextField UserAttributes="@(new (){{"id","inputDisplayName"}})" Label="Display Name" Class="mt-3"
               @bind-Value="Scope.DisplayName" For="@(() => Scope.DisplayName)" />
-<MudTextField Label="Description" Class="mt-3"
+<MudTextField UserAttributes="@(new (){{"id","inputDescription"}})" Label="Description" Class="mt-3"
               @bind-Value="Scope.Description" For="@(() => Scope.Description)" />
 <div class="d-flex flex-wrap mt-2">
     <MudText Typo="Typo.h6" Class="mt-2">Resources</MudText>
-    <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+    <MudIconButton UserAttributes="@(new (){{"id","btnAddResources"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                    @onclick="AddScopeResource" Color="Color.Primary"></MudIconButton>
 </div>
 <ValidationMessage For="() => Scope.Resources"></ValidationMessage>

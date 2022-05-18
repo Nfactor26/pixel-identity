@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using System.Threading.Tasks;
 
-namespace Pixel.Identity.UI.Tests.PageModels;
+namespace Pixel.Identity.UI.Tests.PageModels.Roles;
 
 internal class AddRolePage
 {
@@ -23,17 +23,17 @@ internal class AddRolePage
     /// <returns></returns>
     public async Task GoToAsync()
     {
-        if (!this.page.Url.EndsWith("roles/list"))
+        if (!page.Url.EndsWith("roles/list"))
         {
-            await this.page.RunAndWaitForRequestAsync(async () =>
+            await page.RunAndWaitForRequestAsync(async () =>
             {
-                await this.page.ClickAsync("a[href='./roles/list']");
+                await page.ClickAsync("a[href='./roles/list']");
             }, request =>
             {
                 return request.Url.EndsWith("api/roles") && request.Method == "GET";
             });
-        }       
-        await this.page.ClickAsync("#btnNewRole");
+        }
+        await page.ClickAsync("#btnNew");
     }
 
     /// <summary>
@@ -44,24 +44,24 @@ internal class AddRolePage
     /// <returns></returns>
     public async Task CreateRole(string roleName)
     {
-        await this.page.RunAndWaitForNavigationAsync(async () =>
+        await page.RunAndWaitForNavigationAsync(async () =>
         {
-            await this.page.FillAsync("#inputRoleName", roleName);
-            await this.page.ClickAsync("#btnCreate");
+            await page.FillAsync("#inputRoleName", roleName);
+            await page.ClickAsync("#btnCreate");
         }, new PageRunAndWaitForNavigationOptions()
         {
             UrlRegex = new System.Text.RegularExpressions.Regex(".*/roles/list")
-        });      
+        });
         //wait for the snackbar to show up
-        await this.page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
+        await page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
         {
             Timeout = 5000
         });
-        await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
-        await this.page.WaitForSelectorAsync("div.mud-snackbar.mud-alert-filled-success",new PageWaitForSelectorOptions()
+        await page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+        await page.WaitForSelectorAsync("div.mud-snackbar.mud-alert-filled-success", new PageWaitForSelectorOptions()
         {
-             State = WaitForSelectorState.Detached,
-             Timeout = 5000
+            State = WaitForSelectorState.Detached,
+            Timeout = 5000
         });
     }
 }

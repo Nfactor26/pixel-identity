@@ -5,7 +5,7 @@
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="rolesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">User Roles</MudText>
-        <MudIconButton UserAttributes="@(new (){{"id","btnNewRole"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"                      
+        <MudIconButton UserAttributes="@(new (){{"id","btnNew"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"                      
                        @onclick="NavigateToAddRolePage" Color="Color.Primary"></MudIconButton>
         <MudSpacer/>
         <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Role Name" 
@@ -18,7 +18,7 @@
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd UserAttributes="@(new (){{"id","tdRoleName"}})" DataLabel="#">
+        <MudTd DataLabel="#">
             @context.RoleName
         </MudTd>
         <MudTd DataLabel="">
