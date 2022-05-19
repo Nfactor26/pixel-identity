@@ -41,6 +41,7 @@ public class AutoMapProfile : Profile
         .ForMember(d => d.Descriptions, opt => opt.Ignore());
 
         CreateMap<OpenIddictEntityFrameworkCoreScope, ScopeViewModel>()
-        .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()));
+        .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
+        .ForMember(d => d.Resources, opt => opt.MapFrom(s => s.Resources.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"'))));
     }
 }

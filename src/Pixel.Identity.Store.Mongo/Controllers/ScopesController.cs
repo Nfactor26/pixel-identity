@@ -29,20 +29,21 @@ namespace Pixel.Identity.Store.Mongo.Controllers
         public override async Task<PagedList<ScopeViewModel>> GetAll([FromQuery] GetScopesRequest request)
         {           
             List<ScopeViewModel> scopeDescriptors = new List<ScopeViewModel>();
-
+            long count = 0;
             Func<IQueryable<object>, IQueryable<OpenIddictMongoDbScope>> query;
             if (string.IsNullOrEmpty(request.ScopesFilter))
             {
                 query = (scopes) => scopes.Skip(request.Skip).Take(request.Take).Select(s => s as OpenIddictMongoDbScope);
+                count = await this.scopeManager.CountAsync();
             }
             else
             {
                 query = (scopes) => scopes.Where(s => (s as OpenIddictMongoDbScope).DisplayName.StartsWith(request.ScopesFilter)
                 || (s as OpenIddictMongoDbScope).Name.Contains(request.ScopesFilter))
                .Take(request.Take).Skip(request.Skip).Select(s => s as OpenIddictMongoDbScope);
+                count = await this.scopeManager.CountAsync(query, CancellationToken.None);
             }
-
-            long count = await this.scopeManager.CountAsync(query, CancellationToken.None);
+                       
             await foreach (var scope in this.scopeManager.ListAsync(query, CancellationToken.None))
             {
                 var scopeDescriptor = mapper.Map<ScopeViewModel>(scope);

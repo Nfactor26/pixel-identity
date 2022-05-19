@@ -34,16 +34,12 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
         {
             var result = await Service.AddScopeAsync(scope);
             if (result.IsSuccess)
-            {
+            {                
+                SnackBar.Add("Added successfully.", Severity.Success);
                 Navigator.NavigateTo($"scopes/list");
-                SnackBar.Add("Added successfully.", Severity.Success);              
                 return;
             }
-            SnackBar.Add(result.ToString(), Severity.Error, config =>
-            {
-                config.ShowCloseIcon = true;
-                config.RequireInteraction = true;
-            });
+            SnackBar.Add(result.ToString(), Severity.Error);
         }
     }
 }

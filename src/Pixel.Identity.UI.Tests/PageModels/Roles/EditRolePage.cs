@@ -3,7 +3,7 @@ using Pixel.Identity.UI.Tests.ComponentModels;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pixel.Identity.UI.Tests.PageModels;
+namespace Pixel.Identity.UI.Tests.PageModels.Roles;
 
 internal class EditRolePage
 {
@@ -17,8 +17,8 @@ internal class EditRolePage
     public EditRolePage(IPage page)
     {
         this.page = page;
-        this.claimsTable = new TableComponent(page, page.Locator("#tblClaims"));
-    }   
+        claimsTable = new TableComponent(page, page.Locator("#tblClaims"));
+    }
 
     /// <summary>
     /// Navigate to edit role page for a given roleName
@@ -27,7 +27,7 @@ internal class EditRolePage
     /// <returns></returns>
     public async Task GoToAsync(string roleName)
     {
-        await this.page.GotoAsync($"/roles/edit/{roleName}");
+        await page.GotoAsync($"/roles/edit/{roleName}");
     }
 
     /// <summary>
@@ -37,28 +37,28 @@ internal class EditRolePage
     /// <returns>True if rename was successful. False otherwise</returns>
     public async Task<bool> RenameRoleAsync(string newRoleName)
     {
-        await this.page.ClickAsync("#toggleRoleNameEdit");
-        await this.page.FillAsync("#txtRoleName", newRoleName);
-        await this.page.RunAndWaitForRequestAsync(async () =>
+        await page.ClickAsync("#toggleRoleNameEdit");
+        await page.FillAsync("#txtRoleName", newRoleName);
+        await page.RunAndWaitForRequestAsync(async () =>
         {
-            await this.page.Locator("#btnUpdateRoleName").ClickAsync();
+            await page.Locator("#btnUpdateRoleName").ClickAsync();
         }, request =>
         {
             return request.Url.EndsWith("/api/roles") && request.Method == "PUT";
         });
         //wait for the snackbar to show up
-        await this.page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
+        await page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
         {
             Timeout = 5000
         });
-        if(await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").IsVisibleAsync())
+        if (await page.Locator("div.mud-snackbar.mud-alert-filled-success button").IsVisibleAsync())
         {
-            await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
             return true;
         }
-        else if(await this.page.Locator("div.mud-snackbar.mud-alert-filled-error button").IsVisibleAsync())
+        else if (await page.Locator("div.mud-snackbar.mud-alert-filled-error button").IsVisibleAsync())
         {
-            await this.page.Locator("div.mud-snackbar.mud-alert-filled-error button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-error button").ClickAsync();
             return false;
         }
         return false;
@@ -74,32 +74,32 @@ internal class EditRolePage
     /// <returns></returns>
     public async Task<bool> AddClaimAsync(string type, string value, bool includeInAccessToken, bool includeInIdentityToken)
     {
-        await this.page.ClickAsync("#btnNewClaim");
-        await this.page.FillAsync("#txtClaimType", type);
-        await this.page.FillAsync("#txtClaimValue", value);
-        await this.page.SetCheckedAsync("#cbIncludeInAccessToken", includeInAccessToken);
-        await this.page.SetCheckedAsync("#cbIncludeInIdentityToken", includeInIdentityToken);
-        await this.page.RunAndWaitForRequestAsync(async () =>
+        await page.ClickAsync("#btnNewClaim");
+        await page.FillAsync("#txtClaimType", type);
+        await page.FillAsync("#txtClaimValue", value);
+        await page.SetCheckedAsync("#cbIncludeInAccessToken", includeInAccessToken);
+        await page.SetCheckedAsync("#cbIncludeInIdentityToken", includeInIdentityToken);
+        await page.RunAndWaitForRequestAsync(async () =>
         {
-            await this.page.Locator("#btnAddNewClaim").ClickAsync();
+            await page.Locator("#btnAddNewClaim").ClickAsync();
         }, request =>
         {
             return request.Url.EndsWith($"/api/roles/add/claim") && request.Method == "POST";
         });
 
         //wait for success dialog to popup for 5 second
-        await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").WaitForAsync(new LocatorWaitForOptions()
+        await page.Locator("div.mud-snackbar.mud-alert-filled-success button").WaitForAsync(new LocatorWaitForOptions()
         {
             Timeout = 5000
         });
-        if (await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").IsVisibleAsync())
+        if (await page.Locator("div.mud-snackbar.mud-alert-filled-success button").IsVisibleAsync())
         {
-            await this.page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
             return true;
         }
 
         //close the claim dialog and return false indicating failure
-        await this.page.Locator("div[role='dialog'] button[aria-label='close'])").ClickAsync();
+        await page.Locator("div[role='dialog'] button[aria-label='close'])").ClickAsync();
         return false;
     }
 
@@ -110,7 +110,7 @@ internal class EditRolePage
     /// <returns></returns>
     public async Task SearchForClaimAsync(string filter)
     {
-        await this.claimsTable.SearchAsync(filter);
+        await claimsTable.SearchAsync(filter);
     }
 
     /// <summary>
@@ -123,11 +123,11 @@ internal class EditRolePage
     /// <param name="newIncludeInAccessToken">new value of whether to include claim in access token</param>
     /// <param name="newIncludeInIdentityToken">new value of whether to include claim in identity token</param>
     /// <returns></returns>
-    public async Task<int> EditClaimsAsync(string claimType, string claimValue, string newClaimType, string newClaimValue ,
-        bool newIncludeInAccessToken,  bool newIncludeInIdentityToken)
+    public async Task<int> EditClaimsAsync(string claimType, string claimValue, string newClaimType, string newClaimValue,
+        bool newIncludeInAccessToken, bool newIncludeInIdentityToken)
     {
-        await this.claimsTable.SearchAsync(claimType);
-        var rows = await this.claimsTable.GetMatchingRowsAsync(async (row) =>
+        await claimsTable.SearchAsync(claimType);
+        var rows = await claimsTable.GetMatchingRowsAsync(async (row) =>
         {
             bool isClaimTypeMatch = (await row.Locator("#tdType").TextContentAsync())?.Equals(claimType) ?? false;
             bool isClaimValueMatch = (await row.Locator("#tdValue").TextContentAsync())?.Equals(claimValue) ?? false;
@@ -140,14 +140,14 @@ internal class EditRolePage
             await row.Locator("#txtClaimValue").FillAsync(newClaimValue);
             await row.Locator("#cbIncludeInAccessToken").SetCheckedAsync(newIncludeInAccessToken);
             await row.Locator("#cbIncludeInIdentityToken").SetCheckedAsync(newIncludeInIdentityToken);
-            await this.page.RunAndWaitForRequestAsync(async () =>
+            await page.RunAndWaitForRequestAsync(async () =>
             {
                 await row.Locator("button").Nth(0).ClickAsync();
             }, request =>
             {
                 return request.Url.EndsWith("api/roles/update/claim") && request.Method == "POST";
             });
-            await this.page.ClickAsync("div.mud-snackbar.mud-alert-filled-success button");
+            await page.ClickAsync("div.mud-snackbar.mud-alert-filled-success button");
         }
         return rows.Count();
     }
@@ -160,24 +160,24 @@ internal class EditRolePage
     /// <returns>Number of deleted rows</returns>
     public async Task<int> DeleteClaimsAsync(string claimType, string claimValue)
     {
-        await this.claimsTable.SearchAsync(claimType);
-        var rows = await this.claimsTable.GetMatchingRowsAsync(async (row) =>
+        await claimsTable.SearchAsync(claimType);
+        var rows = await claimsTable.GetMatchingRowsAsync(async (row) =>
         {
             bool isClaimTypeMatch = (await row.Locator("#tdType").TextContentAsync())?.Equals(claimType) ?? false;
             bool isClaimValueMatch = (await row.Locator("#tdValue").TextContentAsync())?.Equals(claimValue) ?? false;
             return isClaimTypeMatch && isClaimValueMatch;
         });
-        foreach(var row in rows)
+        foreach (var row in rows)
         {
-            await this.page.RunAndWaitForRequestFinishedAsync(async () =>
+            await page.RunAndWaitForRequestFinishedAsync(async () =>
             {
                 await row.Locator("#btnDelete").ClickAsync();
             },
             new PageRunAndWaitForRequestFinishedOptions()
             {
-                 Predicate = request => request.Url.EndsWith("api/roles/delete/claim") && request.Method == "POST"
-            });           
-            await this.page.ClickAsync("div.mud-snackbar.mud-alert-filled-success button");
+                Predicate = request => request.Url.EndsWith("api/roles/delete/claim") && request.Method == "POST"
+            });
+            await page.ClickAsync("div.mud-snackbar.mud-alert-filled-success button");
         }
         return rows.Count();
     }
