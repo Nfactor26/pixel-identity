@@ -1,7 +1,7 @@
 ﻿<MudGrid Spacing="2">
     @foreach (var item in Items)
     {
-        <MudItem xs="@ItemSize">           
+        <MudItem UserAttributes="@(new (){{"id","toggleItem"}})" xs="@ItemSize">           
            <MudToggleIconButton Toggled="@item.IsSelected" ToggledChanged="@(x => ToggleSwitch(x, item))"
                      Color="@Color.Default" ToggledColor="@Color.Success" 
                      Size="Size.Large" ToggledSize="Size.Large"

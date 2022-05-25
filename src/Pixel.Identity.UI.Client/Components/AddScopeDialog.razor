@@ -10,7 +10,7 @@
                          AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
             </MudItem>
             <MudItem xs="2">
-                <MudIconButton OnClick="AddScope" Disabled="@(null == selectedOption)"
+                <MudIconButton UserAttributes="@(new (){{"id","btnAddScope"}})" OnClick="AddScope" Disabled="@(null == selectedOption)"
                                Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
             </MudItem>
         </MudGrid>     

@@ -60,11 +60,7 @@ namespace Pixel.Identity.UI.Client.Pages.Application
                 SnackBar.Add("Added successfully.", Severity.Success);               
                 return;
             }
-            SnackBar.Add(result.ToString(), Severity.Error, config =>
-            {
-                config.ShowCloseIcon = true;
-                config.RequireInteraction = true;
-            });
+            SnackBar.Add(result.ToString(), Severity.Error);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿@page "/applications/list"
 @attribute [Authorize(Policy = Policies.CanManageApplications)]
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<ApplicationViewModel>>>(GetApplicationsDataAsync))"
+<MudTable UserAttributes="@(new (){{"id","tblApplications"}})" ServerData="@(new Func<TableState, Task<TableData<ApplicationViewModel>>>(GetApplicationsDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="applicationsTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Applications</MudText>
-        <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+        <MudIconButton UserAttributes="@(new (){{"id","btnNew"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                        @onclick="AddNewApplication" Color="Color.Primary"></MudIconButton>
         <MudSpacer></MudSpacer>
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Client Id or Display Name" Adornment="Adornment.Start"
+        <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by Client Id or Display Name" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
@@ -19,7 +19,7 @@
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Client Id">
+        <MudTd DataLabel="#">
             @context.ClientId
         </MudTd>
         <MudTd DataLabel="Display Name">
@@ -29,11 +29,11 @@
             @context.ConsentType
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+            <MudIconButton UserAttributes="@(new (){{"id","btnEdit"}})" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                            @onclick="()=> EditApplication(context)" Size="Size.Medium"></MudIconButton>
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+            <MudIconButton UserAttributes="@(new (){{"id","btnDelete"}})" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
                            @onclick="()=> DeleteApplicationAsync(context)" Size="Size.Medium"></MudIconButton>
         </MudTd>
     </RowTemplate>
