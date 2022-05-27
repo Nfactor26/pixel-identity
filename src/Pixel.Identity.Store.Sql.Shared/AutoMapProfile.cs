@@ -21,8 +21,8 @@ public class AutoMapProfile : Profile
         CreateMap<OpenIddictEntityFrameworkCoreApplication, ApplicationViewModel>()
         .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
         .ForMember(d => d.IsConfidentialClient, opt => opt.Ignore())
-        .ForMember(d => d.RedirectUris, opt => opt.MapFrom(s => s.RedirectUris.Trim(']', '[').Split(',', StringSplitOptions.None).Select(u => new Uri(u, UriKind.RelativeOrAbsolute))))
-        .ForMember(d => d.PostLogoutRedirectUris, opt => opt.MapFrom(s => s.PostLogoutRedirectUris.Trim(']', '[').Split(',', StringSplitOptions.None).Select(u => new Uri(u, UriKind.RelativeOrAbsolute))))
+        .ForMember(d => d.RedirectUris, opt => opt.MapFrom(s => s.RedirectUris.Trim(']', '[').Split(',', StringSplitOptions.None).Select(u => new Uri(u.Trim('\"'), UriKind.RelativeOrAbsolute))))
+        .ForMember(d => d.PostLogoutRedirectUris, opt => opt.MapFrom(s => s.PostLogoutRedirectUris.Trim(']', '[').Split(',', StringSplitOptions.None).Select(u => new Uri(u.Trim('\"'), UriKind.RelativeOrAbsolute))))
         .ForMember(d => d.Permissions, opt => opt.MapFrom(s => s.Permissions.Trim(']', '[').Split(',', StringSplitOptions.None).Select(p => p.Trim('\"'))))
         .ForMember(d => d.Requirements, opt => opt.MapFrom(s => s.Requirements.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"'))));
 

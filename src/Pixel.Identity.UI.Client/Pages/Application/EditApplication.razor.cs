@@ -53,11 +53,7 @@ namespace Pixel.Identity.UI.Client.Pages.Application
                 this.application = await GetApplicationDetailsAsync(this.clientId);             
                 return;
             }
-            SnackBar.Add(result.ToString(), Severity.Error, config =>
-            {
-                config.ShowCloseIcon = true;
-                config.RequireInteraction = true;
-            });
+            SnackBar.Add(result.ToString(), Severity.Error);
         }
 
         /// <summary>

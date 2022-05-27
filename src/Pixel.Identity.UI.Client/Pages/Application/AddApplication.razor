@@ -8,7 +8,7 @@
                <MudText Typo="Typo.h4">Create New</MudText>
          </MudItem/>
          <MudItem xs="4">
-              <MudSelect T="ApplicationPreset" ValueChanged="(v) => ApplyPreset(v)" Label="Apply Preset" 
+              <MudSelect UserAttributes="@(new (){{"id","cbPresets"}})" T="ApplicationPreset" ValueChanged="(v) => ApplyPreset(v)" Label="Apply Preset" 
                 AdornmentColor="Color.Secondary" FullWidth="false">
                 @foreach (ApplicationPreset item in Enum.GetValues(typeof(ApplicationPreset)))
                 {
