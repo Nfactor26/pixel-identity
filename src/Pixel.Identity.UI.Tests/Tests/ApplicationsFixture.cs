@@ -274,7 +274,7 @@ internal class ApplicationsFixture : PageSesionTest
         await listApplicationsPage.GoToAsync();
         var editApplicationPage = new EditApplicationPage(this.Page);
         await editApplicationPage.GoToAsync("application-10");
-        await editApplicationPage.TryAddScope("Offline_Access");
+        Assert.IsTrue(await editApplicationPage.TryAddScope("Offline_Access"));
         await editApplicationPage.Submit(false);
     }
 

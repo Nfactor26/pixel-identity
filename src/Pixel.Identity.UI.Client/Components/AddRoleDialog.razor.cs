@@ -4,12 +4,14 @@ using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Components
 {
     public partial class AddRoleDialog : ComponentBase
     {
+        string error = null;
         UserRoleViewModel selectedOption;
 
         [CascadingParameter]
@@ -18,17 +20,34 @@ namespace Pixel.Identity.UI.Client.Components
         [Inject]
         public ISnackbar SnackBar { get; set; }
 
-        [Inject]
-        public IUserRolesService RolesService { get; set; }
+        [Parameter]
+        public IUserRolesService RolesService { get; set; }      
+
+        [Parameter]
+        public string Owner { get; set; }
+       
+        [Parameter]
+        public IEnumerable<UserRoleViewModel> ExistingRoles { get; set; }
 
         /// <summary>
-        /// Close the dialog with selectedOption as dialog result
+        /// Add role to user and close the dialog
         /// </summary>
-        void AddRole()
+        async Task AddRoleAsync()
         {
             if (null != selectedOption)
             {
-                MudDialog.Close(DialogResult.Ok<UserRoleViewModel>(selectedOption));
+                if (!ExistingRoles.Any(u => u.RoleName.Equals(selectedOption.RoleName)))
+                {
+                    var result = await RolesService.AssignRolesToUserAsync(Owner, new[] { selectedOption });
+                    if (result.IsSuccess)
+                    {
+                        MudDialog.Close(DialogResult.Ok<UserRoleViewModel>(selectedOption));
+                        return;
+                    }
+                    error = result.ToString();
+                    return;                  
+                }                
+                error = $"{selectedOption.RoleName} role is already assigned to user.";
             }
         }
 

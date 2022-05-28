@@ -53,12 +53,12 @@ namespace Pixel.Identity.UI.Tests.PageModels
         /// <summary>
         /// Search for specified key and click edit button on first matching row
         /// </summary>
-        /// <param name="roleName"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<bool> EditAsync(string roleName)
+        public async Task<bool> EditAsync(string key)
         {
-            await SearchAsync(roleName);
-            return await table.EditFirstMatchingRowAsync(async (row) => (await row.Locator("td[data-label='#']").TextContentAsync())?.Equals(roleName)
+            await SearchAsync(key);
+            return await table.EditFirstMatchingRowAsync(async (row) => (await row.Locator("td[data-label='#']").TextContentAsync())?.Equals(key)
                                                                                    ?? false, GetRequestUrl());
         }
 

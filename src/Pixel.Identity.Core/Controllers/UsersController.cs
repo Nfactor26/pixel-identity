@@ -48,14 +48,14 @@ namespace Pixel.Identity.Core.Controllers
             if (!string.IsNullOrEmpty(request.UsersFilter))
             {
                 count = this.userManager.Users.Where(u => u.UserName.Contains(request.UsersFilter)
-                || u.Email.Contains(request.UsersFilter)).Count();
+                || u.Email.Contains(request.UsersFilter)).Skip(request.Skip).Take(request.Take).Count();
                 applicationUsers = this.userManager.Users.Where(u => u.UserName.Contains(request.UsersFilter)
                 || u.Email.Contains(request.UsersFilter)).Skip(request.Skip).Take(request.Take).OrderBy(u => u.UserName);
             }
             else
             {
                 count = this.userManager.Users.Count();
-                applicationUsers = this.userManager.Users.OrderBy(u => u.UserName);
+                applicationUsers = this.userManager.Users.Skip(request.Skip).Take(request.Take).OrderBy(u => u.UserName);
             }
 
             var userDetails = mapper.Map<IEnumerable<UserDetailsViewModel>>(applicationUsers);
@@ -253,7 +253,7 @@ namespace Pixel.Identity.Core.Controllers
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }
 
-        [HttpDelete("delete/claim")]
+        [HttpPost("delete/claim")]
         [Authorize(Policy = Policies.CanManageUsers)]
         public async Task<IActionResult> DeleteUserClaim([FromBody] RemoveClaimRequest request)
         {
