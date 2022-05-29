@@ -120,8 +120,7 @@ namespace Pixel.Identity.UI.Tests
         /// <param name="scopeName">Duplicate scope name</param>
         /// <returns></returns>
         [Order(35)]
-        [TestCase("scope-01")]
-        [Ignore("To fix error reponse")]
+        [TestCase("scope-01")]      
         public async Task Test_That_Can_Not_Create_Duplicate_Scope(string scopeName)
         {
             var listScopesPage = new ListScopesPage(this.Page);
