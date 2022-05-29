@@ -10,9 +10,13 @@
                          AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
             </MudItem>
             <MudItem xs="2">
-                <MudIconButton OnClick="AddRole" Disabled="@(null == selectedOption)"
+                <MudIconButton UserAttributes="@(new (){{"id","btnAddRole"}})" OnClick="AddRoleAsync" Disabled="@(null == selectedOption)"
                                Icon="@Icons.Material.Filled.Add" Color="Color.Primary" />
             </MudItem>
         </MudGrid>     
+        @if (!string.IsNullOrEmpty(error))
+        {
+            <MudAlert id="errorMessage" Severity="Severity.Error">@error</MudAlert>
+        }
     </DialogContent>
 </MudDialog>

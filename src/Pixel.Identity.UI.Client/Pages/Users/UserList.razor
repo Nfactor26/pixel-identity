@@ -1,12 +1,12 @@
 ﻿@page "/users/list"
 @attribute [Authorize(Policy = Policies.CanManageUsers)]
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<UserDetailsViewModel>>>(GetUsersDataAsync))"
+<MudTable UserAttributes="@(new (){{"id","tblUsers"}})" ServerData="@(new Func<TableState, Task<TableData<UserDetailsViewModel>>>(GetUsersDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="usersTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Users</MudText>
         <MudSpacer/>
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by User Name or Email" Adornment="Adornment.Start"
+        <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by User Name or Email" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
@@ -18,7 +18,7 @@
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="User Name">
+        <MudTd DataLabel="#">
             @context.UserName
         </MudTd>
         <MudTd DataLabel="User Email">
@@ -38,11 +38,11 @@
             }
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+            <MudIconButton UserAttributes="@(new (){{"id","btnEdit"}})" Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                         @onclick="()=> EditUser(context)"   Size="Size.Medium" ></MudIconButton>
         </MudTd>
         <MudTd DataLabel="">
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+            <MudIconButton UserAttributes="@(new (){{"id","btnDelete"}})" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
                      @onclick="() => DeleteUserAsync(context)"  Size="Size.Medium" ></MudIconButton>
         </MudTd>
     </RowTemplate>

@@ -152,19 +152,16 @@ namespace Pixel.Identity.UI.Client.Pages.Users
         /// <returns></returns>
         async Task AddRoleAsync()
         {
-            var parameters = new DialogParameters();           
+            var parameters = new DialogParameters();
+            parameters.Add("Owner", user.UserName);
+            parameters.Add("ExistingRoles", user.UserRoles);
+            parameters.Add("RolesService", RolesService);
             var dialog = Dialog.Show<AddRoleDialog>("Add New Role", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
-            var result = await dialog.Result;          
-            if (!result.Cancelled && result.Data is UserRoleViewModel userRole)
-            {              
-                var assignRoleResult =  await RolesService.AssignRolesToUserAsync(user.UserName, new[] { userRole });
-                if (assignRoleResult.IsSuccess)
-                {
-                    user.UserRoles.Add(userRole);
-                    SnackBar.Add("Role successfully assigned.", Severity.Success);
-                    return;
-                }
-                SnackBar.Add($"Error while assigning role.{result}", Severity.Error);
+            var result = await dialog.Result;         
+            if (!result.Cancelled && result.Data is UserRoleViewModel role)
+            {
+                user.UserRoles.Add(role);
+                SnackBar.Add("Role successfully assigned.", Severity.Success);
             }
         }
 

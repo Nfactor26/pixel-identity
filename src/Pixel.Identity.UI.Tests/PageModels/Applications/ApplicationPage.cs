@@ -167,12 +167,12 @@ internal class ApplicationPage
     {
         await this.page.Locator("button#btnAddScope").ClickAsync();
         var dialog = this.page.Locator("div[role='dialog']");
-        await dialog.Locator("inptu.mud-select-input").TypeAsync(scope);
-        var popup = this.page.Locator("div.mud-popover-provider");
-        var exists = (await popup.Locator("div.mud-list div.mud-list-item-text").CountAsync()) == 1;
+        await dialog.Locator("input.mud-select-input").TypeAsync(scope);
+        this.page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text");
+        var exists = (await this.page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").CountAsync()) == 1;
         if (exists)
         {
-            await popup.Locator("div.mud-list div.mud-list-item-text").ClickAsync();
+            await this.page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").ClickAsync();
             await dialog.Locator("button#btnAddScope").ClickAsync();
             return true;
         }

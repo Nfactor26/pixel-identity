@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace Pixel.Identity.UI.Tests
 {
     [TestFixture, Order(40)]    
-    internal class RoleFixture : PageSesionTest
+    internal class RolesFixture : PageSesionTest
     {
         private readonly string baseUrl;      
 
-        public RoleFixture()
+        public RolesFixture()
         {
             this.baseUrl = ConfigurationFactory.Create()["BaseUrl"];
         }

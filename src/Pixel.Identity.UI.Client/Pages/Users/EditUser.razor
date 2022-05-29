@@ -75,12 +75,12 @@
 
     <br />
 
-    <MudCard Elevation="4">
+    <MudCard UserAttributes="@(new (){{"id","rolesCollection"}})" Elevation="4">
         <MudCardHeader Class="pb-0">
             <CardHeaderContent>
                 <div class="d-flex flex-wrap">
-                    <MudText Typo="Typo.h6" Class="mt-2">Resources</MudText>
-                    <MudIconButton Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                    <MudText Typo="Typo.h6" Class="mt-2">Roles</MudText>
+                    <MudIconButton UserAttributes="@(new (){{"id","btnAddRole"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
                                @onclick="AddRoleAsync" Color="Color.Primary"></MudIconButton>
                 </div>
             </CardHeaderContent>
