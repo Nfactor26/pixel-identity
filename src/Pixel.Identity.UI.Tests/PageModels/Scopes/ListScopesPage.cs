@@ -35,6 +35,10 @@ namespace Pixel.Identity.UI.Tests.PageModels.Scopes
                 {
                     return request.Url.Contains("api/scopes?") && request.Method == "GET";
                 });
+                await this.page.Locator("div#tblScopes table tbody tr").Nth(0).WaitForAsync(new LocatorWaitForOptions()
+                {
+                    Timeout = 5000
+                });
             }
         }       
     }
