@@ -155,7 +155,7 @@ internal class ApplicationsFixture : PageSesionTest
         },
         new PageRunAndWaitForNavigationOptions()
         {
-               UrlRegex = new System.Text.RegularExpressions.Regex(".*/applications/list")
+               UrlRegex = new Regex(".*/applications/list")
         });
         //wait for the snackbar to show up
         await this.Page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
