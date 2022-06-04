@@ -32,7 +32,7 @@ screenshots:
     image_path: /assets/home_gallery/add_scope_tn.jpg
     alt: "Add new scope"
     title: "Add new scope"  
-  - url: /assets/home_gallery/edit_users.jpg
+  - url: /assets/home_gallery/edit_user.jpg
     image_path: /assets/home_gallery/edit_user_tn.jpg
     alt: "Edit user"
     title: "Edit user"

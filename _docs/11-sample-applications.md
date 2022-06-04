@@ -33,9 +33,9 @@ Register new user accounts if required. Claims can be added directly to users or
 - Page will be redirected to https://localhost:5239 on successful login
 - Click Fetch data page from side navigation bar
 - If user doesn't have "read-weather" claim with value of "true", user will see unauthorized message.
-  ![](/assets/blazor-fetch-data-not-authorized.PNG) 
+  {% include figure image_path="/assets/blazor-fetch-data-not-authorized.jpg" %}{: .full}
 - If user has "read-weather" claim with value of "true", user will see weather forecase data retrieved from Sample.Service.Api service.
-  ![](/assets/data-available-when-authorized.PNG)
+  {% include figure image_path="/assets/data-available-when-authorized.jpg" %}{: .full}
 
 ### Notes
 - Ensure that the sample applications are running on https if pixel identity service is running over https

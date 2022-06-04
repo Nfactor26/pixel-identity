@@ -6,16 +6,17 @@ permalink: /docs/certificates/
 Pixel Identity requires 3 certificates in all to get up and running.
 
 - RSA certificate required for [encryption](https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html) by OpenIddict.
-
   Certificates can be generated and self-signed locally using the .NET Core CertificateRequest API:
+
       using var algorithm = RSA.Create(keySizeInBits: 2048);
-      
-      var subject = new X500DistinguishedName("CN=Fabrikam Encryption Certificate");
+
+      var subject = new X500DistinguishedName("CN=Pixel Identity Encryption Certificate");
       var request = new CertificateRequest(subject, algorithm, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
       request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.KeyEncipherment, critical: true));
-      
+
       var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(2));
-      
+
+      //Export the certificate as Pfx without any password
       File.WriteAllBytes("identity-encryption.pfx", certificate.Export(X509ContentType.Pfx, string.Empty));
 
   Set *Identity:Certificates:EncryptionCertificatePath* and *Identity:Certificates:EncryptionCertificateKey* variables accordingly. 
@@ -26,12 +27,13 @@ Pixel Identity requires 3 certificates in all to get up and running.
   Certificates can be generated and self-signed locally using the .NET Core CertificateRequest API:
       using var algorithm = RSA.Create(keySizeInBits: 2048);
 
-      var subject = new X500DistinguishedName("CN=Fabrikam Signing Certificate");
+      var subject = new X500DistinguishedName("CN=Pixel Identity Signing Certificate");
       var request = new CertificateRequest(subject, algorithm, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
       request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature, critical: true));
 
       var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddYears(2));
-
+      
+      //Export the certificate as Pfx without any password
       File.WriteAllBytes("identity-signing.pfx", certificate.Export(X509ContentType.Pfx, string.Empty));
 
   Set *Identity:Certificates:SigningCertificatePath* and *Identity:Certificates:SigningCertificateKey* variables accordingly.

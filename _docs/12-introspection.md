@@ -12,14 +12,13 @@ A custom scope also needs to be created. The custom scope should have a resource
 
 - Login to Pixel Identity with a user having appropriate access to manage applications and scopes
 - Goto Scopes page and click the + button to add a custom scope
-- Fill in required details as shown below
-  ![](/assets/add-scope-for-api-service.PNG)
-- Add scope
+- Fill in required details as shown below and add new scope 
+  {% include figure image_path="/assets/add-scope-for-api-service.jpg" %}{: .full}
+
 
 ### Onboarding Sample.Serice.Api application
 
 - Goto Applications page and click the + button to add a new application
 - Pick "Introspection" preset
-- Fill in required details as shown below 
-  ![](/assets/add-application-with-introspection.PNG)
-- Add application 
+- Fill in required details as shown below and add new application
+  {% include figure image_path="/assets/add-application-with-introspection.jpg" %}{: .full}

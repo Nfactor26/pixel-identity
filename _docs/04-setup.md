@@ -6,19 +6,25 @@ permalink: /docs/setup/
 ### Setup with docker
 
 Download and extract the docker-compose.zip file from [releases](https://github.com/Nfactor26/pixel-identity/releases) page from github repo.
-Generate all the three required certificates as described in the [certificates guide](/docs/certificates) and put in the **.certificates** folder.
-Go through the [configurations](/docs/configuration) and modify as required. Execute below commands from docker-compose folder after starting docker. 
+Make sure to unblock the zip file.Generate all the three required certificates as described in the [certificates guide](/docs/certificates) and put in the **.certificates** folder.Go through the [configurations](/docs/configuration) and modify as required. 
+
+Execute below commands from docker-compose folder after starting docker. 
 
     docker volume create postgre-pixel-identiy-store  # For Postgres SQL 
     docker volume create mongo-pixel-identiy-store    # For MongoDB
 
     docker network create --driver bridge pixel-network
     
-    docker compose -f docker-compose-traefik-postgres.yml  # For Postgres SQL 
-    docker compose -f docker-compose-traefik-postgres.yml  # For MongoDB
+    docker compose -f docker-compose-traefik-postgres.yml up -d  # For Postgres SQL 
+    docker compose -f docker-compose-traefik-mongo.yml up -d  # For MongoDB
+
+Execute below commands from docker-compose folder to stop.
+
+    docker compose -f docker-compose-traefik-postgres.yml down # For Postgres SQL
+    docker compose -f docker-compose-traefik-mongo.yml down  # For MongoDB 
 
 Navigate to https://pixel.docker.localhost/pauth once the containers are up and running.
-Login with admin@pixel.com and Admi9@pixel to get started. You can change password once logged in.
+Login with values configured for  InitAdminUser and InitAdminUserPass configuration keys to get started. You can change password once logged in.
 
 #### Reverse-Proxy
 
@@ -46,7 +52,7 @@ Latest version of these database will be pulled and started inside docker. Datab
 Pixel Identity service is already configured with defaults in docker-compose-*.yml files. Modify the image version if required.
 Check [dockerhub](https://hub.docker.com/repository/docker/nfactor26/pixel-identity) for available versions.
 
-    image: nfactor26/pixel-identity:v1.0.0-beta
+    image: nfactor26/pixel-identity:v1.1.0
 
 Service is configured to run on *http* and not exposed on any port. It is assumed that it will be accessed via a reverse-proxy with SSL termination.
 It requires identity-encryption.pfx and identity-signing.pfx certificates to be available in .certificates file which are required by 
@@ -54,14 +60,17 @@ It requires identity-encryption.pfx and identity-signing.pfx certificates to be 
 
 ### Setup with Windows or Linux
 
-Download and extract pixel-identity-windows.zip or pixel-identity-ubuntu.zip file from [releases](https://github.com/Nfactor26/pixel-identity/releases) page from github repo. Add required configuration in appsettings.json. Make sure your database is up and running. 
+Download and extract pixel-identity-windows.zip or pixel-identity-ubuntu.zip file from [releases](https://github.com/Nfactor26/pixel-identity/releases) page from github repo. Make sure to unblock the zip files. Add required configuration in appsettings.json. Make sure your database is up and running. 
 
 Ensure that environment variable [ASPNETCORE_ENVIRONMENT](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-6.0) is correctly set to
-Development or Stagin or Production.
-Launch Pixel Identity service to listen on https. The recommendation however is to use it behind a reverse-proxy with SSL termination.
-    dotnet Pixel.Identity.Provider --urls=https://localhost:44382/
+Development or Staging or Production.Launch Pixel Identity service to listen on https. The recommendation however is to use it behind a reverse-proxy with SSL termination.
+Make sure you use the same host configured for IdentityHost configuration for --urls parameter e.g. if IdentityHost is https://localhost:44382/pauth you need to pass
+--urls=https://localhost:44382.
+   
+    dotnet Pixel.Identity.Provider.dll --urls=https://localhost:44382/ 
 
 Navigate to https://localhost:44382/pauth displayed on console. Assumption here is that dotnet development certificate is auto generated.
+For development enviornmet, https://ethereal.email/ account is used for SMTP configuration.
  
 
 - Example appsettings.Production.json with MongoDB and SMTP based email sender
@@ -104,7 +113,7 @@ Navigate to https://localhost:44382/pauth displayed on console. Assumption here 
                     "Name": "Pixel.Identity.Store.Mongo"
                 }
                 ]
-            }
+            },
             "IdentityOptions": {
                 "SignIn": {
                     "RequireConfirmedAccount": true
@@ -116,8 +125,8 @@ Navigate to https://localhost:44382/pauth displayed on console. Assumption here 
                     "EncryptionCertificateKey": "",
                     "SigningCertificatePath": ".....\\.certificates\\identity-signing.pfx",
                     "SigningCertificateKey": ""
-                    }
-                },
+                }
+            },
             "SMTP":
             {
                 "Host": "",
@@ -125,11 +134,13 @@ Navigate to https://localhost:44382/pauth displayed on console. Assumption here 
                 "UserName": "",
                 "Password": "",
                 "From": ""
-            }
+            },
             "MongoDbSettings": {
                 "ConnectionString": "mongodb://mongoadmin:mongopass@mongo:27017/",
                 "DatabaseName": "pixel-identity-db-test"
             },
+            "InitAdminUser": "admin@pixel.com",
+            "InitAdminUserPass": "Admi9@pixel",
             "AllowedHosts": "http://localhost:44382/pauth"
             "AllowedOrigins": "http://localhost:44382"
         }       
