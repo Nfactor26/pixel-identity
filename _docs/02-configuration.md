@@ -5,18 +5,24 @@ permalink: /docs/configuration/
 
 ### General settings
 
-| Option      | Description | Default Value|
+| Option      | Description | Is Required ?|
 | ----------- | ----------- | -------      |
-|  IdentityHost     | Url over which pixel-identity is accessed. This is required to auto configure Pixel Identity UI with OpenIddict.  | Required |
-|  AllowedOrigins   | Allowed origins for CORS.  | Required |
+|  InitAdminUser     | User name for the initial admin user that is created.                                                             | Required |
+|  InitAdminUserPass | Password for the initial adming user that is created.                                                             | Required |
+|  IdentityHost      | Url over which pixel-identity is accessed. This is required to auto configure Pixel Identity UI with OpenIddict.  | Required |
+|  AllowedOrigins    | Allowed origins for CORS.  | Optional |
 
 - appsettings.json
-          
+
+        "InitAdminUser": "admin@pixel.com",
+        "InitAdminUserPass": "Admi9@pixel",
         "IdentityHost": "http://localhost:44382/pauth",
         "AllowedOrigins": "http://localhost:44382"
 
 - environment variable or .env files for docker
-
+ 
+        InitAdminUser=admin@pixel.com
+        InitAdminUserPass=Admi9@pixel
         AllowedOrigins=https://pixel.docker.localhost
         IdentityHost=https://pixel.docker.localhost/pauth
 
@@ -25,12 +31,12 @@ permalink: /docs/configuration/
 [OpenIddict](https://github.com/openiddict/openiddict-core) requires two certificates for [encryption and signing](https://documentation.openiddict.com/configuration/encryption-and-signing-credentials.html)
 
 
-| Option      | Description | Default Value|
+| Option      | Description | Is Required ?|
 | ----------- | ----------- | -------      |
-|  EncryptionCertificatePath     | Aboslute path for encryption certificate.  | Required |
-|  EncryptionCertificateKey   | Password for encryption ceritificate if any provided while generating certificate.  | "" |
-|  SigningCertificatePath   | Absolute path for signing certificate.  | Required |
-|  SigningCertificateKey   | Password for signing certificate if any provided while generating certificate.  | "" |
+|  EncryptionCertificatePath     | Aboslute path for encryption certificate. A development certificate is auto generated if not specified. You should provide a certificate for production enviornment. | Optional |
+|  EncryptionCertificateKey   | Password for encryption ceritificate if any provided while generating certificate.  | Optional |
+|  SigningCertificatePath   | Absolute path for signing certificate. A development certificate is auto generated if not specified. You should provide a certificate for production environment.  | Optional |
+|  SigningCertificateKey   | Password for signing certificate if any provided while generating certificate.  | Optional |
 
 - appsettings.json
 
@@ -43,7 +49,7 @@ permalink: /docs/configuration/
             }
         }
 
-- environment variable or .env files for docker
+- environment variable or .env files for docker  
 
         Identity__Certificates__EncryptionCertificatePath=.....\\.certificates\\identity-encryption.pfx
         Identity__Certificates__EncryptionCertificateKey=""
@@ -132,6 +138,7 @@ Use Pixel.Identity.Store.Mongo or Pixel.Identity.Store.SqlServer or Pixel.Identi
         }
 
       Additional configuration required if using **Pixel.Identity.Messenger.Email** plugin for detail of SMPT server used for sending emails.
+      For development, https://ethereal.email/ account is used for SMTP configuration.
       
         "SMTP":
         {
@@ -161,6 +168,7 @@ Use Pixel.Identity.Store.Mongo or Pixel.Identity.Store.SqlServer or Pixel.Identi
 ### Asp.Net Identity Options
 
 Below Options can be configured for [Asp.Net Identity ](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-6.0)
+All these options are optional and will use default value if not configured.
 
 
 | Option      | Description | Default Value|
@@ -184,7 +192,7 @@ Below Options can be configured for [Asp.Net Identity ](https://docs.microsoft.c
 
         "IdentityOptions": {
             "SignIn": {
-            "RequireConfirmedAccount": false
+                "RequireConfirmedAccount": false
             }
          }
 

@@ -15,4 +15,4 @@ See [configuration guide](/docs/configuration) for customization and [setup guid
 
 ## Note
 
-You might need to unblock the zip files before extracting. Right click zip file -> Properties -> General -> uncheck unblock.
+You will need to unblock the zip files before extracting. Right click zip file -> Properties -> General -> uncheck unblock.
