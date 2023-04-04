@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 namespace Pixel.Identity.UI.Tests.PageModels.Roles;
 
 internal class ListRolesPage : ListPage
-{   
-    private readonly string requestUrl = "api/roles";
-
+{       
     /// <summary>
     /// constructor
     /// </summary>
