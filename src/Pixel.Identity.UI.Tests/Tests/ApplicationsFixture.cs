@@ -197,13 +197,14 @@ internal class ApplicationsFixture : PageSesionTest
     public async Task Test_That_Can_NavigateToPrevious_If_Not_On_First_Page()
     {
         var listApplicationsPage = new ListApplicationsPage(this.Page);
-        await listApplicationsPage.GoToAsync();
-        await listApplicationsPage.NavigateToNextAsync();
+        await listApplicationsPage.GoToAsync();     
+        Assert.AreEqual(10, await listApplicationsPage.GetCountAsync());
+        await listApplicationsPage.NavigateToNextAsync();       
+        Assert.AreEqual(2, await listApplicationsPage.GetCountAsync());
         var canNavigateToPrevious = await listApplicationsPage.CanNavigateToPrevious();
         Assert.IsTrue(canNavigateToPrevious);
-        await listApplicationsPage.NavigateToPreviousAsync();
-        int scopesCount = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(10, scopesCount);
+        await listApplicationsPage.NavigateToPreviousAsync();      
+        Assert.AreEqual(10, await listApplicationsPage.GetCountAsync());
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 

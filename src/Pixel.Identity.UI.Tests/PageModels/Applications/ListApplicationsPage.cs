@@ -6,8 +6,6 @@ namespace Pixel.Identity.UI.Tests.PageModels.Applications;
 
 internal class ListApplicationsPage : ListPage
 {
-    private readonly string requestUrl = "api/applications";
-
     /// <summary>
     /// constructor
     /// </summary>
