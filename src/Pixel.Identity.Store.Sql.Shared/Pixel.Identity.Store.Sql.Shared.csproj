@@ -14,12 +14,12 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.1.1" />
-		<PackageReference Include="OpenIddict.EntityFrameworkCore.Models" Version="3.1.1" />
-		<PackageReference Include="OpenIddict.Abstractions" Version="3.1.1">
+		<PackageReference Include="OpenIddict.EntityFrameworkCore" Version="4.2.0" />
+		<PackageReference Include="OpenIddict.EntityFrameworkCore.Models" Version="4.2.0" />
+		<PackageReference Include="OpenIddict.Abstractions" Version="4.2.0">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="OpenIddict.Quartz" Version="3.1.1">
+		<PackageReference Include="OpenIddict.Quartz" Version="4.2.0">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>		
 	</ItemGroup>

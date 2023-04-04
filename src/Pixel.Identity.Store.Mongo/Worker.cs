@@ -45,30 +45,30 @@ public class Worker : IHostedService
                     DisplayName = "Pixel Identity",
                     Type = ClientTypes.Public,
                     PostLogoutRedirectUris =
-            {
-                new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")
-            },
-                    RedirectUris =
-            {
-                new Uri($"{configuration["IdentityHost"]}/authentication/login-callback")
-            },
+                    {
+                        new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")
+                    },
+                            RedirectUris =
+                    {
+                        new Uri($"{configuration["IdentityHost"]}/authentication/login-callback")
+                    },
                     Permissions =
-            {
-                Permissions.Endpoints.Authorization,
-                Permissions.Endpoints.Logout,
-                Permissions.Endpoints.Token,
-                Permissions.Endpoints.Introspection,
-                Permissions.GrantTypes.AuthorizationCode,
-                Permissions.GrantTypes.RefreshToken,
-                Permissions.ResponseTypes.Code,
-                Permissions.Scopes.Email,
-                Permissions.Scopes.Profile,
-                Permissions.Scopes.Roles
-            },
+                    {
+                        Permissions.Endpoints.Authorization,
+                        Permissions.Endpoints.Logout,
+                        Permissions.Endpoints.Token,
+                        Permissions.Endpoints.Introspection,
+                        Permissions.GrantTypes.AuthorizationCode,
+                        Permissions.GrantTypes.RefreshToken,
+                        Permissions.ResponseTypes.Code,
+                        Permissions.Scopes.Email,
+                        Permissions.Scopes.Profile,
+                        Permissions.Scopes.Roles
+                    },
                     Requirements =
-            {
-                Requirements.Features.ProofKeyForCodeExchange
-            }
+                    {
+                        Requirements.Features.ProofKeyForCodeExchange
+                    }
                 });
                 logger.LogInformation("Added application descriptor for pixel-identity-ui");
             }

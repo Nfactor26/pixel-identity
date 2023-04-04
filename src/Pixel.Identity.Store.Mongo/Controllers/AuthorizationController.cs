@@ -10,7 +10,7 @@ namespace Pixel.Identity.Store.Mongo.Controllers
     /// Controller for handling OpenId protocol using OpenIdDict.
     /// It provides end points for authentication, tokens, sign out , etc.
     /// </summary>
-    public class AuthorizationController : AuthorizationController<ApplicationUser, ObjectId>
+    public class AuthorizationController : AuthorizationController<ApplicationUser, ApplicationRole, ObjectId>
     {
         /// <summary>
         /// constructor
@@ -20,8 +20,9 @@ namespace Pixel.Identity.Store.Mongo.Controllers
         /// <param name="scopeManager"></param>
         /// <param name="signInManager"></param>
         /// <param name="userManager"></param>
-        public AuthorizationController(IOpenIddictApplicationManager applicationManager, IOpenIddictAuthorizationManager authorizationManager, IOpenIddictScopeManager scopeManager, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager) :
-            base(applicationManager, authorizationManager, scopeManager, signInManager, userManager)
+        public AuthorizationController(IOpenIddictApplicationManager applicationManager, IOpenIddictAuthorizationManager authorizationManager, IOpenIddictScopeManager scopeManager,
+            SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager) :
+            base(applicationManager, authorizationManager, scopeManager, signInManager, userManager, roleManager)
         {
         }
     }

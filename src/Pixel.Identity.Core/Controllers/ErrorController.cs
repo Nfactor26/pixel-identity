@@ -5,6 +5,7 @@ using Pixel.Identity.Core.ViewModels;
 namespace Pixel.Identity.Core.Controllers;
 
 [ApiController]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorController : Controller
 {
     /// <summary>

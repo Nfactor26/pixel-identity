@@ -107,6 +107,12 @@ namespace Pixel.Identity.Provider
             {
                 app.UseExceptionHandler("/error-local-development");
                 app.UseWebAssemblyDebugging();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Pixel Identity");
+                    options.RoutePrefix = string.Empty;
+                });
             }
             else
             {
@@ -117,14 +123,8 @@ namespace Pixel.Identity.Provider
 
             app.UsePathBase("/pauth");
            
-            app.UseSerilogRequestLogging();
+            app.UseSerilogRequestLogging();         
            
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pixel Persistence V1");
-            });
-
             //app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
@@ -219,12 +219,12 @@ namespace Pixel.Identity.Provider
             .AddServer(options =>
             {
                 // Enable the authorization, logout, token and userinfo endpoints.
-                options.SetAuthorizationEndpointUris("/connect/authorize")
-                .SetLogoutEndpointUris("/connect/logout")
-                .SetTokenEndpointUris("/connect/token")
-                .SetUserinfoEndpointUris("/connect/userinfo")
-                .SetIntrospectionEndpointUris("/connect/introspect")
-                .SetDeviceEndpointUris("/connect/device")
+                options.SetAuthorizationEndpointUris("connect/authorize")
+                .SetLogoutEndpointUris("connect/logout")
+                .SetTokenEndpointUris("connect/token")
+                .SetUserinfoEndpointUris("connect/userinfo")
+                .SetIntrospectionEndpointUris("connect/introspect")
+                .SetDeviceEndpointUris("connect/device")
                 .SetVerificationEndpointUris("connect/verify");
 
                 //when integration with third-party APIs/resource servers is desired
@@ -232,7 +232,9 @@ namespace Pixel.Identity.Provider
 
                 // Disables the transport security requirement (HTTPS). Service is supposed
                 // to run behind a reverse-proxy with tls termination
-                options.UseAspNetCore().DisableTransportSecurityRequirement();
+                options.UseAspNetCore().EnableTokenEndpointPassthrough().EnableUserinfoEndpointPassthrough()
+                       .EnableVerificationEndpointPassthrough().EnableStatusCodePagesIntegration()
+                       .DisableTransportSecurityRequirement();
 
                 options.DisableScopeValidation();
 

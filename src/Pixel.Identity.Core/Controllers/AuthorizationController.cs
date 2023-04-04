@@ -25,8 +25,9 @@ namespace Pixel.Identity.Core.Controllers
     /// Controller for handling OpenId protocol using OpenIdDict. It provides end points for authentication, tokens, sign out , etc.
     /// It must be inherited in the DbStore plugin which should provide it with the desired type for TUser
     /// </summary>
-    public abstract class AuthorizationController<TUser, TKey> : Controller
+    public abstract class AuthorizationController<TUser, TRole, TKey> : Controller
         where TUser : IdentityUser<TKey>, new()
+        where TRole : IdentityRole<TKey>, new()
         where TKey : IEquatable<TKey>
     {
         private readonly IOpenIddictApplicationManager _applicationManager;
@@ -34,19 +35,22 @@ namespace Pixel.Identity.Core.Controllers
         private readonly IOpenIddictScopeManager _scopeManager;
         private readonly SignInManager<TUser> _signInManager;
         private readonly UserManager<TUser> _userManager;
+        private readonly RoleManager<TRole> _roleManager;
 
         public AuthorizationController(
             IOpenIddictApplicationManager applicationManager,
             IOpenIddictAuthorizationManager authorizationManager,
             IOpenIddictScopeManager scopeManager,
             SignInManager<TUser> signInManager,
-            UserManager<TUser> userManager)
+            UserManager<TUser> userManager,
+            RoleManager<TRole> roleManager)
         {
             _applicationManager = applicationManager;
             _authorizationManager = authorizationManager;
             _scopeManager = scopeManager;
             _signInManager = signInManager;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         #region Authorization code, implicit and hybrid flows
@@ -60,11 +64,17 @@ namespace Pixel.Identity.Core.Controllers
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
-
-            // Retrieve the user principal stored in the authentication cookie.
-            // If it can't be extracted, redirect the user to the login page.
+                     
+            // Try to retrieve the user principal stored in the authentication cookie and redirect
+            // the user agent to the login page (or to an external provider) in the following cases:
+            //
+            //  - If the user principal can't be extracted or the cookie is too old.
+            //  - If prompt=login was specified by the client application.
+            //  - If a max_age parameter was provided and the authentication cookie is not considered "fresh" enough.
             var result = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
-            if (result is null || !result.Succeeded)
+            if (result == null || !result.Succeeded || request.HasPrompt(Prompts.Login) ||
+               (request.MaxAge != null && result.Properties?.IssuedUtc != null &&
+                DateTimeOffset.UtcNow - result.Properties.IssuedUtc > TimeSpan.FromSeconds(request.MaxAge.Value)))
             {
                 // If the client application requested promptless authentication,
                 // return an error indicating that the user is not logged in.
@@ -79,19 +89,6 @@ namespace Pixel.Identity.Core.Controllers
                         }));
                 }
 
-                return Challenge(
-                    authenticationSchemes: IdentityConstants.ApplicationScheme,
-                    properties: new AuthenticationProperties
-                    {
-                        RedirectUri = Request.PathBase + Request.Path + QueryString.Create(
-                            Request.HasFormContentType ? Request.Form.ToList() : Request.Query.ToList())
-                    });
-            }
-
-            // If prompt=login was specified by the client application,
-            // immediately return the user agent to the login page.
-            if (request.HasPrompt(Prompts.Login))
-            {
                 // To avoid endless login -> authorization redirects, the prompt=login flag
                 // is removed from the authorization request payload before redirecting the user.
                 var prompt = string.Join(" ", request.GetPrompts().Remove(Prompts.Login));
@@ -108,32 +105,7 @@ namespace Pixel.Identity.Core.Controllers
                     {
                         RedirectUri = Request.PathBase + Request.Path + QueryString.Create(parameters)
                     });
-            }
-
-            // If a max_age parameter was provided, ensure that the cookie is not too old.
-            // If it's too old, automatically redirect the user agent to the login page.
-            if (request.MaxAge is not null && result.Properties?.IssuedUtc is not null &&
-                DateTimeOffset.UtcNow - result.Properties.IssuedUtc > TimeSpan.FromSeconds(request.MaxAge.Value))
-            {
-                if (request.HasPrompt(Prompts.None))
-                {
-                    return Forbid(
-                        authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string>
-                        {
-                            [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.LoginRequired,
-                            [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The user is not logged in."
-                        }));
-                }
-
-                return Challenge(
-                    authenticationSchemes: IdentityConstants.ApplicationScheme,
-                    properties: new AuthenticationProperties
-                    {
-                        RedirectUri = Request.PathBase + Request.Path + QueryString.Create(
-                            Request.HasFormContentType ? Request.Form.ToList() : Request.Query.ToList())
-                    });
-            }
+            }         
 
             // Retrieve the profile of the logged in user.
             var user = await _userManager.GetUserAsync(result.Principal) ??
@@ -170,39 +142,44 @@ namespace Pixel.Identity.Core.Controllers
                 case ConsentTypes.Implicit:
                 case ConsentTypes.External when authorizations.Any():
                 case ConsentTypes.Explicit when authorizations.Any() && !request.HasPrompt(Prompts.Consent):
-                    var principal = await _signInManager.CreateUserPrincipalAsync(user);
+                    // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+                    var identity = new ClaimsIdentity(
+                        authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                        nameType: Claims.Name,
+                        roleType: Claims.Role);
+
+                    // Add the claims that will be persisted in the tokens.
+                    identity.SetClaim(Claims.Subject, await _userManager.GetUserIdAsync(user))
+                            .SetClaim(Claims.Email, await _userManager.GetEmailAsync(user))
+                            .SetClaim(Claims.Name, await _userManager.GetUserNameAsync(user))
+                            .SetClaims(Claims.Role, (await _userManager.GetRolesAsync(user)).ToImmutableArray());
+
+                    await AddUserClaimsAsync(identity, user);
 
                     // Note: in this sample, the granted scopes match the requested scope
                     // but you may want to allow the user to uncheck specific scopes.
                     // For that, simply restrict the list of scopes before calling SetScopes.
-                    principal.SetScopes(request.GetScopes());
-                    principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+                    identity.SetScopes(request.GetScopes());
+                    identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
 
                     // Automatically create a permanent authorization to avoid requiring explicit consent
                     // for future authorization or token requests containing the same scopes.
                     var authorization = authorizations.LastOrDefault();
-                    if (authorization is null)
-                    {
-                        authorization = await _authorizationManager.CreateAsync(
-                            principal: principal,
-                            subject  : await _userManager.GetUserIdAsync(user),
-                            client   : await _applicationManager.GetIdAsync(application),
-                            type     : AuthorizationTypes.Permanent,
-                            scopes   : principal.GetScopes());
-                    }
+                    authorization ??= await _authorizationManager.CreateAsync(
+                        identity: identity,
+                        subject: await _userManager.GetUserIdAsync(user),
+                        client: await _applicationManager.GetIdAsync(application),
+                        type: AuthorizationTypes.Permanent,
+                        scopes: identity.GetScopes());
 
-                    principal.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
+                    identity.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
+                    identity.SetDestinations(GetDestinations);
 
-                    foreach (var claim in principal.Claims)
-                    {
-                        claim.SetDestinations(GetDestinations(claim, principal));
-                    }
-
-                    return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                    return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
                 // At this point, no authorization was found in the database and an error must be returned
                 // if the client application specified prompt=none in the authorization request.
-                case ConsentTypes.Explicit   when request.HasPrompt(Prompts.None):
+                case ConsentTypes.Explicit when request.HasPrompt(Prompts.None):
                 case ConsentTypes.Systematic when request.HasPrompt(Prompts.None):
                     return Forbid(
                         authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
@@ -214,11 +191,12 @@ namespace Pixel.Identity.Core.Controllers
                         }));
 
                 // In every other case, render the consent form.
-                default: return View(new AuthorizeViewModel
-                {
-                    ApplicationName = await _applicationManager.GetLocalizedDisplayNameAsync(application),
-                    Scope = request.Scope
-                });
+                default:
+                    return View(new AuthorizeViewModel
+                    {
+                        ApplicationName = await _applicationManager.GetLocalizedDisplayNameAsync(application),
+                        Scope = request.Scope
+                    });
             }
         }
 
@@ -260,36 +238,41 @@ namespace Pixel.Identity.Core.Controllers
                     }));
             }
 
-            var principal = await _signInManager.CreateUserPrincipalAsync(user);
+            // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+            var identity = new ClaimsIdentity(
+                authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                nameType: Claims.Name,
+                roleType: Claims.Role);
+
+            // Add the claims that will be persisted in the tokens.
+            identity.SetClaim(Claims.Subject, await _userManager.GetUserIdAsync(user))
+                    .SetClaim(Claims.Email, await _userManager.GetEmailAsync(user))
+                    .SetClaim(Claims.Name, await _userManager.GetUserNameAsync(user))
+                    .SetClaims(Claims.Role, (await _userManager.GetRolesAsync(user)).ToImmutableArray());
+
+            await AddUserClaimsAsync(identity, user);
 
             // Note: in this sample, the granted scopes match the requested scope
             // but you may want to allow the user to uncheck specific scopes.
             // For that, simply restrict the list of scopes before calling SetScopes.
-            principal.SetScopes(request.GetScopes());
-            principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+            identity.SetScopes(request.GetScopes());
+            identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
 
             // Automatically create a permanent authorization to avoid requiring explicit consent
             // for future authorization or token requests containing the same scopes.
             var authorization = authorizations.LastOrDefault();
-            if (authorization is null)
-            {
-                authorization = await _authorizationManager.CreateAsync(
-                    principal: principal,
-                    subject  : await _userManager.GetUserIdAsync(user),
-                    client   : await _applicationManager.GetIdAsync(application),
-                    type     : AuthorizationTypes.Permanent,
-                    scopes   : principal.GetScopes());
-            }
+            authorization ??= await _authorizationManager.CreateAsync(
+                identity: identity,
+                subject: await _userManager.GetUserIdAsync(user),
+                client: await _applicationManager.GetIdAsync(application),
+                type: AuthorizationTypes.Permanent,
+                scopes: identity.GetScopes());
 
-            principal.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
-
-            foreach (var claim in principal.Claims)
-            {
-                claim.SetDestinations(GetDestinations(claim, principal));
-            }
+            identity.SetAuthorizationId(await _authorizationManager.GetIdAsync(authorization));
+            identity.SetDestinations(GetDestinations);
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-            return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
         [Authorize, FormValueRequired("submit.Deny")]
@@ -351,27 +334,35 @@ namespace Pixel.Identity.Core.Controllers
             var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             if (result.Succeeded)
             {
-                var principal = await _signInManager.CreateUserPrincipalAsync(user);
+                // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+                var identity = new ClaimsIdentity(
+                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                    nameType: Claims.Name,
+                    roleType: Claims.Role);
+
+                // Add the claims that will be persisted in the tokens.
+                identity.SetClaim(Claims.Subject, await _userManager.GetUserIdAsync(user))
+                        .SetClaim(Claims.Email, await _userManager.GetEmailAsync(user))
+                        .SetClaim(Claims.Name, await _userManager.GetUserNameAsync(user))
+                        .SetClaims(Claims.Role, (await _userManager.GetRolesAsync(user)).ToImmutableArray());
+
+                await AddUserClaimsAsync(identity, user);
 
                 // Note: in this sample, the granted scopes match the requested scope
                 // but you may want to allow the user to uncheck specific scopes.
                 // For that, simply restrict the list of scopes before calling SetScopes.
-                principal.SetScopes(result.Principal.GetScopes());
-                principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
-
-                foreach (var claim in principal.Claims)
-                {
-                    claim.SetDestinations(GetDestinations(claim, principal));
-                }
+                identity.SetScopes(result.Principal.GetScopes());
+                identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
+                identity.SetDestinations(GetDestinations);
 
                 var properties = new AuthenticationProperties
                 {
                     // This property points to the address OpenIddict will automatically
                     // redirect the user to after validating the authorization demand.
-                    RedirectUri = "/"
+                    RedirectUri = "/pauth"
                 };
 
-                return SignIn(principal, properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return SignIn(new ClaimsPrincipal(identity), properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
             // Redisplay the form when the user code is not valid.
@@ -391,7 +382,7 @@ namespace Pixel.Identity.Core.Controllers
             {
                 // This property points to the address OpenIddict will automatically
                 // redirect the user to after rejecting the authorization demand.
-                RedirectUri = "/"
+                RedirectUri = "/pauth"
             });
         #endregion
 
@@ -437,54 +428,64 @@ namespace Pixel.Identity.Core.Controllers
                 var user = await _userManager.FindByNameAsync(request.Username);
                 if (user is null)
                 {
-                    return Forbid(
-                        authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string>
-                        {
-                            [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
-                            [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The username/password couple is invalid."
-                        }));
+                    var properties = new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                        [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
+                           "The username/password couple is invalid."
+                    });
+
+                    return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
                 }
 
                 // Validate the username/password parameters and ensure the account is not locked out.
                 var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
                 if (!result.Succeeded)
                 {
-                    return Forbid(
-                        authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-                        properties: new AuthenticationProperties(new Dictionary<string, string>
-                        {
-                            [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
-                            [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = "The username/password couple is invalid."
-                        }));
+                    var properties = new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                        [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
+                        [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
+                          "The username/password couple is invalid."
+                    });
+
+                    return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
                 }
 
-                var principal = await _signInManager.CreateUserPrincipalAsync(user);
+                // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+                var identity = new ClaimsIdentity(
+                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                    nameType: Claims.Name,
+                    roleType: Claims.Role);
 
-                // Note: in this sample, the granted scopes match the requested scope
-                // but you may want to allow the user to uncheck specific scopes.
-                // For that, simply restrict the list of scopes before calling SetScopes.
-                principal.SetScopes(request.GetScopes());
-                principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+                // Add the claims that will be persisted in the tokens.
+                identity.SetClaim(Claims.Subject, await _userManager.GetUserIdAsync(user))
+                        .SetClaim(Claims.Email, await _userManager.GetEmailAsync(user))
+                        .SetClaim(Claims.Name, await _userManager.GetUserNameAsync(user))
+                        .SetClaims(Claims.Role, (await _userManager.GetRolesAsync(user)).ToImmutableArray());
 
-                foreach (var claim in principal.Claims)
+                await AddUserClaimsAsync(identity, user);
+
+                // Set the list of scopes granted to the client application.
+                identity.SetScopes(new[]
                 {
-                    claim.SetDestinations(GetDestinations(claim, principal));
-                }
+                    Scopes.OpenId,
+                    Scopes.Email,
+                    Scopes.Profile,
+                    Scopes.Roles
+                }.Intersect(request.GetScopes()));
 
-                // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-                return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                identity.SetDestinations(GetDestinations);
+
+                return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
             else if (request.IsAuthorizationCodeGrantType() || request.IsDeviceCodeGrantType() || request.IsRefreshTokenGrantType())
             {
-                // Retrieve the claims principal stored in the authorization code/device code/refresh token.
-                var principal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
+                // Retrieve the claims principal stored in the authorization code/refresh token.
+                var result = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
                 // Retrieve the user profile corresponding to the authorization code/refresh token.
-                // Note: if you want to automatically invalidate the authorization code/refresh token
-                // when the user password/roles change, use the following line instead:
-                // var user = _signInManager.ValidateSecurityStampAsync(info.Principal);
-                var user = await _userManager.GetUserAsync(principal);
+                var user = await _userManager.FindByIdAsync(result.Principal.GetClaim(Claims.Subject));
                 if (user is null)
                 {
                     return Forbid(
@@ -508,13 +509,24 @@ namespace Pixel.Identity.Core.Controllers
                         }));
                 }
 
-                foreach (var claim in principal.Claims)
-                {
-                    claim.SetDestinations(GetDestinations(claim, principal));
-                }
+                var identity = new ClaimsIdentity(result.Principal.Claims,
+                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                    nameType: Claims.Name,
+                    roleType: Claims.Role);
+
+                // Override the user claims present in the principal in case they
+                // changed since the authorization code/refresh token was issued.
+                identity.SetClaim(Claims.Subject, await _userManager.GetUserIdAsync(user))
+                        .SetClaim(Claims.Email, await _userManager.GetEmailAsync(user))
+                        .SetClaim(Claims.Name, await _userManager.GetUserNameAsync(user))
+                        .SetClaims(Claims.Role, (await _userManager.GetRolesAsync(user)).ToImmutableArray());
+               
+                await AddUserClaimsAsync(identity, user);
+               
+                identity.SetDestinations(GetDestinations);
 
                 // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
-                return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
             else if(request.IsClientCredentialsGrantType()) 
             {
@@ -527,16 +539,15 @@ namespace Pixel.Identity.Core.Controllers
                     throw new InvalidOperationException("The application details cannot be found in the database.");
                 }
 
-                // Create a new ClaimsIdentity containing the claims that
-                // will be used to create an id_token, a token or a code.
-                var identity = new ClaimsIdentity(TokenValidationParameters.DefaultAuthenticationType, Claims.Name, Claims.Role);
+                // Create the claims-based identity that will be used by OpenIddict to generate tokens.
+                var identity = new ClaimsIdentity(
+                    authenticationType: TokenValidationParameters.DefaultAuthenticationType,
+                    nameType: Claims.Name,
+                    roleType: Claims.Role);
 
-                // Use the client_id as the subject identifier.
-                identity.AddClaim(Claims.Subject, await _applicationManager.GetClientIdAsync(application),
-                    Destinations.AccessToken, Destinations.IdentityToken);
-
-                identity.AddClaim(Claims.Name, await _applicationManager.GetDisplayNameAsync(application),
-                    Destinations.AccessToken, Destinations.IdentityToken);
+                // Add the claims that will be persisted in the tokens (use the client_id as the subject identifier).
+                identity.SetClaim(Claims.Subject, await _applicationManager.GetClientIdAsync(application));
+                identity.SetClaim(Claims.Name, await _applicationManager.GetDisplayNameAsync(application));
 
                 // Note: In the original OAuth 2.0 specification, the client credentials grant
                 // doesn't return an identity token, which is an OpenID Connect concept.
@@ -547,36 +558,37 @@ namespace Pixel.Identity.Core.Controllers
                 // scope is not explicitly set, no identity token is returned to the client application.
 
                 // Set the list of scopes granted to the client application in access_token.
-                var principal = new ClaimsPrincipal(identity);
-                principal.SetScopes(request.GetScopes());
-                principal.SetResources(await _scopeManager.ListResourcesAsync(principal.GetScopes()).ToListAsync());
+                identity.SetScopes(request.GetScopes());
+                identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
+                identity.SetDestinations(GetDestinations);
 
-                foreach (var claim in principal.Claims)
-                {
-                    claim.SetDestinations(GetDestinations(claim));
-                }
-
-                return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+                return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }  
             
             throw new InvalidOperationException("The specified grant type is not supported.");
         }
         #endregion
 
-        private IEnumerable<string> GetDestinations(Claim claim)
+        /// <summary>
+        /// Add claims assigned to user directly or derived from roles assigned to user to ClaimsIdentity
+        /// </summary>
+        /// <param name="claimsIdentity"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual async Task AddUserClaimsAsync(ClaimsIdentity claimsIdentity, TUser user)
         {
-            // Note: by default, claims are NOT automatically included in the access and identity tokens.
-            // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
-            // whether they should be included in access tokens, in identity tokens or in both.
-
-            return claim.Type switch
+            foreach(var claim in await _userManager.GetClaimsAsync(user))
             {
-                Claims.Name or Claims.Subject  => ImmutableArray.Create(Destinations.AccessToken, Destinations.IdentityToken),
-                _ => ImmutableArray.Create(Destinations.AccessToken),
-            };
+                claimsIdentity.AddClaim(claim);
+            }
+            foreach(var assignedRole in await _userManager.GetRolesAsync(user))
+            {
+                var role = await _roleManager.FindByNameAsync(assignedRole);
+                claimsIdentity.AddClaims(await _roleManager.GetClaimsAsync(role));
+            }
         }
 
-        private IEnumerable<string> GetDestinations(Claim claim, ClaimsPrincipal principal)
+        protected virtual IEnumerable<string> GetDestinations(Claim claim)
         {
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
@@ -587,7 +599,7 @@ namespace Pixel.Identity.Core.Controllers
                 case Claims.Name:
                     yield return Destinations.AccessToken;
 
-                    if (principal.HasScope(Scopes.Profile))
+                    if (claim.Subject.HasScope(Scopes.Profile))
                         yield return Destinations.IdentityToken;
 
                     yield break;
@@ -595,7 +607,7 @@ namespace Pixel.Identity.Core.Controllers
                 case Claims.Email:
                     yield return Destinations.AccessToken;
 
-                    if (principal.HasScope(Scopes.Email))
+                    if (claim.Subject.HasScope(Scopes.Email))
                         yield return Destinations.IdentityToken;
 
                     yield break;
@@ -603,7 +615,7 @@ namespace Pixel.Identity.Core.Controllers
                 case Claims.Role:
                     yield return Destinations.AccessToken;
 
-                    if (principal.HasScope(Scopes.Roles))
+                    if (claim.Subject.HasScope(Scopes.Roles))
                         yield return Destinations.IdentityToken;
 
                     yield break;
@@ -613,17 +625,7 @@ namespace Pixel.Identity.Core.Controllers
                     yield break;
 
                 default:
-                    //claim desinations are set by OpenIdDict using Claims.Private.ClaimDestinationsMap payload from token during exchange
-                    //We need to add them back from .destinations property otherwise they are lost
-                    if (claim.Properties.ContainsKey(".destinations"))
-                    {
-                        if (claim.Properties[".destinations"].Contains(Destinations.AccessToken))
-                            yield return Destinations.AccessToken;
-                        if (claim.Properties[".destinations"].Contains(Destinations.IdentityToken))
-                            yield return Destinations.IdentityToken;
-                        yield break;
-                    }
-                    
+                  
                     if (claim.Properties.ContainsKey("IncludeInAccessToken"))
                     {
                         if (bool.TryParse(claim.Properties["IncludeInAccessToken"], out bool includeInAccessToken)
