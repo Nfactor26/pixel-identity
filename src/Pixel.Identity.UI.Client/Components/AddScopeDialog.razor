@@ -3,7 +3,7 @@
     <DialogContent>
         <MudGrid Spacing="3" Justify="Justify.FlexStart">
             <MudItem xs="10" Style="width:360px">
-                 <MudAutocomplete T="ScopeViewModel" Label="Roles" @bind-Value="selectedOption" SearchFunc="@SearchScopes"
+                 <MudAutocomplete T="ScopeViewModel" Label="Scopes" @bind-Value="selectedOption" SearchFunc="@SearchScopes"
                          ResetValueOnEmptyText="true" ToStringFunc="@(e=> e == null ? null : e.DisplayName)"
                          CoerceText="false" CoerceValue="false" Class="mt-n3" Variant="Variant.Text" 
                          Margin="Margin.None" Immediate="true"
