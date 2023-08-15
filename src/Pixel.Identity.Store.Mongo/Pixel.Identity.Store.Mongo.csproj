@@ -13,14 +13,14 @@
 		</PackageReference>		
 		<PackageReference Include="Dawn.Guard" Version="1.12.0" />	
 		<PackageReference Include="MongoDB.Driver" Version="2.18.0" />
-		<PackageReference Include="OpenIddict.Abstractions" Version="4.2.0">
+		<PackageReference Include="OpenIddict.Abstractions" Version="4.6.0">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="OpenIddict.Quartz" Version="4.2.0">
+		<PackageReference Include="OpenIddict.Quartz" Version="4.6.0">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
-		<PackageReference Include="OpenIddict.MongoDb" Version="4.2.0" />
-		<PackageReference Include="OpenIddict.MongoDb.Models" Version="4.2.0" />		
+		<PackageReference Include="OpenIddict.MongoDb" Version="4.6.0" />
+		<PackageReference Include="OpenIddict.MongoDb.Models" Version="4.6.0" />		
 	</ItemGroup>
 
 	<ItemGroup>
