@@ -45,9 +45,13 @@
 		<ItemGroup>
 			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Email\Pixel.Identity.Messenger.Email.csproj" />
 			<MessengerPluginProject Include="..\Pixel.Identity.Messenger.Console\Pixel.Identity.Messenger.Console.csproj" />
-		</ItemGroup>		
+		</ItemGroup>
+		<ItemGroup>
+			<ExternalAuthPlugin Include="..\Pixel.Identity.External.Github\Pixel.Identity.External.Github.csproj" />			
+		</ItemGroup>
 		<MSBuild RebaseOutputs="true" Projects="@(DbStorePluginProject)" Targets="Build" Properties="OutputPath=$(TargetDir)Plugins\DbStore\%(FileName)\" />
 		<MSBuild RebaseOutputs="true" Projects="@(MessengerPluginProject)" Targets="Build" Properties="OutputPath=$(TargetDir)Plugins\Messenger\%(FileName)\" />
+		<MSBuild RebaseOutputs="true" Projects="@(ExternalAuthPlugin)" Targets="Build" Properties="OutputPath=$(TargetDir)Plugins\OAuthProvider\%(FileName)\" />
 	</Target>
 
 	<!--On publish add additional step to copy the plugins folder from build\plugins to publish\plugins-->
