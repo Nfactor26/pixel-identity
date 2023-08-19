@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
+using MongoDB.Driver.Linq;
 using Pixel.Identity.Core;
 using Pixel.Identity.Core.Conventions;
 using Pixel.Identity.Store.Mongo.Extensions;
@@ -88,10 +90,13 @@ namespace Pixel.Identity.Store.Mongo
             var mongoDbSettings = configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
             return builder.AddCore(options =>
             {
+                var mongoClientSettings = MongoClientSettings.FromConnectionString(mongoDbSettings.ConnectionString);
+                mongoClientSettings.LinqProvider = LinqProvider.V2;
+                var client = new MongoClient(mongoClientSettings);
+
                 // Configure OpenIddict to use the MongoDB stores and models.
                 options.UseMongoDb()
-               .UseDatabase(new MongoClient(mongoDbSettings.ConnectionString)
-               .GetDatabase(mongoDbSettings.DatabaseName));
+               .UseDatabase(client.GetDatabase(mongoDbSettings.DatabaseName));
 
                 //// Enable Quartz.NET integration.
                 options.UseQuartz();
