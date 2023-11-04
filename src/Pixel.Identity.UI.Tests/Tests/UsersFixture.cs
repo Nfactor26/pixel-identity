@@ -26,9 +26,9 @@ internal class UsersFixture : PageSesionTest
     {
         var configuration = ConfigurationFactory.Create();
         var loginPage = new LoginPage(this.Page);
-        await loginPage.GoToAsync(baseUrl);
+        await loginPage.GoToAsync(baseUrl);    
         await loginPage.LoginAsync(configuration["UserEmail"], configuration["UserSecret"], false);
-        Thread.Sleep(2000);
+        Thread.Sleep(5000);
         await Expect(this.Page.Locator("#signedInMenu")).ToBeVisibleAsync();
 
     }
@@ -52,12 +52,24 @@ internal class UsersFixture : PageSesionTest
     public async Task Test_That_Can_NavigateToNext_When_Multiple_Pages_Are_Available()
     {
         var listUsersPage = new ListUsersPage(this.Page);
-        await listUsersPage.GoToAsync();
+        await this.Page.RunAndWaitForRequestAsync(async () =>
+        {
+            await listUsersPage.GoToAsync();
+        }, request =>
+        {
+            return request.Url.EndsWith($"api/users?currentPage=1&pageSize=10") && request.Method == "GET";
+        });     
         int usersCount = await listUsersPage.GetCountAsync();
         Assert.AreEqual(10, usersCount);
         var canNavigateToNext = await listUsersPage.CanNavigateToNext();
         Assert.IsTrue(canNavigateToNext);
-        await listUsersPage.NavigateToNextAsync();
+        await this.Page.RunAndWaitForRequestAsync(async () =>
+        {
+            await listUsersPage.NavigateToNextAsync();
+        }, request =>
+        {
+            return request.Url.EndsWith($"api/users?currentPage=2&pageSize=10") && request.Method == "GET";
+        });     
         usersCount = await listUsersPage.GetCountAsync();
         Assert.AreEqual(2, usersCount);
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
@@ -153,7 +165,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.EditAsync(userName);
         await this.Page.Locator("button#btnAddRole").ClickAsync();
         var dialog = this.Page.Locator("div[role='dialog']");
-        await dialog.Locator("input.mud-select-input").TypeAsync(roleToAdd);
+        await dialog.Locator("input.mud-select-input").FillAsync(roleToAdd);
         await this.Page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").WaitForAsync(new LocatorWaitForOptions()
         {            
             Timeout = 5000
@@ -266,6 +278,7 @@ internal class UsersFixture : PageSesionTest
         await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
         await addUserComponent.SumbitFormAsync();
         Assert.IsTrue(await addUserComponent.HasErrorMessage(errorMessage));
+        await addUserComponent.CloseDialogAsync();
     }
 
     /// <summary>

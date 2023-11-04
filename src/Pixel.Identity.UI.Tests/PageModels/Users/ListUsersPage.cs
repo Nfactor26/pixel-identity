@@ -49,7 +49,7 @@ internal class ListUsersPage : ListPage
     public async Task ShowNewUserDialogAsync()
     {
         await page.ClickAsync("#btnNew");
-        await this.page.Locator("div[role='dialog'").WaitForAsync(new LocatorWaitForOptions()
+        await this.page.Locator("div[role='dialog']").WaitForAsync(new LocatorWaitForOptions()
         {
             Timeout = 5000
         });       

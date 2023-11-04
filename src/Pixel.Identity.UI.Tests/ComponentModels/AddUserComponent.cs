@@ -17,7 +17,6 @@ namespace Pixel.Identity.UI.Tests.ComponentModels
         {
             this.page = page;
             this.dialogComponent = new DialogComponent(page);
-
         }
 
         /// <summary>
@@ -28,9 +27,9 @@ namespace Pixel.Identity.UI.Tests.ComponentModels
         public async Task FillNewUserDetails(User userDetails)
         {            
             var dialog = this.page.Locator("div[role='dialog']");
-            await dialog.Locator("#txtEmail").TypeAsync(userDetails.Email);
-            await dialog.Locator("#txtPassword").TypeAsync(userDetails.Password);
-            await dialog.Locator("#txtConfirmPassword").TypeAsync(userDetails.Password);
+            await dialog.Locator("#txtEmail").FillAsync(userDetails.Email);
+            await dialog.Locator("#txtPassword").FillAsync(userDetails.Password);
+            await dialog.Locator("#txtConfirmPassword").FillAsync(userDetails.Password);
         }
 
         /// <summary>
@@ -41,6 +40,16 @@ namespace Pixel.Identity.UI.Tests.ComponentModels
         {
             var dialog = this.page.Locator("div[role='dialog']");
             await dialog.Locator("#btnAddUser").ClickAsync();
+        }
+
+        /// <summary>
+        /// Click Create button to submit the form
+        /// </summary>
+        /// <returns></returns>
+        public async Task CloseDialogAsync()
+        {
+            var dialog = this.page.Locator("div[role='dialog']");
+            await dialog.Locator("button[aria-label='close']").ClickAsync();
         }
 
         /// <summary>
@@ -75,17 +84,10 @@ namespace Pixel.Identity.UI.Tests.ComponentModels
                 await dialog.Locator("#btnAddUser").ClickAsync();
             }, request =>
             {
-                return request.Url.EndsWith($"api/users/") && request.Method == "POST";
+                return request.Url.EndsWith($"api/users") && request.Method == "POST";
             });
 
-            var success = await dialogComponent.EnsureSuccessAsync();
-
-            if (!success)
-            {
-                //close the claim dialog and return false indicating failure
-                await page.Locator("div[role='dialog'] button[aria-label='close'])").ClickAsync();
-            }
-            return success;
+            return await dialogComponent.EnsureSuccessAsync();           
         }
     }
 }
