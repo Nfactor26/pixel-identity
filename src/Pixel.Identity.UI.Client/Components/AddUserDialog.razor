@@ -1,0 +1,24 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Add new user
+        </MudText>
+    </TitleContent> 
+    <DialogContent>
+        <EditForm Model="@model" OnValidSubmit="AddUserAsync">
+            <DataAnnotationsValidator />
+            <MudCard Outlined="false" Style="min-width:600px;" Elevation="0">
+                <MudCardContent>
+                    <MudTextField id="txtEmail" Label="Email" Class="mt-3" @bind-Value="model.Email" For="@(() => model.Email)" />
+                    <MudTextField id="txtPassword" Label="Password" Class="mt-3" @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+                    <MudTextField id="txtConfirmPassword" Label="ConfirmPassword" Class="mt-3" @bind-Value="model.ConfirmPassword" For="@(() => model.ConfirmPassword)" InputType="InputType.Password" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton UserAttributes="@(new (){{"id","btnAddUser"}})"
+                               ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                               Color="Color.Primary" Class="ml-auto">Create</MudButton>
+                </MudCardActions>               
+            </MudCard>
+        </EditForm>
+    </DialogContent> 
+</MudDialog>

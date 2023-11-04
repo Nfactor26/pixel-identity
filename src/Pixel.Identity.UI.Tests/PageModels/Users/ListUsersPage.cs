@@ -41,4 +41,17 @@ internal class ListUsersPage : ListPage
             });
         }
     }
+
+    /// <summary>
+    /// Click the + button to show create user dialog
+    /// </summary>
+    /// <returns></returns>
+    public async Task ShowNewUserDialogAsync()
+    {
+        await page.ClickAsync("#btnNew");
+        await this.page.Locator("div[role='dialog']").WaitForAsync(new LocatorWaitForOptions()
+        {
+            Timeout = 5000
+        });       
+    }
 }

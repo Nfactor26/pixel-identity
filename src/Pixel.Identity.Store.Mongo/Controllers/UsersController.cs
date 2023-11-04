@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Pixel.Identity.Core;
 using Pixel.Identity.Core.Controllers;
-using Pixel.Identity.Shared;
 using Pixel.Identity.Store.Mongo.Models;
 
 namespace Pixel.Identity.Store.Mongo.Controllers
@@ -22,8 +22,9 @@ namespace Pixel.Identity.Store.Mongo.Controllers
         /// </summary>
         /// <param name="mapper"></param>
         /// <param name="userManager"></param>
-        public UsersController(IMapper mapper, UserManager<ApplicationUser> userManager)
-            : base(mapper, userManager)
+        public UsersController(ILogger<UsersController<ApplicationUser, ObjectId>> logger, IMapper mapper, UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore, IEmailSender emailSender)
+            : base(logger, mapper, userManager, userStore, emailSender)
         {
         }
     }

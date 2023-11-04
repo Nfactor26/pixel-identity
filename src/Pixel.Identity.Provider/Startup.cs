@@ -50,7 +50,19 @@ namespace Pixel.Identity.Provider
 
             //Add plugin assembly type to application part so that controllers in this assembly can be discovered by asp.net
             services.AddControllersWithViews();               
-            services.AddRazorPages();
+            services.AddRazorPages(options =>
+            {               
+                //Allow unauthorized users to access registration page when allow user registration setting is true so that users can
+                //register for a new account on their own.
+                if(bool.TryParse(Configuration["AllowUserRegistration"] ?? "true", out bool allowUserRegistration) && allowUserRegistration)
+                {
+                    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Register");
+                }
+                else
+                {
+                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register", Policies.CanManageUsers);
+                }
+            });
             services.AddServerSideBlazor();
             services.AddSwaggerGen(c =>
             {

@@ -5,6 +5,9 @@
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="usersTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Users</MudText>
+        <MudIconButton UserAttributes="@(new (){{"id","btnNew"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                       @onclick="OpenNewUserDialogAsync" Color="Color.Primary"></MudIconButton>
+        <MudSpacer />
         <MudSpacer/>
         <MudTextField UserAttributes="@(new (){{"id","txtSearchBox"}})" T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search by User Name or Email" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
