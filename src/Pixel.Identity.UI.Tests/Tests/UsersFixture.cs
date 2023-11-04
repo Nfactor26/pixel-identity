@@ -58,7 +58,8 @@ internal class UsersFixture : PageSesionTest
         }, request =>
         {
             return request.Url.EndsWith($"api/users?currentPage=1&pageSize=10") && request.Method == "GET";
-        });     
+        });
+        await Task.Delay(1000);
         int usersCount = await listUsersPage.GetCountAsync();
         Assert.AreEqual(10, usersCount);
         var canNavigateToNext = await listUsersPage.CanNavigateToNext();
@@ -69,7 +70,8 @@ internal class UsersFixture : PageSesionTest
         }, request =>
         {
             return request.Url.EndsWith($"api/users?currentPage=2&pageSize=10") && request.Method == "GET";
-        });     
+        });
+        await Task.Delay(1000);
         usersCount = await listUsersPage.GetCountAsync();
         Assert.AreEqual(2, usersCount);
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
