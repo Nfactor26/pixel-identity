@@ -9,8 +9,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 
 namespace Pixel.Identity.Core.Areas.Identity.Pages.Account
-{
-    [AllowAnonymous]
+{    
     [IdentityDefaultUI(typeof(RegisterModel<,>))]
     public abstract class RegisterModel : PageModel
     {

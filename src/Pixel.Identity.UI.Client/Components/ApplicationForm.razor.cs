@@ -122,7 +122,7 @@ namespace Pixel.Identity.UI.Client.Components
             var parameters = new DialogParameters();
             var dialog = Dialog.Show<AddScopeDialog>("Add New Scope", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
             var result = await dialog.Result;
-            if (!result.Cancelled && result.Data is ScopeViewModel customScope)
+            if (!result.Canceled && result.Data is ScopeViewModel customScope)
             {
                 if(Application.Permissions.Contains(customScope.Name))
                 {
@@ -141,7 +141,7 @@ namespace Pixel.Identity.UI.Client.Components
             parameters.Add("ExistingUris", Application.RedirectUris);
             var dialog = Dialog.Show<AddUriComponent>("Add New Uri", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true }) ;
             var result = await dialog.Result;
-            if (!result.Cancelled && result.Data is Uri uriToAdd)
+            if (!result.Canceled && result.Data is Uri uriToAdd)
             {
                 Application.RedirectUris.Add(uriToAdd);
             }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Pixel.Identity.Core;
 using Pixel.Identity.Core.Controllers;
 
 namespace Pixel.Identity.Store.Sql.Shared.Controllers
@@ -17,10 +17,14 @@ namespace Pixel.Identity.Store.Sql.Shared.Controllers
         /// <summary>
         /// constructor
         /// </summary>
+        /// <param name="logger"></param>
         /// <param name="mapper"></param>
         /// <param name="userManager"></param>
-        public UsersController(IMapper mapper, UserManager<ApplicationUser> userManager)
-            : base(mapper, userManager)
+        /// <param name="userStore"></param>
+        /// <param name="emailSender"></param>
+        public UsersController(ILogger<UsersController<ApplicationUser, Guid>> logger, IMapper mapper, UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore, IEmailSender emailSender)
+            : base(logger, mapper, userManager, userStore, emailSender)
         {
         }
     }

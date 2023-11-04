@@ -1,13 +1,18 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration Configuration
 
 <MudToolBar Spacing="5">
-    <MudButton id="registerPageLink" Link="authentication/register"
-               Variant="Variant.Outlined"
-               Color="Color.Tertiary" Class="mr-5">
-        Register
-    </MudButton>
-    <MudButton id="loginPageLink" Link="authentication/login"
+    @if(bool.TryParse(Configuration["AllowUserRegistration"] ?? "true", out bool allowUserRegistration) && allowUserRegistration)
+    {
+        <MudButton id="registerPageLink" Href="authentication/register"
+                   Variant="Variant.Outlined"
+                   Color="Color.Tertiary" Class="mr-5">
+            Register
+        </MudButton>
+    }    
+    <MudButton id="loginPageLink" Href="authentication/login"
                Variant="Variant.Outlined"
                Color="Color.Tertiary" Class="mr-5">
         Login

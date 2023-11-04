@@ -2,6 +2,7 @@
 using MudBlazor;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
+using Pixel.Identity.UI.Client.Components;
 using Pixel.Identity.UI.Client.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,6 +77,23 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             usersTable.ReloadServerData();
         }
 
+        /// <summary>
+        /// Show a dialog to add new users
+        /// </summary>
+        async Task OpenNewUserDialogAsync()
+        {
+            var dialogReference = await DialogService.ShowAsync<AddUserDialog>("Add New User", new DialogOptions()
+            {
+                CloseButton = true,
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.Medium
+            });
+            var dialogResult = await dialogReference.Result;
+            if(!dialogResult.Canceled)
+            {
+                await usersTable.ReloadServerData();
+            }
+        }
 
         /// <summary>
         /// Navigate to the edit user page

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
+using Pixel.Identity.UI.Tests.ComponentModels;
 using Pixel.Identity.UI.Tests.Helpers;
 using Pixel.Identity.UI.Tests.NUnit;
 using Pixel.Identity.UI.Tests.PageModels;
@@ -244,5 +245,64 @@ internal class UsersFixture : PageSesionTest
         int count = await listUsersPage.GetCountAsync();
         Assert.AreEqual(0, count);
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
+    }
+
+    /// <summary>
+    /// Verify that create user form can't be submitted with incorrect data
+    /// </summary>
+    /// <param name="userEmail"></param>
+    /// <param name="userPassword"></param>
+    /// <param name="errorMessage"></param>
+    /// <returns></returns>
+    [Order(130)]
+    [TestCase("test_user_12@pixel.com", "", "The Password field is required.")]
+    [TestCase("", "tesT-useR-secreT-12", "The Email field is required.")]
+    public async Task Test_That_Can_Not_Submit_Create_User_Form_With_Incorrect_Details(string userEmail, string userPassword, string errorMessage)
+    {
+        var listUsersPage = new ListUsersPage(this.Page);
+        await listUsersPage.GoToAsync();
+        await listUsersPage.ShowNewUserDialogAsync();
+        var addUserComponent = new AddUserComponent(this.Page);
+        await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
+        await addUserComponent.SumbitFormAsync();
+        Assert.IsTrue(await addUserComponent.HasErrorMessage(errorMessage));
+    }
+
+    /// <summary>
+    /// Verify that user account can be created
+    /// </summary>
+    /// <param name="userEmail"></param>
+    /// <param name="userPassword"></param>
+    /// <returns></returns>
+    [Order(130)]
+    [TestCase("test_user_12@pixel.com", "tesT-useR-secreT-12")]   
+    public async Task Test_That_Can_Create_User_Account(string userEmail, string userPassword)
+    {
+        var listUsersPage = new ListUsersPage(this.Page);
+        await listUsersPage.GoToAsync();
+        await listUsersPage.ShowNewUserDialogAsync();
+        var addUserComponent = new AddUserComponent(this.Page);
+        await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
+        bool userCreated = await addUserComponent.SubmitAndCloseNotificationAsync();
+        Assert.IsTrue(userCreated);
+    }
+
+    /// <summary>
+    /// Verify that user account can't be created with a duplicate email
+    /// </summary>
+    /// <param name="userEmail"></param>
+    /// <param name="userPassword"></param>
+    /// <returns></returns>
+    [Order(140)]
+    [TestCase("test_user_12@pixel.com", "tesT-useR-secreT-12")]
+    public async Task Test_That_Can_Not_Create_User_Account_With_Duplicate_Email(string userEmail, string userPassword)
+    {
+        var listUsersPage = new ListUsersPage(this.Page);
+        await listUsersPage.GoToAsync();
+        await listUsersPage.ShowNewUserDialogAsync();
+        var addUserComponent = new AddUserComponent(this.Page);
+        await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
+        bool userCreated = await addUserComponent.SubmitAndCloseNotificationAsync();
+        Assert.IsFalse(userCreated);
     }
 }

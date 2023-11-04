@@ -50,6 +50,13 @@ namespace Pixel.Identity.UI.Client.Services
         Task<OperationResult> UnlockUserAccountAsync(UserDetailsViewModel userDetails);
 
         /// <summary>
+        /// Register a new user account
+        /// </summary>
+        /// <param name="registerViewModel"></param>
+        /// <returns></returns>
+        Task<OperationResult> CreateUserAsync(RegisterViewModel registerViewModel);
+
+        /// <summary>
         /// Update the details of user
         /// </summary>
         /// <param name="userDetails"></param>
@@ -120,6 +127,14 @@ namespace Pixel.Identity.UI.Client.Services
             return await OperationResult.FromResponseAsync(result);
         }
 
+        /// <inheritdoc/>
+        public async Task<OperationResult> CreateUserAsync(RegisterViewModel registerViewModel)
+        {
+            var result = await httpClient.PostAsJsonAsync<RegisterViewModel>($"api/users", registerViewModel);
+            return await OperationResult.FromResponseAsync(result);
+        }
+
+        /// <inheritdoc/>
         public async Task<OperationResult> UpdateUserAsync(UserDetailsViewModel userDetails)
         {
             var result = await httpClient.PostAsJsonAsync<UserDetailsViewModel>($"api/users/{userDetails.Id}", userDetails);
