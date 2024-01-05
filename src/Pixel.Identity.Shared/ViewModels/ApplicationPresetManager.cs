@@ -17,7 +17,7 @@ namespace Pixel.Identity.Shared.ViewModels
         {
             applicationViewModel.Permissions.Clear();
             applicationViewModel.Requirements.Clear();
-            applicationViewModel.Type = OpenIddictConstants.ClientTypes.Public;
+            applicationViewModel.ClientType = OpenIddictConstants.ClientTypes.Public;
             applicationViewModel.ConsentType = OpenIddictConstants.ConsentTypes.Explicit;
 
             switch (preset)
@@ -35,7 +35,7 @@ namespace Pixel.Identity.Shared.ViewModels
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Roles);
                     break;
                 case ApplicationPreset.ClientCredentialsFlow:
-                    applicationViewModel.Type = OpenIddictConstants.ClientTypes.Confidential;
+                    applicationViewModel.ClientType = OpenIddictConstants.ClientTypes.Confidential;
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Token);                  
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials);
                     break;
@@ -49,7 +49,7 @@ namespace Pixel.Identity.Shared.ViewModels
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Scopes.Roles);
                     break;
                 case ApplicationPreset.Introspection:
-                    applicationViewModel.Type = OpenIddictConstants.ClientTypes.Confidential;
+                    applicationViewModel.ClientType = OpenIddictConstants.ClientTypes.Confidential;
                     applicationViewModel.Permissions.Add(OpenIddictConstants.Permissions.Endpoints.Introspection);
                     break;
             }           

@@ -10,13 +10,13 @@ namespace Pixel.Identity.UI.Client.Validations
             RuleFor(x => x.ClientId).NotEmpty();
             RuleFor(x => x.DisplayName).NotEmpty();
             RuleFor(x => x.ConsentType).NotEmpty();
-            RuleFor(x => x.Type).NotEmpty();
+            RuleFor(x => x.ClientType).NotEmpty();
             RuleFor(x => x.Permissions).NotEmpty();
             
             //while creating a new application, client secret is mandatory for confidential clients
             RuleFor(x => x.ClientSecret).Must((c, m) =>
             {
-                if(string.IsNullOrEmpty(c.Id) && (c.Type?.Equals("confidential") ?? false))
+                if(string.IsNullOrEmpty(c.Id) && (c.ClientType?.Equals("confidential") ?? false))
                 {
                     return !string.IsNullOrEmpty(m);
                 }

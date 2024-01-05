@@ -6,6 +6,6 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenIddict.Abstractions" Version="4.7.0" />
+    <PackageReference Include="OpenIddict.Abstractions" Version="5.0.1" />
   </ItemGroup>
 </Project>

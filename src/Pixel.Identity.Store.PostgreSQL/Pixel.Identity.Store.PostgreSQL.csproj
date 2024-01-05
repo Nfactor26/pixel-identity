@@ -6,12 +6,12 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="4.7.0" />
-    <PackageReference Include="OpenIddict.EntityFrameworkCore.Models" Version="4.7.0" />
-    <PackageReference Include="OpenIddict.Abstractions" Version="4.7.0">
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="5.0.1" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore.Models" Version="5.0.1" />
+    <PackageReference Include="OpenIddict.Abstractions" Version="5.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenIddict.Quartz" Version="4.7.0">
+    <PackageReference Include="OpenIddict.Quartz" Version="5.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />

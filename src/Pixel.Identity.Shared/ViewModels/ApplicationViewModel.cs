@@ -21,10 +21,10 @@ namespace Pixel.Identity.Shared.ViewModels
         /// Gets or sets the application type associated with the application.
         /// </summary>
         [Required]
-        public string Type { get; set; }
+        public string ClientType { get; set; }
                
         [IgnoreDataMember]
-        public bool IsConfidentialClient => Type?.Equals(ClientTypes.Confidential) ?? false;
+        public bool IsConfidentialClient => ClientType?.Equals(ClientTypes.Confidential) ?? false;
 
         /// <summary>
         /// Gets or sets the client secret associated with the application.

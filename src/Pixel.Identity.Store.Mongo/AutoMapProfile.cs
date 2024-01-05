@@ -13,9 +13,15 @@ public class AutoMapProfile : Profile
 {
     public AutoMapProfile()
     {
-        CreateMap<ApplicationViewModel, OpenIddictApplicationDescriptor>()
-           .ForMember(a => a.DisplayNames, opt => opt.Ignore())
-           .ForMember(a => a.Properties, opt => opt.Ignore());
+        // OpenIddict changed the OpenIddictApplicationDescriptor.Type to be
+        // OpenIddictApplicationDescriptor.ClientType and then marked the original
+        // Type property as Obsolete with IsError = True. We cannot use AutoMapper's
+        // ForMember(a => a.Type, opt => opt.Ignore()) method because it will not compile.
+        // The workaround is to use the MemberList.Source option which allows AutoMapper
+        // to ignore the Type property.
+        CreateMap<ApplicationViewModel, OpenIddictApplicationDescriptor>(MemberList.Source)
+           .ForSourceMember(d => d.IsConfidentialClient, opt => opt.DoNotValidate())
+           .ForSourceMember(d => d.Id, opt => opt.DoNotValidate());
 
         CreateMap<OpenIddictMongoDbApplication, ApplicationViewModel>()
         .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))

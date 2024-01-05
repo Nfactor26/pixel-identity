@@ -11,14 +11,14 @@
     </PackageReference>
     <PackageReference Include="Dawn.Guard" Version="1.12.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
-    <PackageReference Include="OpenIddict.Abstractions" Version="4.7.0">
+    <PackageReference Include="OpenIddict.Abstractions" Version="5.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenIddict.Quartz" Version="4.7.0">
+    <PackageReference Include="OpenIddict.Quartz" Version="5.0.1">
       <ExcludeAssets>runtime</ExcludeAssets>
     </PackageReference>
-    <PackageReference Include="OpenIddict.MongoDb" Version="4.7.0" />
-    <PackageReference Include="OpenIddict.MongoDb.Models" Version="4.7.0" />
+    <PackageReference Include="OpenIddict.MongoDb" Version="5.0.1" />
+    <PackageReference Include="OpenIddict.MongoDb.Models" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj">

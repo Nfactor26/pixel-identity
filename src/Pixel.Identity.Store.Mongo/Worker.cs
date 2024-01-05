@@ -43,7 +43,7 @@ public class Worker : IHostedService
                     ClientId = "pixel-identity-ui",
                     ConsentType = ConsentTypes.Implicit,
                     DisplayName = "Pixel Identity",
-                    Type = ClientTypes.Public,
+                    ClientType = ClientTypes.Public,
                     PostLogoutRedirectUris =
                     {
                         new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")
