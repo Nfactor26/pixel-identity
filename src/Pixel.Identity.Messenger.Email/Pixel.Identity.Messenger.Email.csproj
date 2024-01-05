@@ -1,20 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>  
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="MailKit" Version="4.1.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj">
-			<Private>false</Private>
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</ProjectReference>
-	</ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
