@@ -19,9 +19,6 @@ namespace Pixel.Identity.UI.Client.Components
         public ISnackbar SnackBar { get; set; }
 
         [Inject]
-        public SignOutSessionStateManager SignOutManager { get; set; }
-
-        [Inject]
         public NavigationManager Navigator { get; set; }
 
         DeleteAccountModel model = new ();
@@ -35,8 +32,7 @@ namespace Pixel.Identity.UI.Client.Components
             var result = await AccountService.DeleteAccountAsync(model);
             if (result.IsSuccess)
             {
-                await SignOutManager.SetSignOutState();
-                Navigator.NavigateTo("authentication/register");
+                Navigator.NavigateToLogout("authentication/register");
                 return;
             }
             SnackBar.Add(result.ToString(), Severity.Error, config =>

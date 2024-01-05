@@ -29,7 +29,7 @@ namespace Pixel.Identity.UI.Client.Components
             parameters.Add("ExistingResources", Scope.Resources);
             var dialog = Dialog.Show<AddResourceDialog>("Add Resource", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
             var result = await dialog.Result;
-            if (!result.Cancelled && result.Data is string resource)
+            if (!result.Canceled && result.Data is string resource)
             {
                 Scope.Resources.Add(resource);
             }
