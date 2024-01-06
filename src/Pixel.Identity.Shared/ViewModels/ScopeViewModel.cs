@@ -26,18 +26,18 @@ namespace Pixel.Identity.Shared.ViewModels
         /// Display name of the scope
         /// </summary>
         [Required]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
 
         /// <summary>
         /// Description of the scope
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Resources associated with the scope.
         /// Resources are added on claims prinicipal
         /// </summary>
-        public List<string> Resources { get; set; } = new();
+        public List<string> Resources { get; set; } = [];
 
     }
 }

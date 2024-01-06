@@ -9,19 +9,19 @@ namespace Pixel.Identity.Shared.ViewModels
 {
     public class ApplicationViewModel
     {        
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
      
         /// <summary>
         /// Gets or sets the client identifier associated with the application.
         /// </summary>
         [Required]
-        public string ClientId { get; set; }
+        public string ClientId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the application type associated with the application.
         /// </summary>
         [Required]
-        public string ClientType { get; set; }
+        public string ClientType { get; set; } = string.Empty;
                
         [IgnoreDataMember]
         public bool IsConfidentialClient => ClientType?.Equals(ClientTypes.Confidential) ?? false;
@@ -37,36 +37,36 @@ namespace Pixel.Identity.Shared.ViewModels
         /// Gets or sets the consent type associated with the application.
         /// </summary>
         [Required]
-        public string ConsentType { get; set; }
+        public string ConsentType { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the display name associated with the application.
         /// </summary>
         [Required]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the permissions associated with the application.
         /// </summary>
         [Required]
-        public List<string> Permissions { get; set; } = new();
+        public List<string> Permissions { get; set; } = [];
 
         /// <summary>
         /// Gets the callback URLs associated with the application.
         /// </summary>      
-        public List<Uri> RedirectUris { get; set; } = new();
+        public List<Uri> RedirectUris { get; set; } = [];
 
 
         /// <summary>
         /// Gets the logout callback URLs associated with the application.
         /// </summary>      
-        public List<Uri> PostLogoutRedirectUris { get; set; } = new();
+        public List<Uri> PostLogoutRedirectUris { get; set; } = [];
 
         /// <summary>
         /// Gets the requirements associated with the application.
         /// </summary>
         [Required]
-        public List<string> Requirements { get; set; } = new();
+        public List<string> Requirements { get; set; } = [];
        
     }
 }

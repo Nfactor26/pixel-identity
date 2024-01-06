@@ -5,19 +5,19 @@ using System.ComponentModel.DataAnnotations;
 namespace Pixel.Identity.Shared.ViewModels
 {
     public class UserDetailsViewModel
-    {       
-        public string Id { get; set; }
+    {
+        public string Id { get; set; } = string.Empty;
 
         [Required]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         public bool EmailConfirmed { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         public bool PhoneNumberConfirmed { get; set; }
 
@@ -31,14 +31,14 @@ namespace Pixel.Identity.Shared.ViewModels
 
         public bool IsLockedOut
         {
-            get 
+            get
             {
                 return LockoutEnabled && LockoutEnd.HasValue;
             }
         }
-      
+
         [Required]
-        public List<UserRoleViewModel> UserRoles { get; set; } = new ();
+        public List<UserRoleViewModel> UserRoles { get; set; } = new();
 
         [Required]
         public List<ClaimViewModel> UserClaims { get; set; } = new();

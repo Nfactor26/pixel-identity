@@ -11,12 +11,12 @@ public class UpdateRoleNameRequest
     /// </summary>
     [Required]
     [DataMember(IsRequired = true)]
-    public string RoleId { get; set; }
+    public string RoleId { get; set; } = string.Empty;
 
     /// <summary>
     /// Claim to add to the role
     /// </summary>
     [Required]
     [DataMember(IsRequired = true)]
-    public string NewName { get; set; }
+    public string NewName { get; set; } = string.Empty;
 }

@@ -5,9 +5,9 @@ namespace Pixel.Identity.Shared.Request
 {
     public class AddUserRolesRequest
     {
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
-        public List<UserRoleViewModel> RolesToAdd { get; set; } = new List<UserRoleViewModel>();
+        public List<UserRoleViewModel> RolesToAdd { get; set; } = [];
 
         public AddUserRolesRequest()
         {

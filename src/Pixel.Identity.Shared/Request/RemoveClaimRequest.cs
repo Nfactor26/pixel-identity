@@ -11,14 +11,14 @@ namespace Pixel.Identity.Shared.Request
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public string Owner { get; set; }
+        public string Owner { get; set; } = string.Empty;
 
         /// <summary>
         /// Claim to remove from the role
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public ClaimViewModel ClaimToRemove { get; set; }
+        public ClaimViewModel ClaimToRemove { get; set; } = default!;
 
         /// <summary>
         /// constructor
