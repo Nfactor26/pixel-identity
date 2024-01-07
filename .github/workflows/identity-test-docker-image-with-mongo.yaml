@@ -41,7 +41,7 @@ jobs:
      - name: print container logs
        run: docker logs pixel_identity_provider
      - name: Install browsers
-       run: pwsh src/Pixel.Identity.UI.Tests/bin/Debug/net6.0/playwright.ps1 install
+       run: pwsh src/Pixel.Identity.UI.Tests/bin/Debug/net8.0/playwright.ps1 install
      - name:  Execute tests
        run: dotnet test  --logger "trx;" src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
      - name: Upload test results
