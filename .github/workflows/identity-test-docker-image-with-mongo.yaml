@@ -26,7 +26,7 @@ jobs:
         image: "pixel-identity:local"
      - name: Launch docker image
        run: >
-         docker run -d -p 44382:80 --network=${{ job.container.network }}
+         docker run -d -p 44382:8080 --network=${{ job.container.network }}
          -e AllowedOrigins=http://localhost:44382 -e IdentityHost=http://localhost:44382/pauth
          --env-file ./.config/identity-mongo-with-console-email.env
          --name pixel_identity_provider pixel-identity:local     
