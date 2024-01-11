@@ -50,6 +50,6 @@
       <PluginFiles Include="$(TargetDir)\Plugins\**\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(PublishDir)\Plugins" />
-    <Copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(PublishDir)Plugins\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles -> '$(PublishDir)\\Plugins\\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
