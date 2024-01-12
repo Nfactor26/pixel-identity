@@ -71,9 +71,9 @@ internal class ApplicationsFixture : PageSesionTest
         var listApplicationsPage = new ListApplicationsPage(this.Page);
         await listApplicationsPage.GoToAsync();
         int rolesCount = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(1, rolesCount);
+        Assert.That(rolesCount, Is.EqualTo(1));
         var canNavigateToNext = await listApplicationsPage.CanNavigateToNext();
-        Assert.IsFalse(canNavigateToNext);
+        Assert.That(canNavigateToNext, Is.False);
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
@@ -87,7 +87,7 @@ internal class ApplicationsFixture : PageSesionTest
         var listApplicationsPage = new ListApplicationsPage(this.Page);
         await listApplicationsPage.GoToAsync();
         var canNavigateToPrevious = await listApplicationsPage.CanNavigateToPrevious();
-        Assert.IsFalse(canNavigateToPrevious);
+        Assert.That(canNavigateToPrevious, Is.False);
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
@@ -109,10 +109,10 @@ internal class ApplicationsFixture : PageSesionTest
         await addApplicationPage.GoToAsync();
         await addApplicationPage.ApplyPreset(application.FromTemplate);
         await this.Page.Locator("button[type='submit']").ClickAsync();
-        Assert.AreEqual("'Client Id' must not be empty.", await this.Page.Locator("p.mud-input-helper-text.mud-input-error").Nth(0).InnerTextAsync());
-        Assert.AreEqual("'Display Name' must not be empty.", await this.Page.Locator("p.mud-input-helper-text.mud-input-error").Nth(1).InnerTextAsync());
-        Assert.AreEqual("RedirectUris is required for Authorization Code Flow", await this.Page.Locator("div.validation-message").Nth(0).InnerTextAsync());
-        Assert.AreEqual("PostLogoutRedirectUris is required for Authorization Code Flow", await this.Page.Locator("div.validation-message").Nth(1).InnerTextAsync());
+        await Assert.ThatAsync(async () => await this.Page.Locator("p.mud-input-helper-text.mud-input-error").Nth(0).InnerTextAsync(), Is.EqualTo("'Client Id' must not be empty."));
+        await Assert.ThatAsync(async () => await this.Page.Locator("p.mud-input-helper-text.mud-input-error").Nth(1).InnerTextAsync(), Is.EqualTo("'Display Name' must not be empty."));
+        await Assert.ThatAsync(async () => await this.Page.Locator("div.validation-message").Nth(0).InnerTextAsync(), Is.EqualTo("RedirectUris is required for Authorization Code Flow"));
+        await Assert.ThatAsync(async () => await this.Page.Locator("div.validation-message").Nth(1).InnerTextAsync(), Is.EqualTo("PostLogoutRedirectUris is required for Authorization Code Flow"));
 
     }
 
@@ -149,13 +149,10 @@ internal class ApplicationsFixture : PageSesionTest
         await addApplicationPage.SetDisplayName(application.DisplayName);
         await addApplicationPage.AddRedirectUri(application.RedirectUris);
         await addApplicationPage.AddPostLogoutRedirectUri(application.PostLogoutRedirectUris);
-        await this.Page.RunAndWaitForNavigationAsync(async () =>
+        await this.Page.Locator("button[type='submit']").ClickAsync();
+        await this.Page.WaitForURLAsync(new Regex(".*/applications/list"), new PageWaitForURLOptions()
         {
-            await this.Page.Locator("button[type='submit']").ClickAsync();
-        },
-        new PageRunAndWaitForNavigationOptions()
-        {
-               UrlRegex = new Regex(".*/applications/list")
+               WaitUntil = WaitUntilState.NetworkIdle
         });
         //wait for the snackbar to show up
         await this.Page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
@@ -180,12 +177,12 @@ internal class ApplicationsFixture : PageSesionTest
         var listApplicationsPage = new ListApplicationsPage(this.Page);
         await listApplicationsPage.GoToAsync();
         int applicationCount = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(10, applicationCount);
+        Assert.That(applicationCount, Is.EqualTo(10));
         var canNavigateToNext = await listApplicationsPage.CanNavigateToNext();
-        Assert.IsTrue(canNavigateToNext);
+        Assert.That(canNavigateToNext, Is.True);
         await listApplicationsPage.NavigateToNextAsync();
         applicationCount = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(2, applicationCount);
+        Assert.That(applicationCount, Is.EqualTo(2));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
@@ -198,13 +195,13 @@ internal class ApplicationsFixture : PageSesionTest
     {
         var listApplicationsPage = new ListApplicationsPage(this.Page);
         await listApplicationsPage.GoToAsync();     
-        Assert.AreEqual(10, await listApplicationsPage.GetCountAsync());
+        await Assert.ThatAsync(async () => await listApplicationsPage.GetCountAsync(), Is.EqualTo(10));
         await listApplicationsPage.NavigateToNextAsync();       
-        Assert.AreEqual(2, await listApplicationsPage.GetCountAsync());
+        await Assert.ThatAsync(async () => await listApplicationsPage.GetCountAsync(), Is.EqualTo(2));
         var canNavigateToPrevious = await listApplicationsPage.CanNavigateToPrevious();
-        Assert.IsTrue(canNavigateToPrevious);
+        Assert.That(canNavigateToPrevious, Is.True);
         await listApplicationsPage.NavigateToPreviousAsync();      
-        Assert.AreEqual(10, await listApplicationsPage.GetCountAsync());
+        await Assert.ThatAsync(async () => await listApplicationsPage.GetCountAsync(), Is.EqualTo(10));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
@@ -223,7 +220,7 @@ internal class ApplicationsFixture : PageSesionTest
         await listApplicationsPage.GoToAsync();
         await listApplicationsPage.SetPageSizeAsync(pageSize);
         int scopesCount = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(expectedCount, scopesCount);
+        Assert.That(scopesCount, Is.EqualTo(expectedCount));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
@@ -247,7 +244,7 @@ internal class ApplicationsFixture : PageSesionTest
         await listApplicationsPage.SetPageSizeAsync(pageSize);
         await listApplicationsPage.SearchAsync(searchFilter);
         int count = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(expectedRowCount, count);
+        Assert.That(count, Is.EqualTo(expectedRowCount));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
@@ -275,7 +272,7 @@ internal class ApplicationsFixture : PageSesionTest
         await listApplicationsPage.GoToAsync();
         var editApplicationPage = new EditApplicationPage(this.Page);
         await editApplicationPage.GoToAsync("application-10");
-        Assert.IsTrue(await editApplicationPage.TryAddScope("Offline_Access"));
+        await Assert.ThatAsync(async () => await editApplicationPage.TryAddScope("Offline_Access"), Is.True);
         await editApplicationPage.Submit(false);
     }
 
@@ -292,12 +289,12 @@ internal class ApplicationsFixture : PageSesionTest
         await listApplicationsPage.GoToAsync();
         await listApplicationsPage.SetPageSizeAsync("10");
         var deleted = await listApplicationsPage.DeleteAsync(application.ClientId);
-        Assert.IsTrue(deleted);
+        Assert.That(deleted, Is.True);
         await listApplicationsPage.SearchAsync(string.Empty);
         await listApplicationsPage.SearchAsync(application.ClientId);
         await Task.Delay(200);
         int count = await listApplicationsPage.GetCountAsync();
-        Assert.AreEqual(0, count);
+        Assert.That(count, Is.EqualTo(0));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 }

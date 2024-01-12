@@ -61,9 +61,9 @@ internal class UsersFixture : PageSesionTest
         });
         await Task.Delay(1000);
         int usersCount = await listUsersPage.GetCountAsync();
-        Assert.AreEqual(10, usersCount);
+        Assert.That(usersCount, Is.EqualTo(10));
         var canNavigateToNext = await listUsersPage.CanNavigateToNext();
-        Assert.IsTrue(canNavigateToNext);
+        Assert.That(canNavigateToNext, Is.True);
         await this.Page.RunAndWaitForRequestAsync(async () =>
         {
             await listUsersPage.NavigateToNextAsync();
@@ -73,7 +73,7 @@ internal class UsersFixture : PageSesionTest
         });
         await Task.Delay(1000);
         usersCount = await listUsersPage.GetCountAsync();
-        Assert.AreEqual(2, usersCount);
+        Assert.That(usersCount, Is.EqualTo(2));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
     }
 
@@ -88,10 +88,10 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.GoToAsync();
         await listUsersPage.NavigateToNextAsync();
         var canNavigateToPrevious = await listUsersPage.CanNavigateToPrevious();
-        Assert.IsTrue(canNavigateToPrevious);
+        Assert.That(canNavigateToPrevious, Is.True);
         await listUsersPage.NavigateToPreviousAsync();
         int usersCount = await listUsersPage.GetCountAsync();
-        Assert.AreEqual(10, usersCount);
+        Assert.That(usersCount, Is.EqualTo(10));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
     }
 
@@ -110,7 +110,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.GoToAsync();
         await listUsersPage.SetPageSizeAsync(pageSize);
         int usersCount = await listUsersPage.GetCountAsync();
-        Assert.AreEqual(expectedCount, usersCount);
+        Assert.That(usersCount, Is.EqualTo(expectedCount));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
     }
 
@@ -136,7 +136,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.SetPageSizeAsync(pageSize);
         await listUsersPage.SearchAsync(searchFilter);
         int count = await listUsersPage.GetCountAsync();
-        Assert.AreEqual(expectedRowCount, count);
+        Assert.That(count, Is.EqualTo(expectedRowCount));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
 
     }
@@ -155,7 +155,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.GoToAsync();
         await listUsersPage.EditAsync(userName);
         var editUserPage = new EditUserPage(this.Page);
-        Assert.IsTrue(await editUserPage.TryAddRole(roleToAdd));
+        await Assert.ThatAsync(async () => await editUserPage.TryAddRole(roleToAdd), Is.True);
     }
 
     [Order(55)]
@@ -173,12 +173,12 @@ internal class UsersFixture : PageSesionTest
             Timeout = 5000
         });     
         var exists = (await this.Page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").CountAsync()) == 1;
-        Assert.IsTrue(exists);
+        Assert.That(exists, Is.True);
         if (exists)
         {
             await this.Page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").ClickAsync();
             await dialog.Locator("button#btnAddRole").ClickAsync();
-            Assert.AreEqual("IdentityAdmin role is already assigned to user.", await dialog.Locator("div#errorMessage").InnerTextAsync());
+            await Assert.ThatAsync(async () => await dialog.Locator("div#errorMessage").InnerTextAsync(), Is.EqualTo("IdentityAdmin role is already assigned to user."));
             await dialog.Locator("button[aria-label='close']").ClickAsync();
         }
     }
@@ -197,7 +197,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.GoToAsync();
         await listUsersPage.EditAsync(userName);
         var editUserPage = new EditUserPage(this.Page);
-        Assert.IsTrue(await editUserPage.TryRemoveRole(roleToDelete));
+        await Assert.ThatAsync(async () => await editUserPage.TryRemoveRole(roleToDelete), Is.True);
     }
 
 
@@ -217,7 +217,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.GoToAsync();
         await listUsersPage.EditAsync(userName);
         var editUserPage = new EditUserPage(this.Page);
-        Assert.IsTrue(await editUserPage.AddClaimAsync(claimType, claimValue, includeInAccessToken, includeInIdentityToken));
+        await Assert.ThatAsync(async () => await editUserPage.AddClaimAsync(claimType, claimValue, includeInAccessToken, includeInIdentityToken), Is.True);
     }
 
     /// <summary>
@@ -236,7 +236,7 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.EditAsync(userName);
         var editUserPage = new EditUserPage(this.Page);
         int deletedCount = await editUserPage.DeleteClaimsAsync(claimType, claimValue);
-        Assert.AreEqual(1, deletedCount);
+        Assert.That(deletedCount, Is.EqualTo(1));
     }
 
     /// <summary>
@@ -252,12 +252,12 @@ internal class UsersFixture : PageSesionTest
         await listUsersPage.GoToAsync();
         await listUsersPage.SetPageSizeAsync("10");
         var deleted = await listUsersPage.DeleteAsync(user.Email);
-        Assert.IsTrue(deleted);
+        Assert.That(deleted, Is.True);
         await listUsersPage.SearchAsync(string.Empty);
         await listUsersPage.SearchAsync(user.Email);
         await Task.Delay(200);
         int count = await listUsersPage.GetCountAsync();
-        Assert.AreEqual(0, count);
+        Assert.That(count, Is.EqualTo(0));
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/users/list"));
     }
 
@@ -279,7 +279,7 @@ internal class UsersFixture : PageSesionTest
         var addUserComponent = new AddUserComponent(this.Page);
         await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
         await addUserComponent.SumbitFormAsync();
-        Assert.IsTrue(await addUserComponent.HasErrorMessage(errorMessage));
+        await Assert.ThatAsync(async () => await addUserComponent.HasErrorMessage(errorMessage), Is.True);
         await addUserComponent.CloseDialogAsync();
     }
 
@@ -299,7 +299,7 @@ internal class UsersFixture : PageSesionTest
         var addUserComponent = new AddUserComponent(this.Page);
         await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
         bool userCreated = await addUserComponent.SubmitAndCloseNotificationAsync();
-        Assert.IsTrue(userCreated);
+        Assert.That(userCreated, Is.True);
     }
 
     /// <summary>
@@ -318,6 +318,6 @@ internal class UsersFixture : PageSesionTest
         var addUserComponent = new AddUserComponent(this.Page);
         await addUserComponent.FillNewUserDetails(new User(userEmail, userPassword));
         bool userCreated = await addUserComponent.SubmitAndCloseNotificationAsync();
-        Assert.IsFalse(userCreated);
+        Assert.That(userCreated, Is.False);
     }
 }

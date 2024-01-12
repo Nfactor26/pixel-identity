@@ -46,21 +46,20 @@ namespace Pixel.Identity.UI.Tests.PageModels.Scopes
         /// <returns></returns>
         public async Task CreateScope(string scopeName, string description, params string[] resources)
         {
-            await page.RunAndWaitForNavigationAsync(async () =>
+            await page.FillAsync("#inputScopeName", scopeName);
+            await page.FillAsync("#inputDisplayName", scopeName);
+            await page.FillAsync("#inputDescription", description);
+            foreach (var resource in resources)
             {
-                await page.FillAsync("#inputScopeName", scopeName);
-                await page.FillAsync("#inputDisplayName", scopeName);
-                await page.FillAsync("#inputDescription", description);
-                foreach (var resource in resources)
-                {
-                    await page.ClickAsync("#btnAddResources");
-                    await page.FillAsync("#inputResourceName", resource);
-                    await page.ClickAsync("#btnAddResource");
-                }
-                await page.ClickAsync("#btnAddScope");
-            }, new PageRunAndWaitForNavigationOptions()
+                await page.ClickAsync("#btnAddResources");
+                await page.FillAsync("#inputResourceName", resource);
+                await page.ClickAsync("#btnAddResource");
+            }
+            await page.ClickAsync("#btnAddScope");
+
+            await page.WaitForURLAsync(new System.Text.RegularExpressions.Regex(".*/scopes/list"), new PageWaitForURLOptions()
             {
-                UrlRegex = new System.Text.RegularExpressions.Regex(".*/scopes/list")
+                WaitUntil = WaitUntilState.NetworkIdle
             });
             //wait for the snackbar to show up
             await page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()

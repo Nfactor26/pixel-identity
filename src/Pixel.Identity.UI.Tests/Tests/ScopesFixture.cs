@@ -68,9 +68,9 @@ namespace Pixel.Identity.UI.Tests
             var listScopesPage = new ListScopesPage(this.Page);
             await listScopesPage.GoToAsync();
             int scopesCount = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(2, scopesCount);
+            Assert.That(scopesCount, Is.EqualTo(2));
             var canNavigateToNext = await listScopesPage.CanNavigateToNext();
-            Assert.IsFalse(canNavigateToNext);
+            Assert.That(canNavigateToNext, Is.False);
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 
@@ -84,7 +84,7 @@ namespace Pixel.Identity.UI.Tests
             var listScopesPage = new ListScopesPage(this.Page);
             await listScopesPage.GoToAsync();
             var canNavigateToPrevious = await listScopesPage.CanNavigateToPrevious();
-            Assert.IsFalse(canNavigateToPrevious);
+            Assert.That(canNavigateToPrevious, Is.False);
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 
@@ -144,12 +144,12 @@ namespace Pixel.Identity.UI.Tests
             var listScopesPage = new ListScopesPage(this.Page);
             await listScopesPage.GoToAsync();
             int scopesCount = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(10, scopesCount);
+            Assert.That(scopesCount, Is.EqualTo(10));
             var canNavigateToNext = await listScopesPage.CanNavigateToNext();
-            Assert.IsTrue(canNavigateToNext);
+            Assert.That(canNavigateToNext, Is.True);
             await listScopesPage.NavigateToNextAsync();
             scopesCount = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(2, scopesCount);
+            Assert.That(scopesCount, Is.EqualTo(2));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 
@@ -164,10 +164,10 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.GoToAsync();
             await listScopesPage.NavigateToNextAsync();
             var canNavigateToPrevious = await listScopesPage.CanNavigateToPrevious();
-            Assert.IsTrue(canNavigateToPrevious);
+            Assert.That(canNavigateToPrevious, Is.True);
             await listScopesPage.NavigateToPreviousAsync();
             int scopesCount = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(10, scopesCount);
+            Assert.That(scopesCount, Is.EqualTo(10));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 
@@ -186,7 +186,7 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.GoToAsync();
             await listScopesPage.SetPageSizeAsync(pageSize);
             int scopesCount = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(expectedCount, scopesCount);
+            Assert.That(scopesCount, Is.EqualTo(expectedCount));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 
@@ -210,7 +210,7 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.SetPageSizeAsync(pageSize);
             await listScopesPage.SearchAsync(searchFilter);
             int count = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(expectedRowCount, count);
+            Assert.That(count, Is.EqualTo(expectedRowCount));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 
@@ -229,11 +229,11 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.EditAsync(scopeName);
             var editScopePage = new EditScopePage(this.Page);
             var result = await editScopePage.UpdateAsync(newDisplayName, newDescription);
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
             await listScopesPage.GoToAsync();
             await listScopesPage.SearchAsync(newDisplayName);
             int count = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(1, count);
+            Assert.That(count, Is.EqualTo(1));
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.EditAsync(scopeName);
             var editScopePage = new EditScopePage(this.Page);
             var result = await editScopePage.AddResourceAsync(resourceToAdd);
-            Assert.IsTrue(result);          
+            Assert.That(result, Is.True);          
         }
 
         /// <summary>
@@ -294,9 +294,9 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.EditAsync(scopeName);
             var editScopePage = new EditScopePage(this.Page);
             var deleted = await editScopePage.DeleteResourceAsync(resourceToDelete);
-            Assert.IsTrue(deleted);
+            Assert.That(deleted, Is.True);
             var exists = await editScopePage.CheckIfResourceExists(resourceToDelete);
-            Assert.IsFalse(exists);
+            Assert.That(exists, Is.False);
         }
 
         /// <summary>
@@ -321,12 +321,12 @@ namespace Pixel.Identity.UI.Tests
             await listScopesPage.GoToAsync();
             await listScopesPage.SetPageSizeAsync("10");
             var deleted = await listScopesPage.DeleteAsync(scope);
-            Assert.IsTrue(deleted);
+            Assert.That(deleted, Is.True);
             await listScopesPage.SearchAsync(string.Empty);
             await listScopesPage.SearchAsync(scope);
             await Task.Delay(200);
             int count = await listScopesPage.GetCountAsync();
-            Assert.AreEqual(0, count);
+            Assert.That(count, Is.EqualTo(0));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/scopes/list"));
         }
 

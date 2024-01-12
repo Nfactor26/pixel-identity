@@ -24,9 +24,10 @@ internal class LogoutPage
     {
         await this.page.ClickAsync("#signedInMenu");
         await this.page.ClickAsync("#signOutMenuItem");
-        await page.RunAndWaitForNavigationAsync(async () =>
-        {
-            await this.page.ClickAsync("#confirmLogoutButton");
+        await this.page.ClickAsync("#confirmLogoutButton");
+        await page.WaitForURLAsync(new System.Text.RegularExpressions.Regex(".*/authentication/logged-out"), new PageWaitForURLOptions() 
+        { 
+            WaitUntil = WaitUntilState.NetworkIdle 
         });       
     }
 }
