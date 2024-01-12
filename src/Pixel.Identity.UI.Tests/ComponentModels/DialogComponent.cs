@@ -31,11 +31,21 @@ internal class DialogComponent
         if (await page.Locator("div.mud-snackbar.mud-alert-filled-success button").IsVisibleAsync())
         {            
             await page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-success button").WaitForAsync(new LocatorWaitForOptions()
+            {
+                Timeout = 5000,
+                State = WaitForSelectorState.Detached
+            });
             return true;
         }
         else if (await page.Locator("div.mud-snackbar.mud-alert-filled-error button").IsVisibleAsync())
         {
             await page.Locator("div.mud-snackbar.mud-alert-filled-error button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-error button").WaitForAsync(new LocatorWaitForOptions()
+            {
+                Timeout = 5000,
+                State = WaitForSelectorState.Detached
+            });
             return false;
         }       
         return false;
@@ -55,11 +65,21 @@ internal class DialogComponent
         if (await page.Locator("div.mud-snackbar.mud-alert-filled-error button").IsVisibleAsync())
         {
             await page.Locator("div.mud-snackbar.mud-alert-filled-error button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-error button").WaitForAsync(new LocatorWaitForOptions()
+            {
+                Timeout = 5000,
+                State = WaitForSelectorState.Detached
+            });
             return true;
         }
         else if (await page.Locator("div.mud-snackbar.mud-alert-filled-success button").IsVisibleAsync())
         {
             await page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+            await page.Locator("div.mud-snackbar.mud-alert-filled-success button").WaitForAsync(new LocatorWaitForOptions()
+            {
+                Timeout = 5000,
+                State = WaitForSelectorState.Detached
+            });
             return false;
         }        
         return false;
