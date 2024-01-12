@@ -27,8 +27,7 @@ internal class PageSesionTest
 
     [OneTimeSetUp]
     public async Task PlaywrightSetup()
-    {
-        InstallBrowser();
+    {       
         Playwright = await playwrightTask.ConfigureAwait(false);
         BrowserType = Playwright[BrowserName];    
         Assert.That(BrowserType, Is.Not.Null, $"The requested browser ({BrowserName}) could not be found - make sure your BROWSER env variable is set correctly.");
