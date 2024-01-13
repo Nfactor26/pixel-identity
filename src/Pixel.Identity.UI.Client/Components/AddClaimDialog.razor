@@ -10,9 +10,9 @@
         <MudTextField id="txtClaimValue" @bind-Value="@model.Value" Label="Value" @onfocus="(() => error = string.Empty)"
                       Variant="Variant.Text" Immediate="true"></MudTextField>
         <br/>
-        <MudSwitch id="cbIncludeInAccessToken" @bind-Checked="model.IncludeInAccessToken" Label="Include in access token" Color="Color.Primary" />
+        <MudSwitch id="cbIncludeInAccessToken" @bind-Value="model.IncludeInAccessToken" Label="Include in access token" Color="Color.Primary" />
 
-        <MudSwitch id="cbIncludeInIdentityToken" @bind-Checked="model.IncludeInIdentityToken" Label="Include in identity token" Color="Color.Primary" />
+        <MudSwitch id="cbIncludeInIdentityToken" @bind-Value="model.IncludeInIdentityToken" Label="Include in identity token" Color="Color.Primary" />
 
         @if (!string.IsNullOrEmpty(error))
         {

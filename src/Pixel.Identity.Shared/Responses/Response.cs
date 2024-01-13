@@ -8,7 +8,7 @@ namespace Pixel.Identity.Shared.Responses
     {       
         public int Status { get; set; }
 
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
       
         public ResponseBase()
         {
@@ -38,7 +38,7 @@ namespace Pixel.Identity.Shared.Responses
 
     public class OkResponse : ResponseBase
     {
-        public object Result { get; set; }
+        public object Result { get; set; } = default!;
 
         public OkResponse() : base()
         {

@@ -5,26 +5,10 @@
     /// </summary>
     public class UserLoginInfo
     {        
-        public string LoginProvider
-        {
-            get;
-            set;
-        }
+        public string LoginProvider { get; set; } = string.Empty;
        
-        public string ProviderKey
-        {
-            get;
-            set;
-        }
+        public string ProviderKey { get; set; } = string.Empty;
 
-        public string ProviderDisplayName
-        {
-            get;
-            set;
-        }
-
-        public UserLoginInfo()
-        {            
-        }
+        public string ProviderDisplayName { get; set; } = string.Empty;
     }
 }

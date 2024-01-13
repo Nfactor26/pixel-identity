@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Pixel.Identity.Core;
 using Pixel.Identity.Core.Conventions;
 using Pixel.Identity.Store.Sql.Shared;

@@ -2,6 +2,6 @@
 {
     public class GetApplicationsRequest : PagedDataRequest
     {
-        public string ApplicationFilter { get; set; }
+        public string ApplicationFilter { get; set; } = string.Empty;
     }
 }

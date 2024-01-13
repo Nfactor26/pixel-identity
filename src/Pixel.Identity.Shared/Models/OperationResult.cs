@@ -43,17 +43,17 @@ namespace Pixel.Identity.Shared.Models
             catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
             {
                 var badRequestResponse = await result.Content.ReadFromJsonAsync<BadRequestResponse>();             
-                return Failed(result.StatusCode, badRequestResponse.Errors);
+                return Failed(result.StatusCode, badRequestResponse?.Errors ?? [result.StatusCode.ToString()]);
             }
             catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 var notFoundResponse = await result.Content.ReadFromJsonAsync<NotFoundResponse>();
-                return Failed(result.StatusCode, notFoundResponse.Message);
+                return Failed(result.StatusCode, notFoundResponse?.Message ?? result.StatusCode.ToString());
             }
             catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.InternalServerError)
             {
-                var problemResponse = await result?.Content.ReadFromJsonAsync<ProblemResponse>();
-                return Failed(result.StatusCode, problemResponse.Title);
+                var problemResponse = await result.Content.ReadFromJsonAsync<ProblemResponse>();
+                return Failed(result.StatusCode, problemResponse?.Title ?? result.StatusCode.ToString());
             }           
         }
 

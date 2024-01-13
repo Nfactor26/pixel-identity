@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pixel.Identity.UI.Client.Components
 {
@@ -7,6 +8,7 @@ namespace Pixel.Identity.UI.Client.Components
     {
         private int itemSize = 3;
         [Parameter]
+        [SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "The validation in Set would be lost.")]
         public int ItemSize
         {
             get => itemSize;
@@ -21,6 +23,7 @@ namespace Pixel.Identity.UI.Client.Components
 
         private int spacing = 2;
         [Parameter]
+        [SuppressMessage("Usage", "BL0007:Component parameters should be auto properties", Justification = "The validation in Set would be lost.")]
         public int Spacing
         {
             get => spacing;

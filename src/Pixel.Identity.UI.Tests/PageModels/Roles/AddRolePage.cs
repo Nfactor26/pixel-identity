@@ -44,13 +44,11 @@ internal class AddRolePage
     /// <returns></returns>
     public async Task CreateRole(string roleName)
     {
-        await page.RunAndWaitForNavigationAsync(async () =>
+        await page.FillAsync("#inputRoleName", roleName);
+        await page.ClickAsync("#btnCreate");
+        await page.WaitForURLAsync(new System.Text.RegularExpressions.Regex(".*/roles/list"), new PageWaitForURLOptions()
         {
-            await page.FillAsync("#inputRoleName", roleName);
-            await page.ClickAsync("#btnCreate");
-        }, new PageRunAndWaitForNavigationOptions()
-        {
-            UrlRegex = new System.Text.RegularExpressions.Regex(".*/roles/list")
+            WaitUntil = WaitUntilState.NetworkIdle
         });
         //wait for the snackbar to show up
         await page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()

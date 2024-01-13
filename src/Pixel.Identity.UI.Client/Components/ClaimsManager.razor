@@ -49,10 +49,10 @@
             <MudTextField UserAttributes="@(new (){{"id","txtClaimValue"}})" @bind-Value="@context.Value" Required />
         </MudTd>
          <MudTd DataLabel="Include in access token">
-            <MudSwitch UserAttributes="@(new (){{"id","cbIncludeInAccessToken"}})" @bind-Checked="@context.IncludeInAccessToken" Color="Color.Primary" />
+             <MudSwitch UserAttributes="@(new (){{"id","cbIncludeInAccessToken"}})" @bind-Value="@context.IncludeInAccessToken" Color="Color.Primary" />
         </MudTd>
          <MudTd DataLabel="Include in identity token">
-           <MudSwitch UserAttributes="@(new (){{"id","cbIncludeInIdentityToken"}})" @bind-Checked="@context.IncludeInIdentityToken" Color="Color.Primary" />
+             <MudSwitch UserAttributes="@(new (){{"id","cbIncludeInIdentityToken"}})" @bind-Value="@context.IncludeInIdentityToken" Color="Color.Primary" />
         </MudTd>
         <MudTd DataLabel="">         
         </MudTd>

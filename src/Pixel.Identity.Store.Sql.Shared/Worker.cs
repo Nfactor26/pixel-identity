@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.EntityFrameworkCore.Models;
@@ -44,7 +48,7 @@ public class Worker : IHostedService
                     ClientId = "pixel-identity-ui",
                     ConsentType = ConsentTypes.Implicit,
                     DisplayName = "Pixel Identity",
-                    Type = ClientTypes.Public,
+                    ClientType = ClientTypes.Public,
                     PostLogoutRedirectUris =
                 {
                     new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")

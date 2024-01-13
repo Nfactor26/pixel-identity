@@ -6,10 +6,10 @@ namespace Pixel.Identity.Shared.ViewModels
     public class UserRoleViewModel
     {
         [Required(AllowEmptyStrings = true)]
-        public string RoleId { get; set; }
+        public string RoleId { get; set; } = string.Empty;
 
         [Required]       
-        public string RoleName { get; set; }
+        public string RoleName { get; set; } = string.Empty;
 
         [Required]       
         public List<ClaimViewModel> Claims { get; set; } = new List<ClaimViewModel>();

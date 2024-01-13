@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Pixel.Identity.Core.Controllers;
 
 namespace Pixel.Identity.Store.Sql.Shared.Controllers

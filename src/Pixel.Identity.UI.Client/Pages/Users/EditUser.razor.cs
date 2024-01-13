@@ -158,7 +158,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             parameters.Add("RolesService", RolesService);
             var dialog = Dialog.Show<AddRoleDialog>("Add New Role", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
             var result = await dialog.Result;         
-            if (!result.Cancelled && result.Data is UserRoleViewModel role)
+            if (!result.Canceled && result.Data is UserRoleViewModel role)
             {
                 user.UserRoles.Add(role);
                 SnackBar.Add("Role successfully assigned.", Severity.Success);
@@ -177,7 +177,7 @@ namespace Pixel.Identity.UI.Client.Pages.Users
             parameters.Add("Service", ClaimsService);
             var dialog = Dialog.Show<AddClaimDialog>("Add Claim", parameters, new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, CloseButton = true });
             var result = await dialog.Result;
-            if (!result.Cancelled && result.Data is ClaimViewModel claim)
+            if (!result.Canceled && result.Data is ClaimViewModel claim)
             {
                 user.UserClaims.Add(claim);
                 SnackBar.Add("Claim was added.", Severity.Success);

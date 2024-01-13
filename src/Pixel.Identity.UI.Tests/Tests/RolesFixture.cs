@@ -67,9 +67,9 @@ namespace Pixel.Identity.UI.Tests
             var listRolesPage = new ListRolesPage(this.Page);
             await listRolesPage.GoToAsync();
             int rolesCount = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(1, rolesCount);
+            Assert.That(rolesCount, Is.EqualTo(1));
             var canNavigateToNext = await listRolesPage.CanNavigateToNext();
-            Assert.IsFalse(canNavigateToNext);
+            Assert.That(canNavigateToNext, Is.False);
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
         }
 
@@ -83,7 +83,7 @@ namespace Pixel.Identity.UI.Tests
             var listRolesPage = new ListRolesPage(this.Page);
             await listRolesPage.GoToAsync();
             var canNavigateToPrevious = await listRolesPage.CanNavigateToPrevious();
-            Assert.IsFalse(canNavigateToPrevious);
+            Assert.That(canNavigateToPrevious, Is.False);
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
         }
 
@@ -143,12 +143,12 @@ namespace Pixel.Identity.UI.Tests
             var listRolesPage = new ListRolesPage(this.Page);
             await listRolesPage.GoToAsync();
             int rolesCount = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(10, rolesCount); 
+            Assert.That(rolesCount, Is.EqualTo(10)); 
             var canNavigateToNext = await listRolesPage.CanNavigateToNext();
-            Assert.IsTrue(canNavigateToNext);
+            Assert.That(canNavigateToNext, Is.True);
             await listRolesPage.NavigateToNextAsync();
             rolesCount = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(2, rolesCount);
+            Assert.That(rolesCount, Is.EqualTo(2));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
         }
 
@@ -163,10 +163,10 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.GoToAsync();
             await listRolesPage.NavigateToNextAsync();
             var canNavigateToPrevious = await listRolesPage.CanNavigateToPrevious();
-            Assert.IsTrue(canNavigateToPrevious);
+            Assert.That(canNavigateToPrevious, Is.True);
             await listRolesPage.NavigateToPreviousAsync();
             int rolesCount = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(10, rolesCount);
+            Assert.That(rolesCount, Is.EqualTo(10));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
         }
 
@@ -185,7 +185,7 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.GoToAsync();        
             await listRolesPage.SetPageSizeAsync(pageSize);
             int rolesCount = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(expectedCount, rolesCount);
+            Assert.That(rolesCount, Is.EqualTo(expectedCount));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
         }
 
@@ -210,7 +210,7 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.SetPageSizeAsync(pageSize);
             await listRolesPage.SearchAsync(searchFilter);
             int count = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(expectedRowCount, count);
+            Assert.That(count, Is.EqualTo(expectedRowCount));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
 
         }
@@ -230,11 +230,11 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.EditAsync(existingName);
             var editRolePage = new EditRolePage(this.Page);
             var result = await editRolePage.RenameRoleAsync(newName);
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
             await listRolesPage.GoToAsync();
             await listRolesPage.SearchAsync(newName);
             int count = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(1, count);
+            Assert.That(count, Is.EqualTo(1));
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.EditAsync(existingName);
             var editRolePage = new EditRolePage(this.Page);
             var result = await editRolePage.RenameRoleAsync(newName);
-            Assert.IsFalse(result);          
+            Assert.That(result, Is.False);          
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.EditAsync(roleName);
             var editRolePage = new EditRolePage(this.Page);
             var result = await editRolePage.AddClaimAsync(claimType, claimValue, includeInAccessToken, includeInIdentityToken);
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
        
         /// <summary>
@@ -295,7 +295,7 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.EditAsync(roleName);
             var editRolePage = new EditRolePage(this.Page);
             int deletedCount = await editRolePage.DeleteClaimsAsync(claimType, claimValue);
-            Assert.AreEqual(1, deletedCount);
+            Assert.That(deletedCount, Is.EqualTo(1));
         }
 
         /// <summary>
@@ -320,7 +320,7 @@ namespace Pixel.Identity.UI.Tests
             var editRolePage = new EditRolePage(this.Page);
             int editedCount = await editRolePage.EditClaimsAsync(claimType, claimValue, newClaimType, newClaimValue,
                 newIncludeInAccessToken, newIncludeInIdentityToken);
-            Assert.AreEqual(1, editedCount);
+            Assert.That(editedCount, Is.EqualTo(1));
         }
 
         /// <summary>
@@ -345,12 +345,12 @@ namespace Pixel.Identity.UI.Tests
             await listRolesPage.GoToAsync();
             await listRolesPage.SetPageSizeAsync("10");         
             var deleted = await listRolesPage.DeleteAsync(roleName);
-            Assert.IsTrue(deleted);
+            Assert.That(deleted, Is.True);
             await listRolesPage.SearchAsync(string.Empty);
             await listRolesPage.SearchAsync(roleName);
             await Task.Delay(200);
             int count = await listRolesPage.GetCountAsync();
-            Assert.AreEqual(0, count);
+            Assert.That(count, Is.EqualTo(0));
             await Expect(this.Page).ToHaveURLAsync(new Regex(".*/roles/list"));
         }
 

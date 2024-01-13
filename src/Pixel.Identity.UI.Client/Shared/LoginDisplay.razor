@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject NavigationManager Navigation
-@inject SignOutSessionStateManager SignOutManager
 
 <AuthorizeView>
     <Authorized>
@@ -11,19 +10,19 @@
                 <MudAvatar>@context.User.Identity.Name.First()</MudAvatar>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem id="profileMenuItem" Link="/authentication/profile">Profile</MudMenuItem>
+                <MudMenuItem id="profileMenuItem" Href="/authentication/profile">Profile</MudMenuItem>
                 <MudMenuItem id="signOutMenuItem" @onclick="BeginSignOut">Sign Out</MudMenuItem>
             </ChildContent>
         </MudMenu>
     </Authorized>
     <NotAuthorized>
         <MudToolBar Spacing="5">
-            <MudButton id="registerPageLink" Link="authentication/register"                      
+            <MudButton id="registerPageLink" Href="authentication/register"                      
                        Variant="Variant.Outlined"
                        Color="Color.Tertiary" Class="mr-5">
                 Register
             </MudButton>
-            <MudButton id="loginPageLink" Link="authentication/login"                   
+                <MudButton id="loginPageLink" Href="authentication/login"
                        Variant="Variant.Outlined"
                        Color="Color.Tertiary" Class="mr-5">
                 Login
@@ -33,9 +32,8 @@
 </AuthorizeView>
 
 @code{
-    private async Task BeginSignOut(MouseEventArgs args)
+    private void BeginSignOut(MouseEventArgs args)
     {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
+      Navigation.NavigateToLogout("authentication/logout");
     }
 }

@@ -2,11 +2,11 @@
               @bind-Value="Application.ClientId" For="@(() => Application.ClientId)" />
 <MudTextField UserAttributes="@(new (){{"id","txtDisplayName"}})" Label="Display Name" Class="mt-3"
               @bind-Value="Application.DisplayName" For="@(() => Application.DisplayName)" />
-<MudSelect UserAttributes="@(new (){{"id","cbClientType"}})" T="string" Label="Client Type" @bind-Value="Application.Type">
+<MudSelect UserAttributes="@(new (){{"id","cbClientType"}})" T="string" Label="Client Type" @bind-Value="Application.ClientType">
     <MudSelectItem Value="@("public")" />
     <MudSelectItem Value="@("confidential")" />
 </MudSelect>
-<ValidationMessage For="() => Application.Type"></ValidationMessage>
+<ValidationMessage For="() => Application.ClientType"></ValidationMessage>
 
 @if (Application.IsConfidentialClient)
 {

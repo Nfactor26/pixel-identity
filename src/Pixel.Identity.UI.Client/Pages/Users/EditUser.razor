@@ -50,10 +50,10 @@
                     <MudTextField Label="Phone Number" Class="mt-3" @bind-Value="user.PhoneNumber" For="@(() => user.PhoneNumber)" />
                     <br />
 
-                    <MudSwitch @bind-Checked="user.EmailConfirmed" Label="Email Confirmed" Color="Color.Success" Disabled="true" />
-                    <MudSwitch @bind-Checked="user.PhoneNumberConfirmed" Label="Phone Number Confirmed" Color="Color.Success" Disabled="true" />
-                    <MudSwitch @bind-Checked="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" Disabled="true" />
-                    <MudSwitch @bind-Checked="user.LockoutEnabled" Label="Lock Out Enabled" Color="Color.Success" />
+                    <MudSwitch @bind-Value="user.EmailConfirmed" Label="Email Confirmed" Color="Color.Success" Disabled="true" />
+                    <MudSwitch @bind-Value="user.PhoneNumberConfirmed" Label="Phone Number Confirmed" Color="Color.Success" Disabled="true" />
+                    <MudSwitch @bind-Value="user.TwoFactorEnabled" Label="Two Factor Enabled" Color="Color.Success" Disabled="true" />
+                    <MudSwitch @bind-Value="user.LockoutEnabled" Label="Lock Out Enabled" Color="Color.Success" />
 
                 </MudCardContent>
                 <MudCardActions>

@@ -12,21 +12,21 @@ namespace Pixel.Identity.Shared.Request
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public string Owner { get; set; }
+        public string Owner { get; set; } = string.Empty;
 
         /// <summary>
         /// Claim to add to the role
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public ClaimViewModel Original { get; set; }
+        public ClaimViewModel Original { get; set; } = default!;
 
         /// <summary>
         /// Claim to add to the role
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public ClaimViewModel Modified { get; set; }
+        public ClaimViewModel Modified { get; set; } = default!;
 
         /// <summary>
         /// constructor

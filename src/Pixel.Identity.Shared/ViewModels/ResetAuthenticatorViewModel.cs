@@ -5,6 +5,6 @@ namespace Pixel.Identity.Shared.ViewModels
     public class ResetAuthenticatorViewModel
     {
         [Required(ErrorMessage = "Code is required to reset Authenticator")]
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
     }
 }

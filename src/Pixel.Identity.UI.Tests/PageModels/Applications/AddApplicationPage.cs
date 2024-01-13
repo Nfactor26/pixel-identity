@@ -106,18 +106,15 @@ internal class AddApplicationPage : ApplicationPage
     /// <returns></returns>
     public async Task Submit(bool hasClientSecret)
     {
-        await page.RunAndWaitForNavigationAsync(async () =>
+        await this.page.Locator("button[type='submit']").ClickAsync();
+        if (hasClientSecret)
         {
-            await this.page.Locator("button[type='submit']").ClickAsync();
-            if (hasClientSecret)
-            {
-                await this.page.Locator("div[role='dialog'] button").ClickAsync();
-            }
-        },
-       new PageRunAndWaitForNavigationOptions()
-       {
-           UrlRegex = new System.Text.RegularExpressions.Regex(".*/applications/list")
-       });
+            await this.page.Locator("div[role='dialog'] button").ClickAsync();
+        }
+        await page.WaitForURLAsync(new System.Text.RegularExpressions.Regex(".*/applications/list"), new PageWaitForURLOptions()
+        { 
+               WaitUntil = WaitUntilState.NetworkIdle
+        });
         //wait for the snackbar to show up
         await page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
         {

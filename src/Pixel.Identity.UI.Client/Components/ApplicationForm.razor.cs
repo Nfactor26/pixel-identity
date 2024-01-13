@@ -161,7 +161,7 @@ namespace Pixel.Identity.UI.Client.Components
             parameters.Add("ExistingUris", Application.PostLogoutRedirectUris);
             var dialog = Dialog.Show<AddUriComponent>("Add New Uri", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
             var result = await dialog.Result;
-            if(!result.Cancelled && result.Data is Uri uriToAdd)
+            if(!result.Canceled && result.Data is Uri uriToAdd)
             {
                Application.PostLogoutRedirectUris.Add(uriToAdd);
             }            

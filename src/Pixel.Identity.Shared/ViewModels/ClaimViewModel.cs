@@ -15,14 +15,14 @@ namespace Pixel.Identity.Shared.ViewModels
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         /// <summary>
         /// Value of the Claim
         /// </summary>
         [Required]
         [DataMember(IsRequired = true)]
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
 
         /// <summary>
         /// Indicates whether the Claim should be included in Access token

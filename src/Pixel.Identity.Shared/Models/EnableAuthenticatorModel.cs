@@ -8,11 +8,11 @@
         /// <summary>
         /// Formatted Key for the user authenticator
         /// </summary>
-        public string SharedKey { get; set; }
+        public string SharedKey { get; set; } = string.Empty;
 
         /// <summary>
         /// QR code Uri
         /// </summary>
-        public string AuthenticatorUri { get; set; }
+        public string AuthenticatorUri { get; set; } = string.Empty;
     }
 }
