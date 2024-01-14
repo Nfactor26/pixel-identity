@@ -41,6 +41,16 @@ public class AutoMapProfile : Profile
            .ForSourceMember(d => d.ClientSecret, opt => opt.DoNotValidate())
            .ForMember(d => d.JsonWebKeySet, opt => opt.MapFrom(s => jsonWebKeySetMapper(s)));
 
+        Func<OpenIddictEntityFrameworkCoreApplication, Dictionary<string, string>> settingsMapper = (a) =>
+        {
+            if (!string.IsNullOrEmpty(a.Settings))
+            {
+               var settingsDictionary = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(a.Settings);
+               return settingsDictionary;
+            }
+            return new();
+        };
+
         CreateMap<OpenIddictEntityFrameworkCoreApplication, ApplicationViewModel>()
         .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
         .ForMember(d => d.IsConfidentialClient, opt => opt.Ignore())
@@ -49,7 +59,8 @@ public class AutoMapProfile : Profile
         .ForMember(d => d.RedirectUris, opt => opt.MapFrom(s => s.RedirectUris.Trim(']', '[').Split(',', StringSplitOptions.None).Select(u => new Uri(u.Trim('\"'), UriKind.RelativeOrAbsolute))))
         .ForMember(d => d.PostLogoutRedirectUris, opt => opt.MapFrom(s => s.PostLogoutRedirectUris.Trim(']', '[').Split(',', StringSplitOptions.None).Select(u => new Uri(u.Trim('\"'), UriKind.RelativeOrAbsolute))))
         .ForMember(d => d.Permissions, opt => opt.MapFrom(s => s.Permissions.Trim(']', '[').Split(',', StringSplitOptions.None).Select(p => p.Trim('\"'))))
-        .ForMember(d => d.Requirements, opt => opt.MapFrom(s => s.Requirements.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"'))));
+        .ForMember(d => d.Requirements, opt => opt.MapFrom(s => s.Requirements.Trim(']', '[').Split(',', StringSplitOptions.None).Select(r => r.Trim('\"'))))
+        .ForMember(d => d.Settings, opt => opt.MapFrom(s => settingsMapper(s)));
 
         CreateMap<IdentityUser<Guid>, UserDetailsViewModel>()
          .ForMember(d => d.UserRoles, opt => opt.Ignore())
