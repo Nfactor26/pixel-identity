@@ -45,10 +45,11 @@ public class Worker : IHostedService
             {
                 await applicationManager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
+                    ApplicationType = ApplicationTypes.Web,
                     ClientId = "pixel-identity-ui",
-                    ConsentType = ConsentTypes.Implicit,
-                    DisplayName = "Pixel Identity",
+                    ConsentType = ConsentTypes.Implicit,                   
                     ClientType = ClientTypes.Public,
+                    DisplayName = "Pixel Identity",
                     PostLogoutRedirectUris =
                 {
                     new Uri($"{configuration["IdentityHost"]}/authentication/logout-callback")

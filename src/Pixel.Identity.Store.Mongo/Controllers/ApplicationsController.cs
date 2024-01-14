@@ -6,6 +6,7 @@ using OpenIddict.MongoDb.Models;
 using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.Responses;
 using Pixel.Identity.Shared.ViewModels;
+using System.Diagnostics;
 
 namespace Pixel.Identity.Store.Mongo.Controllers;
 
@@ -45,8 +46,7 @@ public class ApplicationsController : Core.Controllers.ApplicationsController
 
         await foreach (var app in this.applicationManager.ListAsync(query, CancellationToken.None))
         {
-            var applicationDescriptor = mapper.Map<ApplicationViewModel>(app);
-            applicationDescriptor.ClientSecret = string.Empty;
+            var applicationDescriptor = mapper.Map<ApplicationViewModel>(app);            
             applicationDescriptors.Add(applicationDescriptor);
         }
 

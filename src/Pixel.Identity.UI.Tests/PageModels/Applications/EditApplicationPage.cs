@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using Pixel.Identity.UI.Tests.Helpers;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Tests.PageModels.Applications;
@@ -6,7 +7,7 @@ namespace Pixel.Identity.UI.Tests.PageModels.Applications;
 internal class EditApplicationPage : ApplicationPage
 {
     public EditApplicationPage(IPage page) : base(page)
-    {
+    {      
     }
 
     /// <summary>
@@ -14,9 +15,9 @@ internal class EditApplicationPage : ApplicationPage
     /// </summary>
     /// <param name="clientId">ClientId of the application to edit</param>
     /// <returns></returns>
-    public async Task GoToAsync(string clientId)
+    public async Task GoToAsync(string baseUrl, string clientId)
     {
-        await page.GotoAsync($"/applications/edit/{clientId}");
+        await page.GotoAsync($"{baseUrl}/applications/edit/{clientId}");
     }
 
     /// <summary>

@@ -136,7 +136,7 @@ internal class ApplicationsFixture : PageSesionTest
     /// <summary>
     /// Verify that it is not possible to add a duplicate application
     /// </summary>
-    [Order(35)]
+    [Test, Order(35)]
     public async Task Test_That_Can_Not_Create_Duplicate_Application()
     {
         var application = ApplicationCollection.GetAllApplications().First();
@@ -150,21 +150,17 @@ internal class ApplicationsFixture : PageSesionTest
         await addApplicationPage.AddRedirectUri(application.RedirectUris);
         await addApplicationPage.AddPostLogoutRedirectUri(application.PostLogoutRedirectUris);
         await this.Page.Locator("button[type='submit']").ClickAsync();
-        await this.Page.WaitForURLAsync(new Regex(".*/applications/list"), new PageWaitForURLOptions()
-        {
-               WaitUntil = WaitUntilState.NetworkIdle
-        });
         //wait for the snackbar to show up
         await this.Page.Locator("div.mud-snackbar").WaitForAsync(new LocatorWaitForOptions()
         {
             Timeout = 5000
         });
-        await this.Page.Locator("div.mud-snackbar.mud-alert-filled-success button").ClickAsync();
+        await this.Page.Locator("div.mud-snackbar.mud-alert-filled-error button").ClickAsync();
         await this.Page.WaitForSelectorAsync("div.mud-snackbar.mud-alert-filled-error", new PageWaitForSelectorOptions()
         {
             State = WaitForSelectorState.Detached,
             Timeout = 5000
-        });
+        });      
     }
 
     /// <summary>
@@ -248,13 +244,13 @@ internal class ApplicationsFixture : PageSesionTest
         await Expect(this.Page).ToHaveURLAsync(new Regex(".*/applications/list"));
     }
 
-    [Order(70)]
+    [Test, Order(70)]
     public async Task Test_That_Can_Edit_Application_Details()
     {        
         var listApplicationsPage = new ListApplicationsPage(this.Page);
         await listApplicationsPage.GoToAsync();
         var editApplicationPage = new EditApplicationPage(this.Page);
-        await editApplicationPage.GoToAsync("application-10");
+        await editApplicationPage.GoToAsync(baseUrl, "application-10");
         await editApplicationPage.SetDisplayName("application-one-zero");
         await editApplicationPage.RemoveRedirectUri(new[] { "http://application-ten/pauth/authentication/login-callback" });
         await editApplicationPage.RemovePostLogoutRedirectUri(new[] { "http://application-zero-ten/pauth/authentication/logout-callback" });
@@ -265,14 +261,53 @@ internal class ApplicationsFixture : PageSesionTest
         await editApplicationPage.Submit(false);
     }
 
-    [Order(80)]
+    [Test, Order(80)]
+    public async Task Test_That_Can_Update_JsonWebKey()
+    {
+        var listApplicationsPage = new ListApplicationsPage(this.Page);
+        await listApplicationsPage.GoToAsync();
+        var editApplicationPage = new EditApplicationPage(this.Page);
+        await editApplicationPage.GoToAsync(baseUrl, "application-11");
+        await editApplicationPage.SetJsonWebKey($"""
+                    -----BEGIN EC PRIVATE KEY-----
+                    MHcCAQEEIMGxf/eMzKuW2F8KKWPJo3bwlrO68rK5+xCeO1atwja2oAoGCCqGSM49
+                    AwEHoUQDQgAEI23kaVsRRAWIez/pqEZOByJFmlXda6iSQ4QqcH23Ir8aYPPX5lsV
+                    nBsExNsl7SOYOiIhgTaX6+PTS7yxTnmvSw==
+                    -----END EC PRIVATE KEY-----
+                    """);
+        await editApplicationPage.Submit(false);
+    }
+
+    [Test, Order(90)]
+    public async Task Test_That_Can_Add_New_Setting()
+    {
+        var listApplicationsPage = new ListApplicationsPage(this.Page);
+        await listApplicationsPage.GoToAsync();
+        var editApplicationPage = new EditApplicationPage(this.Page);
+        await editApplicationPage.GoToAsync(baseUrl, "application-01");
+        await editApplicationPage.AddSetting("IdentityToken", "00:05:00");       
+        await editApplicationPage.Submit(false);
+    }
+
+    [Test, Order(100)]
+    public async Task Test_That_Can_Remove_Existing_Setting()
+    {
+        var listApplicationsPage = new ListApplicationsPage(this.Page);
+        await listApplicationsPage.GoToAsync();
+        var editApplicationPage = new EditApplicationPage(this.Page);
+        await editApplicationPage.GoToAsync(baseUrl, "application-01");   
+        await editApplicationPage.RemoveSetting("AccessToken");
+        await editApplicationPage.Submit(false);
+    }
+
+    [Test, Order(110)]
     public async Task Test_That_Can_Add_Custom_Scope()
     {
         var listApplicationsPage = new ListApplicationsPage(this.Page);
         await listApplicationsPage.GoToAsync();
         var editApplicationPage = new EditApplicationPage(this.Page);
-        await editApplicationPage.GoToAsync("application-10");
-        await Assert.ThatAsync(async () => await editApplicationPage.TryAddScope("Offline_Access"), Is.True);
+        await editApplicationPage.GoToAsync(baseUrl, "application-10");
+        await Assert.ThatAsync(async () => await editApplicationPage.TryAddScope("Offline Access"), Is.True);
         await editApplicationPage.Submit(false);
     }
 

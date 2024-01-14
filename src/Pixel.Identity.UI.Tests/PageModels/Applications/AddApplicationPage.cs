@@ -65,6 +65,7 @@ internal class AddApplicationPage : ApplicationPage
         await ApplyPreset(application.FromTemplate);
         await SetClientId(application.ClientId);
         await SetDisplayName(application.DisplayName);
+        await SetApplicationType(application.ApplicationType);
         switch (application.FromTemplate)
         {
             case "Authorization Code Flow":
@@ -79,10 +80,17 @@ internal class AddApplicationPage : ApplicationPage
                 break;
             case "None":
                 await SetConsentType(application.ConsentType);
-                await SetClientType(application.Type);
-                if (application.Type == "confidential")
+                await SetClientType(application.ClientType);
+                if (application.ClientType == "confidential")
                 {
-                    await SetClientSecret(application.ClientSecret);
+                    if (!string.IsNullOrEmpty(application.ClientSecret))
+                    {
+                        await SetClientSecret(application.ClientSecret);
+                    }                
+                    if(!string.IsNullOrEmpty(application.JsonWebKeySet))
+                    {
+                        await SetJsonWebKey(application.JsonWebKeySet);
+                    }
                 }
                 foreach (var permission in application.Permissions)
                 {
@@ -94,6 +102,13 @@ internal class AddApplicationPage : ApplicationPage
                     await AddPostLogoutRedirectUri(application.RedirectUris);
                 }
                 break;
+        }
+        if(application.Settings.Any())
+        {
+           foreach(var setting in application.Settings)
+            {
+                await AddSetting(setting.Key, setting.Value);
+            }
         }
         await Submit(!string.IsNullOrEmpty(application.ClientSecret));
 
