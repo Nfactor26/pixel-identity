@@ -51,8 +51,7 @@ namespace Pixel.Identity.Core.Controllers
         public async Task<ApplicationViewModel> Get(string clientId)
         {
             var app = await applicationManager.FindByClientIdAsync(clientId, CancellationToken.None);
-            var applicationDescriptor = mapper.Map<ApplicationViewModel>(app);
-            applicationDescriptor.ClientSecret = string.Empty;
+            var applicationDescriptor = mapper.Map<ApplicationViewModel>(app);          
             return applicationDescriptor;
         }
 
@@ -97,16 +96,26 @@ namespace Pixel.Identity.Core.Controllers
                     var openIdApplicationDescriptor = mapper.Map<OpenIddictApplicationDescriptor>(applicationDescriptor);
                     var descriptorFromExisting = new OpenIddictApplicationDescriptor();
                     await applicationManager.PopulateAsync(descriptorFromExisting, existing);
+                 
                     //No new secret to update. Populate existing on descriptor before updating
-                    if (applicationDescriptor.IsConfidentialClient && string.IsNullOrEmpty(applicationDescriptor.ClientSecret))
-                    {                       
-                        openIdApplicationDescriptor.ClientSecret = descriptorFromExisting.ClientSecret;
+                    if (applicationDescriptor.IsConfidentialClient)
+                    {                     
+                        if(string.IsNullOrEmpty(applicationDescriptor.ClientSecret))
+                        {
+                            openIdApplicationDescriptor.ClientSecret = descriptorFromExisting.ClientSecret;
+                        }
+                        if(string.IsNullOrEmpty(applicationDescriptor.JsonWebKeySet))
+                        {
+                            openIdApplicationDescriptor.JsonWebKeySet = descriptorFromExisting.JsonWebKeySet;
+                        }
                     }
+
                     if(!openIdApplicationDescriptor.RedirectUris.SequenceEqual(descriptorFromExisting.RedirectUris))
                     {
                         await RemoveOriginsAsync(descriptorFromExisting.RedirectUris);
                         await AllowOriginsAsync(applicationDescriptor.RedirectUris);
                     }
+                    
                     await applicationManager.UpdateAsync(existing, openIdApplicationDescriptor, CancellationToken.None);
                     return Ok();
                 }

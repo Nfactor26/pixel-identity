@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.MongoDb.Models;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.Store.Mongo.Models;
+using System.Security.Cryptography;
 
 namespace Pixel.Identity.Store.Mongo;
 
@@ -19,13 +21,33 @@ public class AutoMapProfile : Profile
         // ForMember(a => a.Type, opt => opt.Ignore()) method because it will not compile.
         // The workaround is to use the MemberList.Source option which allows AutoMapper
         // to ignore the Type property.
-        CreateMap<ApplicationViewModel, OpenIddictApplicationDescriptor>(MemberList.Source)
-           .ForSourceMember(d => d.IsConfidentialClient, opt => opt.DoNotValidate())
-           .ForSourceMember(d => d.Id, opt => opt.DoNotValidate());
 
+        Func<ApplicationViewModel, JsonWebKeySet?> jsonWebKeySetMapper = (a) =>
+        {
+            if (!string.IsNullOrEmpty(a.JsonWebKeySet))
+            {
+                var jsonWebKey = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(GetECDsaSigningKey(a.JsonWebKeySet));
+                return new JsonWebKeySet()
+                {
+                    Keys = { jsonWebKey }
+                };
+            }
+            return default;
+        };
+
+        CreateMap<ApplicationViewModel, OpenIddictApplicationDescriptor>(MemberList.Source)
+           .ForSourceMember(s => s.IsConfidentialClient, opt => opt.DoNotValidate())
+           .ForSourceMember(s => s.Id, opt => opt.DoNotValidate())
+           .ForSourceMember(s => s.JsonWebKeySet, opt => opt.DoNotValidate())
+           .ForSourceMember(s => s.ClientSecret, opt => opt.DoNotValidate())
+           .ForMember(d => d.JsonWebKeySet, opt => opt.MapFrom(s => jsonWebKeySetMapper(s)));
+          
+    
         CreateMap<OpenIddictMongoDbApplication, ApplicationViewModel>()
         .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
-        .ForMember(d => d.IsConfidentialClient, opt => opt.Ignore());
+        .ForMember(d => d.IsConfidentialClient, opt => opt.Ignore())
+        .ForMember(d => d.JsonWebKeySet, opt => opt.Ignore())
+        .ForMember(d => d.ClientSecret, opt => opt.Ignore());
 
         CreateMap<ApplicationUser, UserDetailsViewModel>()
          .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()))
@@ -44,5 +66,12 @@ public class AutoMapProfile : Profile
 
         CreateMap<OpenIddictMongoDbScope, ScopeViewModel>()
         .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id.ToString()));
+    }
+
+    static ECDsaSecurityKey GetECDsaSigningKey(ReadOnlySpan<char> key)
+    {
+        var algorithm = ECDsa.Create();
+        algorithm.ImportFromPem(key);
+        return new ECDsaSecurityKey(algorithm);
     }
 }

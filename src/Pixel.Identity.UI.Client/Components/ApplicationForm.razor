@@ -2,28 +2,47 @@
               @bind-Value="Application.ClientId" For="@(() => Application.ClientId)" />
 <MudTextField UserAttributes="@(new (){{"id","txtDisplayName"}})" Label="Display Name" Class="mt-3"
               @bind-Value="Application.DisplayName" For="@(() => Application.DisplayName)" />
-<MudSelect UserAttributes="@(new (){{"id","cbClientType"}})" T="string" Label="Client Type" @bind-Value="Application.ClientType">
-    <MudSelectItem Value="@("public")" />
-    <MudSelectItem Value="@("confidential")" />
-</MudSelect>
-<ValidationMessage For="() => Application.ClientType"></ValidationMessage>
 
+<MudStack Row="true" Spacing="3" Class="mt-3">
+    <MudItem xs="2">
+        <MudSelect UserAttributes="@(new (){{"id","cbApplicationType"}})" T="string" Label="Application Type" @bind-Value="Application.ApplicationType">
+            <MudSelectItem Value="@("web")" />
+            <MudSelectItem Value="@("native")" />
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="2">
+        <MudSelect UserAttributes="@(new (){{"id","cbConsentType"}})" T="string" Label="Consent Type" @bind-Value="Application.ConsentType">
+            <MudSelectItem Value="@("explicit")" />
+            <MudSelectItem Value="@("external")" />
+            <MudSelectItem Value="@("implicit")" />
+            <MudSelectItem Value="@("systematic")" />
+        </MudSelect>
+        <ValidationMessage For="() => Application.ConsentType"></ValidationMessage>
+    </MudItem>
+    <MudItem xs="2">
+        <MudSelect UserAttributes="@(new (){{"id","cbClientType"}})" T="string" Label="Client Type" @bind-Value="Application.ClientType">
+            <MudSelectItem Value="@("public")" />
+            <MudSelectItem Value="@("confidential")" />
+        </MudSelect>
+        <ValidationMessage For="() => Application.ClientType"></ValidationMessage>
+    </MudItem>
+    <MudItem xs="6">
+        @if (Application.IsConfidentialClient)
+        {
+
+            <MudTextField UserAttributes="@(new (){{"id","txtClientSecret"}})" @bind-Value="Application.ClientSecret" Label="Client Secret" Variant="Variant.Text"
+                          InputType="@passwordInputFieldType" Adornment="Adornment.End" AdornmentColor="Color.Primary"
+                          AdornmentIcon="@passwordInputIcon" OnAdornmentClick="OnTogglePasswordVisibility" />
+            <ValidationMessage For="() => Application.ClientSecret"></ValidationMessage>
+        }
+    </MudItem>
+</MudStack>
 @if (Application.IsConfidentialClient)
 {
-
-    <MudTextField UserAttributes="@(new (){{"id","txtClientSecret"}})" @bind-Value="Application.ClientSecret" Label="Client Secret" Variant="Variant.Text"
-              InputType="@passwordInputFieldType" Adornment="Adornment.End" AdornmentColor="Color.Primary"
-              AdornmentIcon="@passwordInputIcon" OnAdornmentClick="OnTogglePasswordVisibility" />
-    <ValidationMessage For="() => Application.ClientSecret"></ValidationMessage>
+    <MudTextField UserAttributes="@(new (){{"id","txtJsonWebKeySet"}})" T="string" Label="Json Web Key Set" Variant="Variant.Text" @bind-Value="@Application.JsonWebKeySet" AutoGrow HelperText="public key of ECDSA private/public key pair used by the server to validate the client assertions" />
+    <ValidationMessage For="() => Application.JsonWebKeySet"></ValidationMessage>
 }
 
-<MudSelect UserAttributes="@(new (){{"id","cbConsentType"}})" T="string" Label="Consent Type" @bind-Value="Application.ConsentType">
-    <MudSelectItem Value="@("explicit")" />
-    <MudSelectItem Value="@("external")" />
-    <MudSelectItem Value="@("implicit")" />
-    <MudSelectItem Value="@("systematic")" />
-</MudSelect>
-<ValidationMessage For="() => Application.ConsentType"></ValidationMessage>
 <br />
 
 @if(Application.Permissions.Contains(OpenIddict.Abstractions.OpenIddictConstants.Permissions.GrantTypes.AuthorizationCode))
@@ -38,7 +57,7 @@
         <EditableCollection TItem="Uri" TValue="string" ItemSize="12" OnDeleteItem="@RemoveRedirectUri"
                         Items="(Application.RedirectUris ?? Enumerable.Empty<Uri>())">
             <ItemTemplate Context="item">
-                <MudText Color="Color.Info" Typo="Typo.subtitle1">@item.ToString()</MudText>
+                <MudText Color="Color.Info" Class="ml-2" Typo="Typo.subtitle1">@item.ToString()</MudText>
             </ItemTemplate>
         </EditableCollection>
     </div>
@@ -53,9 +72,9 @@
         <ValidationMessage For="() => Application.PostLogoutRedirectUris"></ValidationMessage>
         <EditableCollection TItem="Uri" TValue="string" ItemSize="12"
                         OnDeleteItem="@RemovePostLogoutRedirectUri"
-                        Items="(Application.PostLogoutRedirectUris ?? Enumerable.Empty<Uri>())" NewItem="@string.Empty">
+                            Items="(Application.PostLogoutRedirectUris ?? Enumerable.Empty<Uri>())">
             <ItemTemplate Context="item">
-                <MudText Color="Color.Info" Typo="Typo.subtitle1">@item.ToString()</MudText>
+                <MudText Color="Color.Info" Class="ml-2" Typo="Typo.subtitle1">@item.ToString()</MudText>
             </ItemTemplate>
         </EditableCollection>
     </div>
@@ -98,6 +117,31 @@
 <MudExpansionPanels MultiExpansion="true" Elevation="1">
     <MudExpansionPanel Text="Application requirements" IsInitiallyExpanded="true">
         <ToggleItemCollection Items="requirements" OnToggle="ToggleRequirement" />
+    </MudExpansionPanel>
+</MudExpansionPanels>
+<br />
+
+<MudText Typo="Typo.h6">Settings</MudText>
+<br />
+<MudExpansionPanels MultiExpansion="true" Elevation="1">
+    <MudExpansionPanel id="settingsPanel" IsInitiallyExpanded="true">
+        <TitleContent>
+            <div class="d-flex">
+                <MudText>Token LifeTimes</MudText>
+                <MudIconButton UserAttributes="@(new (){{"id","btnAddSetting"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
+                               Title="Add a new setting"
+                               @onclick="AddSetting" Color="Color.Primary" Class="ml-3" Style="padding:0;"></MudIconButton>
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <EditableCollection TItem="KeyValuePair<string,string>" TValue="KeyValuePair<string,string>" ItemSize="3" Spacing="2"
+                                OnDeleteItem="@RemoveSetting"
+                                Items="(Application.Settings ?? new())">
+                <ItemTemplate Context="item">
+                    <MudText Color="Color.Info" UserAttributes="@(new (){{"id", item.Key}})" Class="ml-2" Typo="Typo.subtitle1">@($"{Pixel.Identity.Shared.Helpers.TokenLifeTimesHelper.GetNameFromValue(item.Key)} : {item.Value}")</MudText>
+                </ItemTemplate>
+            </EditableCollection>
+        </ChildContent>       
     </MudExpansionPanel>
 </MudExpansionPanels>
 <br />

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
 using OpenIddict.Abstractions;
+using Pixel.Identity.Shared.Helpers;
 using Pixel.Identity.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -215,6 +217,31 @@ namespace Pixel.Identity.UI.Client.Components
                 passwordInputIcon = Icons.Material.Filled.Visibility;
                 passwordInputFieldType = InputType.Text;
             }
+        }
+
+        async Task AddSetting()
+        {
+            var parameters = new DialogParameters();
+            List<string> configuredSettingNames = new();
+            foreach (var setting in Application.Settings)
+            {
+                configuredSettingNames.Add(TokenLifeTimesHelper.GetNameFromValue(setting.Key));
+            }
+            parameters.Add("ConfiguredSettings", configuredSettingNames);
+            var dialog = Dialog.Show<ApplicationSettings>("Add New Setting", parameters, new DialogOptions() { MaxWidth = MaxWidth.Large, CloseButton = true });
+            var result = await dialog.Result;
+            if (!result.Canceled && result.Data is KeyValuePair<string, string> settingToAdd)
+            {
+                Application.Settings.Add(settingToAdd.Key, settingToAdd.Value);
+            }
+        }
+
+        void RemoveSetting(KeyValuePair<string, string> settingToRemove)
+        {
+            if (Application.Settings.ContainsKey(settingToRemove.Key))
+            {
+                Application.Settings.Remove(settingToRemove.Key);
+            }           
         }
     }
 }
