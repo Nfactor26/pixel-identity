@@ -42,12 +42,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1872169C-F107-43FD-AE02-6DDF88241644}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\identity-build-and-test-docker.yaml = .github\workflows\identity-build-and-test-docker.yaml
-		.github\workflows\identity-build-only.yaml = .github\workflows\identity-build-only.yaml
 		.github\workflows\identity-build-docker-image.yaml = .github\workflows\identity-build-docker-image.yaml
+		.github\workflows\identity-build-only.yaml = .github\workflows\identity-build-only.yaml
 		.github\workflows\identity-publish-to-docker-hub.yaml = .github\workflows\identity-publish-to-docker-hub.yaml
 		.github\workflows\identity-test-docker-image-with-mongo.yaml = .github\workflows\identity-test-docker-image-with-mongo.yaml
 		.github\workflows\identity-test-docker-image-with-postgres.yaml = .github\workflows\identity-test-docker-image-with-postgres.yaml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pixel.Identity.Store.Sql.Migrations", "src\Pixel.Identity.Store.Sql.Migrations\Pixel.Identity.Store.Sql.Migrations.csproj", "{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -239,6 +241,18 @@ Global
 		{440B2ECE-5DCF-481D-9C18-0EC8F4F18E98}.Release|x64.Build.0 = Release|Any CPU
 		{440B2ECE-5DCF-481D-9C18-0EC8F4F18E98}.Release|x86.ActiveCfg = Release|Any CPU
 		{440B2ECE-5DCF-481D-9C18-0EC8F4F18E98}.Release|x86.Build.0 = Release|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Debug|x64.Build.0 = Debug|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Debug|x86.Build.0 = Debug|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Release|x64.ActiveCfg = Release|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Release|x64.Build.0 = Release|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Release|x86.ActiveCfg = Release|Any CPU
+		{88822DEF-9DEA-4E61-8DAE-DF387C904A1F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
