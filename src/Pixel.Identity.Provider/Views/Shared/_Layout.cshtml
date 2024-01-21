@@ -11,12 +11,12 @@
     <base href="~/" />  
     <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.min.css" />      
     <link rel="stylesheet" href="_content/MudBlazor/MudBlazor.min.css"/>  
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    <component type="typeof(HeadOutlet)" render-mode="Static" />
 </head>
 <body>  
     <div class="mud-layout">
         <partial name="_CookieConsentPartial" optional />
-        <component type="typeof(MainLayout)" render-mode="ServerPrerendered" />
+        <component type="typeof(MainLayout)" render-mode="Static" />
         <div class="mud-main-content">
             <div class="mud-container mud-container-maxwidth-false mt-8">
                  @RenderBody()                  
