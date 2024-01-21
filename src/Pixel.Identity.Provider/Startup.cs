@@ -9,6 +9,7 @@ using MudBlazor;
 using MudBlazor.Services;
 using Pixel.Identity.Core;
 using Pixel.Identity.Core.Plugins;
+using Pixel.Identity.Provider.Components;
 using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared;
 using Quartz;
@@ -63,7 +64,7 @@ namespace Pixel.Identity.Provider
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register", Policies.CanManageUsers);
                 }
             });
-            services.AddServerSideBlazor();
+            services.AddRazorComponents().AddInteractiveServerComponents();
             services.AddSwaggerGen(c =>
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
@@ -146,12 +147,15 @@ namespace Pixel.Identity.Provider
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseAntiforgery();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapRazorComponents<App>().AddInteractiveServerRenderMode();               
                 endpoints.MapFallbackToFile("index.html");
+               
             });
         }      
 
