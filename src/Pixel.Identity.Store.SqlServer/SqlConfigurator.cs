@@ -37,7 +37,8 @@ public class SqlConfigurator : IDataStoreConfigurator
 
         return services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("SqlServerConnection"));
+            options.UseSqlServer(configuration.GetConnectionString("SqlServerConnection"),
+                x => x.MigrationsAssembly("Pixel.Identity.Store.SqlServer"));
 
             // Register the entity sets needed by OpenIddict.
             // Note: use the generic overload if you need
