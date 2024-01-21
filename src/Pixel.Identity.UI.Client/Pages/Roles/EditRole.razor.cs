@@ -111,7 +111,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
             parameters.Add("Service", RoleClaimsService);
             var dialog = Dialog.Show<AddClaimDialog>("Add Claim", parameters, new DialogOptions() { MaxWidth = MaxWidth.ExtraLarge, CloseButton = true });
             var result = await dialog.Result;
-            if (!result.Cancelled && result.Data is ClaimViewModel claim)
+            if (!result.Canceled && result.Data is ClaimViewModel claim)
             {
                 model.Claims.Add(claim);
                 SnackBar.Add($"Claim was added.", Severity.Success);
