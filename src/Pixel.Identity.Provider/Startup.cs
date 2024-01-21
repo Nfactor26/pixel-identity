@@ -64,7 +64,7 @@ namespace Pixel.Identity.Provider
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register", Policies.CanManageUsers);
                 }
             });
-            services.AddRazorComponents().AddInteractiveServerComponents();
+            services.AddRazorComponents();
             services.AddSwaggerGen(c =>
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
@@ -153,7 +153,7 @@ namespace Pixel.Identity.Provider
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapRazorComponents<App>().AddInteractiveServerRenderMode();               
+                endpoints.MapRazorComponents<App>();               
                 endpoints.MapFallbackToFile("index.html");
                
             });
