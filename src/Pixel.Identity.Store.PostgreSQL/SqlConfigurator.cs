@@ -37,7 +37,8 @@ public class SqlConfigurator : IDataStoreConfigurator
 
         return services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("PostgreServerConnection"));
+            options.UseNpgsql(configuration.GetConnectionString("PostgreServerConnection"), 
+                x => x.MigrationsAssembly("Pixel.Identity.Store.PostgreSQL"));
 
             // Register the entity sets needed by OpenIddict.
             // Note: use the generic overload if you need

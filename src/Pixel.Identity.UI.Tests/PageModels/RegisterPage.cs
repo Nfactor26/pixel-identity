@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Tests.PageModels
@@ -23,6 +24,11 @@ namespace Pixel.Identity.UI.Tests.PageModels
         public async Task GoToAsync()
         {           
             await page.ClickAsync("#registerPageLink");
+            await page.WaitForURLAsync(new System.Text.RegularExpressions.Regex(".*/Account/Register/*"), new PageWaitForURLOptions()
+            {
+                WaitUntil = WaitUntilState.NetworkIdle,
+                Timeout = 60000
+            });
         }
 
         /// <summary>
