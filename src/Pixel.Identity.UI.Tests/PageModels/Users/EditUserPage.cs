@@ -40,7 +40,7 @@ internal class EditUserPage
     {
         await this.page.Locator("button#btnAddRole").ClickAsync();
         var dialog = this.page.Locator("div[role='dialog']");
-        await dialog.Locator("input.mud-select-input").TypeAsync(roleToAdd);
+        await dialog.Locator("input.mud-select-input").FillAsync(roleToAdd);
         await this.page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").WaitForAsync(new LocatorWaitForOptions()
         {
             Timeout = 5000
