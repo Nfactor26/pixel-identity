@@ -36,9 +36,6 @@ jobs:
          -e AllowedOrigins=http://localhost:44382 -e IdentityHost=http://localhost:44382/pauth
          --env-file ./.config/identity-postgres-with-console-email.env
          --name pixel_identity_provider pixel-identity:local 
-     - name: Warmup container
-       run: >
-         curl http://localhost:44382/pauth/Identity/Account/Login
      - name: Print container details
        run: docker container ls     
      - name: Setup dotnet ${{ matrix.dotnet-version }}
