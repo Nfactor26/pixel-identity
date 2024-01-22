@@ -35,7 +35,7 @@ jobs:
          docker run -d -p 44382:8080 --network=${{ job.container.network }}
          -e AllowedOrigins=http://localhost:44382 -e IdentityHost=http://localhost:44382/pauth
          --env-file ./.config/identity-postgres-with-console-email.env
-         --name pixel_identity_provider pixel-identity:local     
+         --name pixel_identity_provider pixel-identity:local 
      - name: Print container details
        run: docker container ls     
      - name: Setup dotnet ${{ matrix.dotnet-version }}
@@ -54,6 +54,6 @@ jobs:
        uses: actions/upload-artifact@v3
        with:
         name: pixel-identity-postgres-automation-test-results-${{ matrix.os }}
-        path: src/Pixel.Identity.UI.Tests/TestResults  
+        path: src/Pixel.Identity.UI.Tests/TestResults/*.trx  
 
    
