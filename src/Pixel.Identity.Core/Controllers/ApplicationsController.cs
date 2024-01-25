@@ -71,7 +71,7 @@ namespace Pixel.Identity.Core.Controllers
                 {
                     await AllowOriginsAsync(applicationDescriptor.RedirectUris);
                 }
-                return CreatedAtAction(nameof(Get), new { clientId = applicationDescriptor.ClientId }, result);
+                return CreatedAtAction(nameof(Get), new { clientId = applicationDescriptor.ClientId }, mapper.Map<ApplicationViewModel>(result));
             }
             return BadRequest(new BadRequestResponse(ModelState.GetValidationErrors()));
         }
