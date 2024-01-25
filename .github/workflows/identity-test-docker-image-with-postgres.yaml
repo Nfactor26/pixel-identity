@@ -52,6 +52,7 @@ jobs:
        run: dotnet test  --logger "trx;" src/Pixel.Identity.UI.Tests/Pixel.Identity.UI.Tests.csproj
      - name: Upload test results
        uses: actions/upload-artifact@v3
+       if: ${{ always() }}
        with:
         name: pixel-identity-postgres-automation-test-results-${{ matrix.os }}
         path: src/Pixel.Identity.UI.Tests/TestResults/*.trx  
