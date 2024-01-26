@@ -7,17 +7,21 @@ permalink: /docs/configuration/
 
 | Option      | Description | Is Required ?|
 | ----------- | ----------- | -------      |
-|  InitAdminUser     | User name for the initial admin user that is created.                                                             | Required |
-|  InitAdminUserPass | Password for the initial adming user that is created.                                                             | Required |
-|  IdentityHost      | Url over which pixel-identity is accessed. This is required to auto configure Pixel Identity UI with OpenIddict.  | Required |
-|  AllowedOrigins    | Allowed origins for CORS.  | Optional |
+|  InitAdminUser          | User name for the initial admin user that is created.                                                             | Required |
+|  InitAdminUserPass      | Password for the initial adming user that is created.                                                             | Required |
+|  IdentityHost           | Url over which pixel-identity is accessed. This is required to auto configure Pixel Identity UI with OpenIddict.  | Required |
+|  AllowedOrigins         | Allowed origins for CORS.                                                                                         | Optional |
+|  AllowUserRegistration  | Allow users to register an account. This is suitable for public websites. Default value is true                   | Optional |
+|  AutoMigrate            | Allow EntityFramework migrations to be auto applied. See Database Plugin options section for more details         | Optional | 
 
 - appsettings.json
 
         "InitAdminUser": "admin@pixel.com",
         "InitAdminUserPass": "Admi9@pixel",
         "IdentityHost": "http://localhost:44382/pauth",
-        "AllowedOrigins": "http://localhost:44382"
+        "AllowedOrigins": "http://localhost:44382",
+        "AllowUserRegistration": true,
+        "AutoMigrate": false
 
 - environment variable or .env files for docker
  
@@ -25,6 +29,8 @@ permalink: /docs/configuration/
         InitAdminUserPass=Admi9@pixel
         AllowedOrigins=https://pixel.docker.localhost
         IdentityHost=https://pixel.docker.localhost/pauth
+        AllowUserRegistration=true
+        AutoMigrate=false
 
 ### Certificates
 
@@ -114,6 +120,9 @@ Use Pixel.Identity.Store.Mongo or Pixel.Identity.Store.SqlServer or Pixel.Identi
         MongoDbSettings__ConnectionString=mongodb://localhost:27017
         MongoDbSettings__DatabaseName=pixel-identity-db 
     
+  SQL based plugins use entity framework migration feature starting v3.0 of pixel-identity. Please use provided scripts with the release to create required database.
+  Alternatively, a feature flag 'AutoMigrate' can be set to true to auto apply migration. This should be fine for quickly spinning up a docker or trying locally in dev environment.
+  Recommened approach is to use provided SQL scripts for production usage.
 
   ### Email Sender plugin
 
