@@ -9,6 +9,9 @@ main:
   - title: "About"
     url: /about/
 
+  - title: "Migration Guide"
+    url: /migrations/
+
 
 # documentation links
 docs:
@@ -29,6 +32,10 @@ docs:
       - title: "Introspection"
         url: /docs/introspection/  
       - title: "Authorization Code with pkce"
-        url: /docs/authorization-code-with-pkce/       
+        url: /docs/authorization-code-with-pkce/
+  - title: Samples
+    children:
+      - title: "v2.x to v3.x"
+        url: /docs/v2-to-v3/    
   
  
