@@ -12,6 +12,8 @@ using Pixel.Identity.Core.Plugins;
 using Pixel.Identity.Provider.Components;
 using Pixel.Identity.Provider.Extensions;
 using Pixel.Identity.Shared;
+using Pixel.Identity.Shared.Branding;
+using Pixel.Identity.UI.Client.Services;
 using Quartz;
 using Serilog;
 using System.IO;
@@ -50,12 +52,12 @@ namespace Pixel.Identity.Provider
             });
 
             //Add plugin assembly type to application part so that controllers in this assembly can be discovered by asp.net
-            services.AddControllersWithViews();               
+            services.AddControllersWithViews();
             services.AddRazorPages(options =>
-            {               
+            {
                 //Allow unauthorized users to access registration page when allow user registration setting is true so that users can
                 //register for a new account on their own.
-                if(bool.TryParse(Configuration["AllowUserRegistration"] ?? "true", out bool allowUserRegistration) && allowUserRegistration)
+                if (bool.TryParse(Configuration["AllowUserRegistration"] ?? "true", out bool allowUserRegistration) && allowUserRegistration)
                 {
                     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Register");
                 }
@@ -69,7 +71,7 @@ namespace Pixel.Identity.Provider
             {
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
-           
+
             services.AddMudServices(config =>
             {
                 config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
@@ -83,7 +85,7 @@ namespace Pixel.Identity.Provider
 
             ConfigureCors(services);
 
-            services.AddPlugin<IServicePlugin>(pluginsOptions["EmailSender"].Single(), (p, s) => 
+            services.AddPlugin<IServicePlugin>(pluginsOptions["EmailSender"].Single(), (p, s) =>
             {
                 p.ConfigureService(s, this.Configuration);
             });
@@ -92,11 +94,11 @@ namespace Pixel.Identity.Provider
             foreach (var externalProvider in pluginsOptions["OAuthProvider"])
             {
                 services.AddPlugin<IExternalAuthProvider>(externalProvider, (p, s) =>
-                { 
-                    p.AddProvider(this.Configuration, authenticationBuilder); 
-                });              
-            }        
-       
+                {
+                    p.AddProvider(this.Configuration, authenticationBuilder);
+                });
+            }
+
             services.AddPlugin<IDataStoreConfigurator>(pluginsOptions["DbStore"].Single(), (p, s) =>
             {
                 p.ConfigureAutoMap(s);
@@ -104,7 +106,9 @@ namespace Pixel.Identity.Provider
                 p.AddServices(services);
             });
 
+
             ConfigureAuthorizationPolicy(services);
+            ConfigureBranding(services);
             ConfigureQuartz(services);
         }
 
@@ -135,13 +139,13 @@ namespace Pixel.Identity.Provider
             }
 
             app.UsePathBase("/pauth");
-           
-            app.UseSerilogRequestLogging();         
-           
+
+            app.UseSerilogRequestLogging();
+
             //app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-         
+
             app.UseRouting();
             app.UseCors();
 
@@ -153,11 +157,11 @@ namespace Pixel.Identity.Provider
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapRazorComponents<App>();               
+                endpoints.MapRazorComponents<App>();
                 endpoints.MapFallbackToFile("index.html");
-               
+
             });
-        }      
+        }
 
         /// <summary>
         /// Configure the Cors so that different clients can consume api
@@ -222,15 +226,16 @@ namespace Pixel.Identity.Provider
         private void ConfigureOpenIddict(IServiceCollection services, IDataStoreConfigurator configurator)
         {
             //Configure Identity will call services.AddIdentity which will AddAuthentication  
-            configurator.ConfigureIdentity(this.Configuration, services) 
+            configurator.ConfigureIdentity(this.Configuration, services)
             .AddSignInManager()
             .AddDefaultTokenProviders();
 
-            services.ConfigureApplicationCookie(opts => {
-                opts.LoginPath = "/Identity/Account/Login";                
-            });           
+            services.ConfigureApplicationCookie(opts =>
+            {
+                opts.LoginPath = "/Identity/Account/Login";
+            });
 
-            var openIdBuilder = services.AddOpenIddict()        
+            var openIdBuilder = services.AddOpenIddict()
             // Register the OpenIddict server components.
             .AddServer(options =>
             {
@@ -321,6 +326,11 @@ namespace Pixel.Identity.Provider
 
             // Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
             services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+        }
+
+        private static void ConfigureBranding(IServiceCollection services)
+        {
+            services.AddScoped<IBrandingService, AppSettingsBrandService>();
         }
     }
 }
