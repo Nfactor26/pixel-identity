@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
 using Pixel.Identity.Shared;
+using Pixel.Identity.Shared.Branding;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using Pixel.Identity.UI.Client.Validations;
@@ -62,6 +63,10 @@ namespace Pixel.Identity.UI.Client
              .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             builder.Services.AddHttpClient<IUserClaimsService, UserClaimsService>(
+            client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+             .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+            builder.Services.AddHttpClient<IBrandingService, RemoteBrandService>(
             client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
              .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
