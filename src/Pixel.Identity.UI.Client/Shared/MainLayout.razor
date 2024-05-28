@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using Pixel.Identity.Shared.Branding
+@inherits LayoutComponentBase
+@inject IBrandingService BrandingService
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -10,10 +12,10 @@
             <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" />
         </MudToolBar>
         <MudHidden Breakpoint="Breakpoint.Xs">
-            <MudText Typo="Typo.h6" Class="ml-4">Pixel Identity</MudText>
+            <MudText Typo="Typo.h6" Class="ml-4">@_brand.Name</MudText>
         </MudHidden>
         <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-            <MudText Typo="Typo.subtitle2">Identity Provider</MudText>
+            <MudText Typo="Typo.subtitle2">@_brand.ShortName</MudText>
         </MudHidden>
         <MudSpacer />
         <LoginDisplay />
@@ -33,10 +35,16 @@
 @code {
 
     public bool _drawerOpen = true;
+    public Brand _brand = Brand.Empty;
 
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _brand = await BrandingService.GetBrandAsync();
     }
 }
 
