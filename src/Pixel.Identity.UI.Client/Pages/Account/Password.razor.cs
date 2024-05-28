@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Account
 {
-    public partial class Logins : ComponentBase
+    public partial class Password : ComponentBase
     {
         [Inject]
         public ISnackbar SnackBar { get; set; }
-       
+
         [Inject]
         public IAccountService AccountService { get; set; }
 
@@ -26,7 +26,7 @@ namespace Pixel.Identity.UI.Client.Pages.Account
         protected override async Task OnInitializedAsync()
         {
             hasLocalAccount = await AccountService.GetHasPasswordAsync();
-            var userExternalLogins = await ExternalLoginsService.GetExternalLoginsAsync();          
+            var userExternalLogins = await ExternalLoginsService.GetExternalLoginsAsync();
             this.externalLogins.AddRange(userExternalLogins);
             await base.OnInitializedAsync();
         }
