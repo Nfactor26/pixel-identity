@@ -1,7 +1,7 @@
 ﻿@page "/users/list"
 @attribute [Authorize(Policy = Policies.CanManageUsers)]
 
-<MudTable UserAttributes="@(new (){{"id","tblUsers"}})" ServerData="@(new Func<TableState, Task<TableData<UserDetailsViewModel>>>(GetUsersDataAsync))"
+<MudTable UserAttributes="@(new (){{"id","tblUsers"}})" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<UserDetailsViewModel>>>(GetUsersDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="usersTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Users</MudText>

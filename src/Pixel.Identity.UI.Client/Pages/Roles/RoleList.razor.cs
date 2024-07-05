@@ -4,6 +4,7 @@ using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Roles
@@ -35,7 +36,7 @@ namespace Pixel.Identity.UI.Client.Pages.Roles
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
-        private async Task<TableData<UserRoleViewModel>> GetRolesDataAsync(TableState state)
+        private async Task<TableData<UserRoleViewModel>> GetRolesDataAsync(TableState state, CancellationToken ct)
         {
             try
             {

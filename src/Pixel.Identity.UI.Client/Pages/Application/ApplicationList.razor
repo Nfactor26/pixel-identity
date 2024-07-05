@@ -1,7 +1,7 @@
 ﻿@page "/applications/list"
 @attribute [Authorize(Policy = Policies.CanManageApplications)]
 
-<MudTable UserAttributes="@(new (){{"id","tblApplications"}})" ServerData="@(new Func<TableState, Task<TableData<ApplicationViewModel>>>(GetApplicationsDataAsync))"
+<MudTable T="ApplicationViewModel" UserAttributes="@(new (){{"id","tblApplications"}})" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ApplicationViewModel>>>(GetApplicationsDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="applicationsTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Applications</MudText>

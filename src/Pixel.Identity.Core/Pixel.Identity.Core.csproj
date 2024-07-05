@@ -8,8 +8,8 @@
     <ProjectReference Include="..\Pixel.Identity.Shared\Pixel.Identity.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="OpenIddict.AspNetCore" Version="5.0.1" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="5.7.0" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Pixel.Identity.Core.Extensions" />
