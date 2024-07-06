@@ -49,7 +49,7 @@ namespace Pixel.Identity.UI.Tests.ComponentModels
         public async Task CloseDialogAsync()
         {
             var dialog = this.page.Locator("div[role='dialog']");
-            await dialog.Locator("button[aria-label='close']").ClickAsync();
+            await dialog.Locator("button[aria-label='Close dialog']").ClickAsync();
         }
 
         /// <summary>

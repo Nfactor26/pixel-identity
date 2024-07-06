@@ -95,7 +95,7 @@ internal class RegisterFixture : PageTest
         await registrationPage.RegisterAsync(user.Email, user.Password);     
         //After login, user should be able to see home, profile, logins and authenticator link without
         //any additional claims
-        await Expect(this.Page.Locator("div.mud-navmenu.mud-navmenu-default a")).ToHaveCountAsync(4);
+        await Expect(this.Page.Locator("nav a")).ToHaveCountAsync(4);
     }
 
     /// <summary>

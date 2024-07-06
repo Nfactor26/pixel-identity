@@ -275,7 +275,7 @@ namespace Pixel.Identity.UI.Tests
                 Timeout = 5000
             });
             await this.Page.Locator("div#errorAlert").IsVisibleAsync();
-            await this.Page.Locator("button[aria-label='close']").ClickAsync();
+            await this.Page.Locator("button[aria-label='Close dialog']").ClickAsync();
         }
 
 

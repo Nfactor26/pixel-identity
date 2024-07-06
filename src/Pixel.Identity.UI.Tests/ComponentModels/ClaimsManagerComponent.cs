@@ -60,7 +60,7 @@ internal abstract class ClaimsManagerComponent
         if(!success)
         {
             //close the claim dialog and return false indicating failure
-            await page.Locator("div[role='dialog'] button[aria-label='close'])").ClickAsync();            
+            await page.Locator("div[role='dialog'] button[aria-label='Close dialog'])").ClickAsync();            
         }
         return success;
     }
