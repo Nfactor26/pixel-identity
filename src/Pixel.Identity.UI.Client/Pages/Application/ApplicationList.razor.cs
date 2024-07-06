@@ -5,6 +5,7 @@ using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Application
@@ -36,7 +37,7 @@ namespace Pixel.Identity.UI.Client.Pages.Application
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
-        private async Task<TableData<ApplicationViewModel>> GetApplicationsDataAsync(TableState state)
+        private async Task<TableData<ApplicationViewModel>> GetApplicationsDataAsync(TableState state, CancellationToken ct)
         {
             try
             {

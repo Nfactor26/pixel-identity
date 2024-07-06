@@ -179,7 +179,7 @@ internal class UsersFixture : PageSesionTest
             await this.Page.Locator("div.mud-popover-provider div.mud-list div.mud-list-item-text").ClickAsync();
             await dialog.Locator("button#btnAddRole").ClickAsync();
             await Assert.ThatAsync(async () => await dialog.Locator("div#errorMessage").InnerTextAsync(), Is.EqualTo("IdentityAdmin role is already assigned to user."));
-            await dialog.Locator("button[aria-label='close']").ClickAsync();
+            await dialog.Locator("button[aria-label='Close dialog']").ClickAsync();
         }
     }
 

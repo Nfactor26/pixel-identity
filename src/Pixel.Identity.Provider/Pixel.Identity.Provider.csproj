@@ -10,20 +10,19 @@
     <BaseOutputPath>..\..\.builds\Identity</BaseOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="MailKit" Version="4.3.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MailKit" Version="4.7.0" />
     <PackageReference Include="McMaster.NETCore.Plugins.Mvc" Version="1.4.0" />
-    <PackageReference Include="OpenIddict.AspNetCore" Version="5.0.1" />
-    <PackageReference Include="OpenIddict.Quartz" Version="5.0.1" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.0" />
-    <PackageReference Include="MudBlazor" Version="6.12.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="5.7.0" />
+    <PackageReference Include="OpenIddict.Quartz" Version="5.7.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.10.0" />
+    <PackageReference Include="MudBlazor" Version="7.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.6.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pixel.Identity.Core\Pixel.Identity.Core.csproj" />

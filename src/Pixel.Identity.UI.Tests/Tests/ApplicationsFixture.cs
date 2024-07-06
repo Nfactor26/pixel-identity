@@ -109,8 +109,8 @@ internal class ApplicationsFixture : PageSesionTest
         await addApplicationPage.GoToAsync();
         await addApplicationPage.ApplyPreset(application.FromTemplate);
         await this.Page.Locator("button[type='submit']").ClickAsync();
-        await Assert.ThatAsync(async () => await this.Page.Locator("p.mud-input-helper-text.mud-input-error").Nth(0).InnerTextAsync(), Is.EqualTo("'Client Id' must not be empty."));
-        await Assert.ThatAsync(async () => await this.Page.Locator("p.mud-input-helper-text.mud-input-error").Nth(1).InnerTextAsync(), Is.EqualTo("'Display Name' must not be empty."));
+        await Assert.ThatAsync(async () => await this.Page.Locator("span.mud-input-helper-text.mud-input-error").Nth(0).InnerTextAsync(), Is.EqualTo("'Client Id' must not be empty."));
+        await Assert.ThatAsync(async () => await this.Page.Locator("span.mud-input-helper-text.mud-input-error").Nth(1).InnerTextAsync(), Is.EqualTo("'Display Name' must not be empty."));
         await Assert.ThatAsync(async () => await this.Page.Locator("div.validation-message").Nth(0).InnerTextAsync(), Is.EqualTo("RedirectUris is required for Authorization Code Flow"));
         await Assert.ThatAsync(async () => await this.Page.Locator("div.validation-message").Nth(1).InnerTextAsync(), Is.EqualTo("PostLogoutRedirectUris is required for Authorization Code Flow"));
 

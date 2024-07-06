@@ -1,7 +1,7 @@
 ﻿@page "/scopes/list"
 @attribute [Authorize(Policy = Policies.CanManageScopes)]
 
-<MudTable UserAttributes="@(new (){{"id","tblScopes"}})" ServerData="@(new Func<TableState, Task<TableData<ScopeViewModel>>>(GetScopesDataAsync))"
+<MudTable T="ScopeViewModel" UserAttributes="@(new (){{"id","tblScopes"}})" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ScopeViewModel>>>(GetScopesDataAsync))"
           Dense="false" Hover="true" ReadOnly="true" SortLabel="Sort By" Elevation="4" @ref="scopesTable">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Scopes</MudText>

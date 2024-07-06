@@ -4,6 +4,7 @@ using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Pages.Scopes
@@ -36,7 +37,7 @@ namespace Pixel.Identity.UI.Client.Pages.Scopes
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
-        private async Task<TableData<ScopeViewModel>> GetScopesDataAsync(TableState state)
+        private async Task<TableData<ScopeViewModel>> GetScopesDataAsync(TableState state, CancellationToken ct)
         {
             try
             {

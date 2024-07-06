@@ -1,12 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
 <MudThemeProvider />
+<MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
     <MudAppBar Elevation="4" Dense="false" Fixed="true">
-        <MudToolBar DisableGutters="true">
+        <MudToolBar Gutter="false">
             <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" />
         </MudToolBar>
         <MudHidden Breakpoint="Breakpoint.Xs">

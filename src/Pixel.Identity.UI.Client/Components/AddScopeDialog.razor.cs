@@ -4,6 +4,7 @@ using Pixel.Identity.Shared.Request;
 using Pixel.Identity.Shared.ViewModels;
 using Pixel.Identity.UI.Client.Services;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pixel.Identity.UI.Client.Components
@@ -42,7 +43,7 @@ namespace Pixel.Identity.UI.Client.Components
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        async Task<IEnumerable<ScopeViewModel>> SearchScopes(string value)
+        async Task<IEnumerable<ScopeViewModel>> SearchScopes(string value, CancellationToken ct)
         {
             // if text is null or empty, don't return values (drop-down will not open)
             if (string.IsNullOrEmpty(value))

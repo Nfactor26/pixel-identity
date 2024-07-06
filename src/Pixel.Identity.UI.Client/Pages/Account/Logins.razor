@@ -24,7 +24,7 @@ else
                 @foreach (var item in externalLogins)
                 {
                     <MudItem xs="3" Class="py-2 px-0 ml-1 mr-2">
-                        <MudChip Label="true" Color="Color.Success" OnClose="@(() => RemoveExternalLoginAsync(item))"
+                        <MudChip T="string" Label="true" Color="Color.Success" OnClose="@(() => RemoveExternalLoginAsync(item))"
                                 Disabled="@(externalLogins.Count() == 1 || hasLocalAccount)" Size="Size.Large">
                             @item.ProviderDisplayName
                         </MudChip>       

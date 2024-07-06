@@ -85,18 +85,17 @@
 <ValidationMessage For="() => Application.Permissions"></ValidationMessage>
 <br />
 <MudExpansionPanels MultiExpansion="true" Elevation="1">
-    <MudExpansionPanel Text="EndPoint Permissions" IsInitiallyExpanded="true">
+    <MudExpansionPanel Text="EndPoint Permissions" Expanded="true">
         <ToggleItemCollection Items="endPointPermissions" OnToggle="TogglePermission" />
     </MudExpansionPanel>
-    <MudExpansionPanel Text="Grant Type Permissions" IsInitiallyExpanded="true">
+    <MudExpansionPanel Text="Grant Type Permissions" Expanded="true">
         <ToggleItemCollection Items="grantTypePermissions" ItemSize="3" OnToggle="TogglePermission" />
     </MudExpansionPanel>
-    <MudExpansionPanel IsInitiallyExpanded="true">
+    <MudExpansionPanel Expanded="true">
         <TitleContent>
             <div class="d-flex">
                 <MudText>Scope Permissions</MudText>
-                <MudIconButton UserAttributes="@(new (){{"id","btnAddScope"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
-                               Title="Add custom scope"
+                <MudIconButton UserAttributes="@(new (){{"id","btnAddScope"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"                              
                                @onclick="AddScope" Color="Color.Primary" Class="ml-3" Style="padding:0;"></MudIconButton>
             </div>
         </TitleContent>
@@ -104,7 +103,7 @@
             <ToggleItemCollection Items="scopePermissions" OnToggle="TogglePermission" />
         </ChildContent>
     </MudExpansionPanel>
-    <MudExpansionPanel Text="Response Type Permissions" IsInitiallyExpanded="true">
+    <MudExpansionPanel Text="Response Type Permissions" Expanded="true">
         <MudGrid Spacing="2">
             <ToggleItemCollection Items="responseTypePermissions" OnToggle="TogglePermission" />
         </MudGrid>
@@ -115,7 +114,7 @@
 <MudText Typo="Typo.h6">Requirements</MudText>
 <br />
 <MudExpansionPanels MultiExpansion="true" Elevation="1">
-    <MudExpansionPanel Text="Application requirements" IsInitiallyExpanded="true">
+    <MudExpansionPanel Text="Application requirements" Expanded="true">
         <ToggleItemCollection Items="requirements" OnToggle="ToggleRequirement" />
     </MudExpansionPanel>
 </MudExpansionPanels>
@@ -124,12 +123,11 @@
 <MudText Typo="Typo.h6">Settings</MudText>
 <br />
 <MudExpansionPanels MultiExpansion="true" Elevation="1">
-    <MudExpansionPanel id="settingsPanel" IsInitiallyExpanded="true">
+    <MudExpansionPanel id="settingsPanel" Expanded="true">
         <TitleContent>
             <div class="d-flex">
                 <MudText>Token LifeTimes</MudText>
-                <MudIconButton UserAttributes="@(new (){{"id","btnAddSetting"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"
-                               Title="Add a new setting"
+                <MudIconButton UserAttributes="@(new (){{"id","btnAddSetting"}})" Icon="@Icons.Material.Outlined.AddCircleOutline" Size="Size.Medium"                              
                                @onclick="AddSetting" Color="Color.Primary" Class="ml-3" Style="padding:0;"></MudIconButton>
             </div>
         </TitleContent>
